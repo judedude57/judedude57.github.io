@@ -1,1 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Number Generator</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<h1>Random Number Generator</h1>
+
+<button onclick="generate()">Generate Number</button>
+
+<h2 id="output"></h2>
+
+<script>
+function generate() {
+    document.getElementById("output").innerText =
+        Math.floor(Math.random() * 1000);
+}
+</script>
+
+</body>
+</html>
 
