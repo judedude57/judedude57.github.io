@@ -6,19 +6,37 @@
 </head>
 <body>
 
-<h1>Random Number Generator</h1>
+<h1>Number Generator</h1>
+
+<p>Digits: <span id="digits">3</span></p>
+
+<button onclick="changeDigits()">Change Digits</button>
+<br><br>
 
 <button onclick="generate()">Generate Number</button>
 
 <h2 id="output"></h2>
 
 <script>
+let digitCount = 3;
+
+function changeDigits() {
+    digitCount++;
+    if (digitCount > 10) digitCount = 1; 
+    document.getElementById("digits").innerText = digitCount;
+}
+
 function generate() {
-    document.getElementById("output").innerText =
-        Math.floor(Math.random() * 1000);
+    const min = Math.pow(10, digitCount - 1);
+    const max = Math.pow(10, digitCount) - 1;
+
+    const num = Math.floor(Math.random() * (max - min + 1)) + min;
+
+    document.getElementById("output").innerText = num;
 }
 </script>
 
 </body>
 </html>
+
 
