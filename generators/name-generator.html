@@ -3,6 +3,28 @@
 <head>
     <title>Name Generator</title>
     <link rel="stylesheet" href="../style.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f2f2f2;
+            text-align: center;
+            padding: 40px;
+        }
+        h1 {
+            font-size: 40px;
+            margin-bottom: 20px;
+        }
+        button {
+            margin: 5px;
+            padding: 10px 15px;
+            font-size: 16px;
+        }
+        #output {
+            margin-top: 20px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
 
@@ -35,64 +57,9 @@ function generate() {
 
     if (mode === "first") {
         result = firstNames[Math.floor(Math.random() * firstNames.length)];
-    } 
-    else if (mode === "last") {
+    } else if (mode === "last") {
         result = lastNames[Math.floor(Math.random() * lastNames.length)];
-    } 
-    else {
-        const first = firstNames[Math.floor(Math.random() * firstNames.length)];
-        const last = lastNames[Math.floor(Math.random() * lastNames.length)];
-        result = first + " " + last;
-    }
-
-    document.getElementById("output").innerText = result;
-}
-</script>
-
-</body>
-</html>
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Name Generator</title>
-    <link rel="stylesheet" href="../style.css">
-</head>
-<body>
-
-<h1>Name Generator</h1>
-
-<div>
-    <button onclick="setMode('first')">First Name</button>
-    <button onclick="setMode('last')">Last Name</button>
-    <button onclick="setMode('full')">Full Name</button>
-</div>
-
-<br>
-
-<button onclick="generate()">Generate</button>
-
-<h2 id="output"></h2>
-
-<script>
-let mode = "full";
-
-function setMode(m) {
-    mode = m;
-}
-
-function generate() {
-    const firstNames = ["Alex", "Jordan", "Taylor", "Sky", "Riley", "Casey", "Morgan"];
-    const lastNames = ["Smith", "Johnson", "Brown", "Davis", "Miller", "Wilson", "Moore"];
-
-    let result = "";
-
-    if (mode === "first") {
-        result = firstNames[Math.floor(Math.random() * firstNames.length)];
-    } 
-    else if (mode === "last") {
-        result = lastNames[Math.floor(Math.random() * lastNames.length)];
-    } 
-    else {
+    } else {
         const first = firstNames[Math.floor(Math.random() * firstNames.length)];
         const last = lastNames[Math.floor(Math.random() * lastNames.length)];
         result = first + " " + last;
