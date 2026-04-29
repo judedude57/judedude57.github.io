@@ -1,42 +1,73 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Number Generator</title>
+    <title>Name Generator</title>
     <link rel="stylesheet" href="../style.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f2f2f2;
+            text-align: center;
+            padding: 40px;
+        }
+        h1 {
+            font-size: 40px;
+            margin-bottom: 20px;
+        }
+        button {
+            margin: 5px;
+            padding: 10px 15px;
+            font-size: 16px;
+        }
+        #output {
+            margin-top: 20px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
 
-<h1>Number Generator</h1>
+<h1>Name Generator</h1>
 
-<p>Digits: <span id="digits">3</span></p>
+<div>
+    <button onclick="setMode('first')">First Name</button>
+    <button onclick="setMode('last')">Last Name</button>
+    <button onclick="setMode('full')">Full Name</button>
+</div>
 
-<button onclick="changeDigits()">Change Digits</button>
-<br><br>
+<br>
 
-<button onclick="generate()">Generate Number</button>
+<button onclick="generate()">Generate</button>
 
 <h2 id="output"></h2>
 
 <script>
-let digitCount = 3;
+let mode = "full";
 
-function changeDigits() {
-    digitCount++;
-    if (digitCount > 10) digitCount = 1; 
-    document.getElementById("digits").innerText = digitCount;
+function setMode(m) {
+    mode = m;
 }
 
 function generate() {
-    const min = Math.pow(10, digitCount - 1);
-    const max = Math.pow(10, digitCount) - 1;
+    const firstNames = ["Alex", "Jordan", "Taylor", "Sky", "Riley", "Casey", "Morgan"];
+    const lastNames = ["Smith", "Johnson", "Brown", "Davis", "Miller", "Wilson", "Moore"];
 
-    const num = Math.floor(Math.random() * (max - min + 1)) + min;
+    let result = "";
 
-    document.getElementById("output").innerText = num;
+    if (mode === "first") {
+        result = firstNames[Math.floor(Math.random() * firstNames.length)];
+    } else if (mode === "last") {
+        result = lastNames[Math.floor(Math.random() * lastNames.length)];
+    } else {
+        const first = firstNames[Math.floor(Math.random() * firstNames.length)];
+        const last = lastNames[Math.floor(Math.random() * lastNames.length)];
+        result = first + " " + last;
+    }
+
+    document.getElementById("output").innerText = result;
 }
 </script>
 
 </body>
 </html>
-
-
