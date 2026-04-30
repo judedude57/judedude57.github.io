@@ -1,310 +1,214 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Tile Runner – Infinite Play</title>
-    <style>
-        body {
-            background: #111;
-            color: #f5f5f5;
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            text-align: center;
-        }
+<meta charset="UTF-8">
+<title>Tile Runner 2.0 – Infinite Play</title>
+<style>
+    body {
+        background: #111;
+        color: #f5f5f5;
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        text-align: center;
+        overflow: hidden;
+    }
 
-        .page-wrapper {
-            width: 100%;
-            max-width: 900px;
-            margin: 30px auto;
-            background: #1b1b1b;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 15px rgba(0,0,0,0.7);
-        }
+    .top-bar {
+        padding: 10px;
+        background: #1b1b1b;
+        border-bottom: 2px solid #333;
+        box-shadow: 0 0 10px #000;
+        position: relative;
+        z-index: 10;
+    }
 
-        h1 {
-            font-size: 32px;
-            margin-bottom: 10px;
-        }
+    input, button {
+        padding: 6px 10px;
+        border-radius: 6px;
+        border: 1px solid #444;
+        background: #222;
+        color: white;
+        margin: 5px;
+    }
 
-        .controls {
-            margin: 10px 0 20px;
-        }
+    button:hover {
+        background: #333;
+        border-color: #7a2cff;
+        box-shadow: 0 0 10px #7a2cff;
+    }
 
-        .label {
-            font-size: 14px;
-            margin-right: 5px;
-        }
+    canvas {
+        background: #000;
+        display: block;
+        margin: 0 auto;
+        border: 2px solid #333;
+        border-radius: 8px;
+        box-shadow: 0 0 20px #000;
+    }
 
-        input[type="text"] {
-            padding: 6px 8px;
-            border-radius: 6px;
-            border: 1px solid #444;
-            background: #222;
-            color: #f5f5f5;
-        }
-
-        input[type="color"] {
-            border: none;
-            background: transparent;
-            cursor: pointer;
-        }
-
-        .btn {
-            display: inline-block;
-            margin: 10px;
-            padding: 10px 18px;
-            background: #222;
-            color: white;
-            font-size: 16px;
-            border-radius: 10px;
-            border: 2px solid #444;
-            cursor: pointer;
-            transition: 0.25s ease;
-            box-shadow: 0 0 10px rgba(0,0,0,0.4);
-        }
-
-        .btn:hover {
-            background: #333;
-            transform: scale(1.08);
-            border-color: #7a2cff;
-            box-shadow: 0 0 15px #7a2cff, 0 0 30px #7a2cff;
-        }
-
-        #gameCanvas {
-            background: #000;
-            border-radius: 8px;
-            margin-top: 10px;
-            box-shadow: 0 0 15px #000;
-        }
-
-        .info {
-            margin-top: 10px;
-            font-size: 14px;
-            color: #ccc;
-        }
-
-        .score {
-            margin-top: 10px;
-            font-size: 18px;
-        }
-
-        .home-btn {
-            position: fixed;
-            top: 10px;
-            left: 10px;
-            background: #222;
-            color: white;
-            padding: 10px 15px;
-            border-radius: 6px;
-            text-decoration: none;
-            font-size: 16px;
-            border: 1px solid #444;
-            transition: 0.25s;
-            z-index: 9999;
-        }
-
-        .home-btn:hover {
-            background: #333;
-            transform: scale(1.05);
-            border-color: #7a2cff;
-            box-shadow: 0 0 10px #7a2cff;
-        }
-
-        .ad-space {
-            width: 100%;
-            height: 100px;
-            background: #1a1a1a;
-            border: 1px solid #333;
-            border-radius: 8px;
-            margin-top: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: #777;
-            font-size: 14px;
-        }
-    </style>
+    .ad-space {
+        width: 100%;
+        height: 100px;
+        background: #1a1a1a;
+        border: 1px solid #333;
+        border-radius: 8px;
+        margin-top: 10px;
+        color: #777;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+</style>
 </head>
 <body>
 
-<a href="https://judedude57.github.io" class="home-btn">Home</a>
-
-<div class="page-wrapper">
-    <h1>Tile Runner</h1>
-    <div class="controls">
-        <span class="label">Name:</span>
-        <input type="text" id="playerName" placeholder="Player" />
-        <span class="label">Color:</span>
-        <input type="color" id="playerColor" value="#00ff88" />
-        <button class="btn" onclick="startGame()">Start / Restart</button>
-    </div>
-
-    <canvas id="gameCanvas" width="500" height="500"></canvas>
-
-    <div class="score">
-        Score: <span id="score">0</span> |
-        Best: <span id="bestScore">0</span>
-    </div>
-
-    <div class="info">
-        Move with <b>WASD</b> or <b>Arrow Keys</b>.  
-        Claim tiles by moving. Don’t hit the walls or your own trail.
-    </div>
-
-    <div class="ad-space">
-        Ad Space (paste your code here)
-    </div>
+<div class="top-bar">
+    Name: <input id="playerName" value="Player">
+    Color: <input type="color" id="playerColor" value="#00ff88">
+    <button onclick="startGame()">Start</button>
+    <span style="margin-left:20px;">Score: <span id="score">0</span></span>
+    <span style="margin-left:20px;">Best: <span id="best">0</span></span>
 </div>
 
+<canvas id="game" width="800" height="600"></canvas>
+
+<div class="ad-space">Ad Space (paste code here)</div>
+
 <script>
-const canvas = document.getElementById("gameCanvas");
+/* === CONFIG === */
+const MAP_SIZE = 200;          // 200x200 tiles
+const TILE_SIZE = 32;          // pixel size of each tile
+const MOVE_DELAY = 120;        // ms between moves (speed control)
+
+/* === GAME STATE === */
+let player = { x: 100, y: 100, dx: 1, dy: 0, color: "#00ff88" };
+let claimed = new Set();
+let trail = [];
+let score = 0;
+let best = 0;
+let lastMove = 0;
+let running = false;
+
+/* === CANVAS === */
+const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
 
-const gridSize = 25; // 25x25 grid
-const tileSize = canvas.width / gridSize;
+/* === TEXTURE === */
+function drawFloorTile(x, y) {
+    ctx.fillStyle = "#1a1a1a";
+    ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
 
-let player = { x: 12, y: 12, dx: 1, dy: 0, color: "#00ff88" };
-let claimed = [];
-let trail = [];
-let running = false;
-let score = 0;
-let bestScore = 0;
-let loopId = null;
-
-function loadSettings() {
-    const savedName = localStorage.getItem("tileRunnerName");
-    const savedColor = localStorage.getItem("tileRunnerColor");
-    const savedBest = localStorage.getItem("tileRunnerBest");
-
-    if (savedName) document.getElementById("playerName").value = savedName;
-    if (savedColor) {
-        document.getElementById("playerColor").value = savedColor;
-        player.color = savedColor;
-    }
-    if (savedBest) {
-        bestScore = parseInt(savedBest, 10) || 0;
-        document.getElementById("bestScore").innerText = bestScore;
-    }
+    ctx.fillStyle = "#222";
+    ctx.fillRect(x + 4, y + 4, TILE_SIZE - 8, TILE_SIZE - 8);
 }
 
-function saveSettings() {
-    const name = document.getElementById("playerName").value || "Player";
-    const color = document.getElementById("playerColor").value || "#00ff88";
-    localStorage.setItem("tileRunnerName", name);
-    localStorage.setItem("tileRunnerColor", color);
-}
-
+/* === START GAME === */
 function startGame() {
-    saveSettings();
-    player.x = 12;
-    player.y = 12;
+    player.x = 100;
+    player.y = 100;
     player.dx = 1;
     player.dy = 0;
-    player.color = document.getElementById("playerColor").value || "#00ff88";
-    claimed = [];
+    player.color = document.getElementById("playerColor").value;
+
+    claimed.clear();
     trail = [];
     score = 0;
     document.getElementById("score").innerText = score;
+
     running = true;
-    if (loopId) cancelAnimationFrame(loopId);
-    gameLoop();
+    requestAnimationFrame(loop);
 }
 
-function gameLoop() {
+/* === GAME LOOP === */
+function loop(timestamp) {
     if (!running) return;
 
-    update();
+    if (timestamp - lastMove > MOVE_DELAY) {
+        lastMove = timestamp;
+        update();
+    }
+
     draw();
-    loopId = requestAnimationFrame(gameLoop);
+    requestAnimationFrame(loop);
 }
 
+/* === UPDATE === */
 function update() {
-    // Move player
     player.x += player.dx;
     player.y += player.dy;
 
-    // Check walls
-    if (player.x < 0 || player.x >= gridSize || player.y < 0 || player.y >= gridSize) {
-        gameOver();
-        return;
+    if (player.x < 0 || player.x >= MAP_SIZE || player.y < 0 || player.y >= MAP_SIZE) {
+        return gameOver();
     }
 
     const key = player.x + "," + player.y;
 
-    // Check self trail collision
-    if (trail.includes(key)) {
-        gameOver();
-        return;
-    }
+    if (trail.includes(key)) return gameOver();
 
-    // Add to trail and claimed
     trail.push(key);
-    if (!claimed.includes(key)) {
-        claimed.push(key);
+    if (!claimed.has(key)) {
+        claimed.add(key);
         score++;
         document.getElementById("score").innerText = score;
-        if (score > bestScore) {
-            bestScore = score;
-            document.getElementById("bestScore").innerText = bestScore;
-            localStorage.setItem("tileRunnerBest", bestScore);
+
+        if (score > best) {
+            best = score;
+            document.getElementById("best").innerText = best;
+            localStorage.setItem("tileBest", best);
         }
     }
 
-    // Limit trail length (optional)
-    if (trail.length > 200) {
-        trail.shift();
-    }
+    if (trail.length > 200) trail.shift();
 }
 
+/* === DRAW === */
 function draw() {
-    ctx.fillStyle = "#000";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Draw claimed tiles
-    ctx.fillStyle = "#222";
-    claimed.forEach(c => {
-        const [cx, cy] = c.split(",").map(Number);
-        ctx.fillRect(cx * tileSize, cy * tileSize, tileSize, tileSize);
-    });
+    const camX = player.x * TILE_SIZE - canvas.width / 2;
+    const camY = player.y * TILE_SIZE - canvas.height / 2;
 
-    // Draw trail
+    for (let gx = 0; gx < MAP_SIZE; gx++) {
+        for (let gy = 0; gy < MAP_SIZE; gy++) {
+            const px = gx * TILE_SIZE - camX;
+            const py = gy * TILE_SIZE - camY;
+
+            if (px < -TILE_SIZE || py < -TILE_SIZE || px > canvas.width || py > canvas.height) continue;
+
+            drawFloorTile(px, py);
+        }
+    }
+
     ctx.fillStyle = player.color + "88";
-    trail.forEach(c => {
-        const [tx, ty] = c.split(",").map(Number);
-        ctx.fillRect(tx * tileSize, ty * tileSize, tileSize, tileSize);
+    trail.forEach(t => {
+        const [tx, ty] = t.split(",").map(Number);
+        ctx.fillRect(tx * TILE_SIZE - camX, ty * TILE_SIZE - camY, TILE_SIZE, TILE_SIZE);
     });
 
-    // Draw player
     ctx.fillStyle = player.color;
-    ctx.fillRect(player.x * tileSize, player.y * tileSize, tileSize, tileSize);
+    ctx.fillRect(player.x * TILE_SIZE - camX, player.y * TILE_SIZE - camY, TILE_SIZE, TILE_SIZE);
 }
 
+/* === GAME OVER === */
 function gameOver() {
     running = false;
     alert("Game Over! Score: " + score);
 }
 
-document.addEventListener("keydown", (e) => {
+/* === CONTROLS === */
+document.addEventListener("keydown", e => {
     if (!running) return;
-    if (e.key === "ArrowUp" || e.key === "w") {
-        if (player.dy === 1) return;
-        player.dx = 0; player.dy = -1;
-    } else if (e.key === "ArrowDown" || e.key === "s") {
-        if (player.dy === -1) return;
-        player.dx = 0; player.dy = 1;
-    } else if (e.key === "ArrowLeft" || e.key === "a") {
-        if (player.dx === 1) return;
-        player.dx = -1; player.dy = 0;
-    } else if (e.key === "ArrowRight" || e.key === "d") {
-        if (player.dx === -1) return;
-        player.dx = 1; player.dy = 0;
-    }
+
+    if (e.key === "ArrowUp" || e.key === "w") { player.dx = 0; player.dy = -1; }
+    if (e.key === "ArrowDown" || e.key === "s") { player.dx = 0; player.dy = 1; }
+    if (e.key === "ArrowLeft" || e.key === "a") { player.dx = -1; player.dy = 0; }
+    if (e.key === "ArrowRight" || e.key === "d") { player.dx = 1; player.dy = 0; }
 });
 
-loadSettings();
-startGame();
+/* === LOAD BEST SCORE === */
+best = parseInt(localStorage.getItem("tileBest") || "0");
+document.getElementById("best").innerText = best;
 </script>
 
 </body>
