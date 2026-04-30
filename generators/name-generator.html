@@ -1,46 +1,124 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Name Generator</title>
-    <link rel="stylesheet" href="../style.css">
+    <meta charset="UTF-8">
+    <title>Name Generator – Infinite Play</title>
     <style>
         body {
+            background: #111;
+            color: #f5f5f5;
             font-family: Arial, sans-serif;
-            background: #f2f2f2;
+            margin: 0;
+            padding: 0;
             text-align: center;
-            padding: 40px;
         }
+
+        /* Page wrapper */
+        .page-wrapper {
+            width: 100%;
+            max-width: 900px;
+            margin: 40px auto;
+            background: #1b1b1b;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.7);
+        }
+
         h1 {
             font-size: 40px;
             margin-bottom: 20px;
         }
-        button {
-            margin: 5px;
-            padding: 10px 15px;
-            font-size: 16px;
+
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            margin: 10px;
+            padding: 14px 22px;
+            background: #222;
+            color: white;
+            font-size: 18px;
+            border-radius: 10px;
+            border: 2px solid #444;
+            cursor: pointer;
+            transition: 0.25s ease;
+            box-shadow: 0 0 10px rgba(0,0,0,0.4);
         }
+
+        .btn:hover {
+            background: #333;
+            transform: scale(1.08);
+            border-color: #7a2cff;
+            box-shadow: 0 0 15px #7a2cff, 0 0 30px #7a2cff;
+        }
+
         #output {
-            margin-top: 20px;
-            font-size: 24px;
+            margin-top: 25px;
+            font-size: 28px;
             font-weight: bold;
+            color: #9d7dff;
+            text-shadow: 0 0 10px #7a2cff;
+        }
+
+        /* Home button */
+        .home-btn {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            background: #222;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 18px;
+            border: 1px solid #444;
+            transition: 0.25s;
+        }
+
+        .home-btn:hover {
+            background: #333;
+            transform: scale(1.05);
+            border-color: #7a2cff;
+            box-shadow: 0 0 10px #7a2cff;
+        }
+
+        /* Ad space box */
+        .ad-space {
+            width: 100%;
+            height: 120px;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 8px;
+            margin-top: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #777;
+            font-size: 14px;
         }
     </style>
 </head>
 <body>
 
-<h1>Name Generator</h1>
+<a href="https://judedude57.github.io" class="home-btn">Home</a>
 
-<div>
-    <button onclick="setMode('first')">First Name</button>
-    <button onclick="setMode('last')">Last Name</button>
-    <button onclick="setMode('full')">Full Name</button>
+<div class="page-wrapper">
+    <h1>Name Generator</h1>
+
+    <div>
+        <button class="btn" onclick="setMode('first')">First Name</button>
+        <button class="btn" onclick="setMode('last')">Last Name</button>
+        <button class="btn" onclick="setMode('full')">Full Name</button>
+    </div>
+
+    <button class="btn" onclick="generate()">Generate</button>
+
+    <h2 id="output"></h2>
+
+    <!-- Ad space placeholder -->
+    <div class="ad-space">
+        Ad Space (paste your code here)
+    </div>
 </div>
-
-<br>
-
-<button onclick="generate()">Generate</button>
-
-<h2 id="output"></h2>
 
 <script>
 let mode = "full";
@@ -50,10 +128,20 @@ function setMode(m) {
 }
 
 function generate() {
-    const firstNames = ["Alex", "Jordan", "Taylor", "Sky", "Riley", "Casey", "Morgan", "Jude", "Emma", "Bailey", "Matthew", "Hunter", "Gus", "John", "Peter"];
-    const lastNames = ["Smith", "Johnson", "Brown", "Davis", "Miller", "Wilson", "Moore", "Campbell", "Meyer", "Peterson"];
+    const firstNames = [
+        "Alex","Jordan","Taylor","Sky","Riley","Casey","Morgan","Jude","Emma","Bailey",
+        "Matthew","Hunter","Gus","John","Peter","Liam","Noah","Ava","Sophia","Mason",
+        "Ella","James","Lucas","Mia","Harper","Ethan","Logan","Zoe","Nova","Kai",
+        "Aria","Leo","Ezra","Willow","Rowan","Sage","River","Autumn","Jasper","Felix"
+    ];
 
-    let result = ""
+    const lastNames = [
+        "Smith","Johnson","Brown","Davis","Miller","Wilson","Moore","Campbell","Meyer",
+        "Peterson","Anderson","Thompson","Walker","Bennett","Reed","Foster","Hayes",
+        "Griffin","Knight","Warren","Hughes","Stevens","Coleman","Brooks","Parker"
+    ];
+
+    let result = "";
 
     if (mode === "first") {
         result = firstNames[Math.floor(Math.random() * firstNames.length)];
@@ -68,34 +156,6 @@ function generate() {
     document.getElementById("output").innerText = result;
 }
 </script>
-    <!-- BEGIN AADS AD UNIT 2436014 -->
-
-<div id="frame" style="width: 100%;margin: auto;position: relative; z-index: 99998;">
-          <iframe data-aa='2436014' src='//acceptable.a-ads.com/2436014/?size=Adaptive'
-                            style='border:0; padding:0; width:70%; height:auto; overflow:hidden;display: block;margin: auto'></iframe>
-        </div>
-
-<!-- END AADS AD UNIT 2436014 -->
-
-
-    <a href="https://judedude57.github.io" style="
-    position: fixed;
-    top: 10px;
-    left: 10px;
-    background: #222;
-    color: white;
-    padding: 10px 15px;
-    border-radius: 6px;
-    text-decoration: none;
-    font-size: 18px;
-    z-index: 99999;
-">
-    Home
-</a>
-
-
-
-
 
 </body>
 </html>
