@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Infinite Clicker</title>
+<style>
+    body {
+        background: #0b0014;
+        color: white;
+        font-family: Arial, sans-serif;
+        text-align: center;
+        margin: 0;
+    }
+    #logo {
+        width: 220px;
+        cursor: pointer;
+        transition: transform 0.1s;
+        filter: drop-shadow(0 0 15px #8a2be2);
+        margin-top: 20px;
+    }
+    #logo:active {
+        transform: scale(0.9);
+    }
+    .panel {
+        background: #1a0f2e;
+        padding: 20px;
+        width: 350px;
+        margin: 20px auto;
+        border-radius: 12px;
+        box-shadow: 0 0 20px #5a1ea3;
+    }
+    button {
+        width: 100%;
+        padding: 10px;
+        margin-top: 10px;
+        background: #8a2be2;
+        border: none;
+        border-radius: 6px;
+        color: white;
+        cursor: pointer;
+        font-size: 16px;
+        transition: 0.2s;
+    }
+    button:hover {
+        background: #a45cff;
+    }
+    button:disabled {
+        background: #444;
+        cursor: not-allowed;
+    }
+</style>
+</head>
+<body>
+
+<h1>Infinite Clicker</h1>
+<h2>Cookies: <span id="count">0</span></h2>
+<h3>CPS: <span id="cps">0</span></h3>
+
+<img id="logo" src="https://judedude57.github.io/InfinitePlayLogo.png">
+
+<div class="panel">
+    <h3>Buildings</h3>
+    <div id="buildings"></div>
+</div>
+
+<div class="panel">
+    <h3>Upgrades</h3>
+    <div id="upgrades"></div>
+</div>
+
+<script>
+/* ===========================
+   CORE GAME VARIABLES
+=========================== */
+let cookies = 0;
+let clickPower = 1;
+let cps = 0;
+
+/* ===========================
+   BUILDINGS
+=========================== */
+const buildings = [
+    { name: "Bot", baseCost: 15, cps: 0.1, count: 0 },
+    { name: "Developer", baseCost: 100, cps: 1, count: 0 },
+    { name: "Server Farm", baseCost: 1100, cps: 8, count: 0 },
+    { name: "Game Studio", baseCost: 12000, cps: 47, count: 0 },
+    { name: "Data Mine", baseCost: 130000, cps: 260, count: 0 },
+    { name: "Ad Vault", baseCost: 1400000, cps: 1400, count: 0 },
+    { name: "Algorithm Shrine", baseCost: 20000000, cps: 7800, count: 0 },
+    { name: "AI Lab", baseCost: 330000000, cps: 44000, count: 0 },
+    { name: "Multiverse Gate", baseCost: 5100000000, cps: 260000, count: 0 },
+    { name: "Time Loop Engine", baseCost: 75000000000, cps: 1600000, count: 0 },
+    { name: "Quantum Compressor", baseCost: 1000000000000, cps: 10000000, count: 0 }
+];
+
+/* ===========================
+   BASIC UPGRADES
+=========================== */
+const upgrades = [
+    { name: "Double Click Power", cost: 100, effect: () => clickPower *= 2, bought: false },
+    { name: "Triple Click Power", cost: 1000, effect: () => clickPower *= 3, bought: false },
+    { name: "Bot Efficiency", cost: 500, effect: () => buildings[0].cps *= 2, bought: false },
+    { name: "Developer Efficiency", cost: 5000, effect: () => buildings[1].cps *= 2, bought: false }
+];
+
+/* ===========================
+   DOM ELEMENTS
+=========================== */
+const countEl = document.getElementById("count");
+const cpsEl = document.getElementById("cps");
+const buildingsEl = document.getElementById("buildings");
+const upgradesEl = document.getElementById("upgrades");
+const logo = document.getElementById("logo");
+
+/* ===========================
+   CLICKING
+=========================== */
+logo.onclick = () => {
+    cookies += clickPower;
+    update();
+};
+
+/* ===========================
+   RENDER BUILDINGS
+=========================== */
+function renderBuildings() {
+    buildingsEl.innerHTML = "";
+    buildings.forEach((b, i) => {
+        const cost = Math.floor(b.baseCost * Math.pow(1.15, b.count));
+        const btn = document.createElement("button");
+        btn.textContent = `${b.name} (${b.count}) — ${cost} cookies`;
+        btn.disabled = cookies < cost;
+        btn.onclick = () => buyBuilding(i);
+        buildingsEl.appendChild(btn);
+    });
+}
+
+/* ===========================
+   BUY BUILDING
+=========================== */
+function buyBuilding(i) {
+    const b = buildings[i];
+    const cost = Math.floor(b.baseCost * Math.pow(1.15, b.count));
+    if (cookies >= cost) {
+        cookies -= cost;
+        b.count++;
+        calculateCPS();
+        update();
+    }
+}
+
+/* ===========================
+   RENDER UPGRADES
+=========================== */
+function renderUpgrades() {
+    upgradesEl.innerHTML = "";
+    upgrades.forEach((u, i) => {
+        if (!u.bought) {
+            const btn = document.createElement("button");
+            btn.textContent = `${u.name} — ${u.cost} cookies`;
+            btn.disabled = cookies < u.cost;
+            btn.onclick = () => buyUpgrade(i);
+            upgradesEl.appendChild(btn);
+        }
+    });
+}
+
+/* ===========================
+   BUY UPGRADE
+=========================== */
+function buyUpgrade(i) {
+    const u = upgrades[i];
+    if (cookies >= u.cost) {
+        cookies -= u.cost;
+        u.bought = true;
+        u.effect();
+        calculateCPS();
+        update();
+    }
+}
+
+/* ===========================
+   CALCULATE CPS
+=========================== */
+function calculateCPS() {
+    cps = 0;
+    buildings.forEach(b => cps += b.count * b.cps);
+}
+
+/* ===========================
+   GAME LOOP
+=========================== */
+setInterval(() => {
+    cookies += cps;
+    update();
+}, 1000);
+
+/* ===========================
+   SAVE / LOAD
+=========================== */
+function saveGame() {
+    const save = {
+        cookies,
+        clickPower,
+        buildings,
+        upgrades
+    };
+    localStorage.setItem("InfiniteClickerSave", JSON.stringify(save));
+}
+
+function loadGame() {
+    const save = JSON.parse(localStorage.getItem("InfiniteClickerSave"));
+    if (!save) return;
+
+    cookies = save.cookies;
+    clickPower = save.clickPower;
+
+    save.buildings.forEach((b, i) => buildings[i] = b);
+    save.upgrades.forEach((u, i) => upgrades[i] = u);
+
+    calculateCPS();
+    update();
+}
+
+setInterval(saveGame, 30000);
+
+/* ===========================
+   UPDATE UI
+=========================== */
+function update() {
+    countEl.textContent = Math.floor(cookies);
+    cpsEl.textContent = cps.toFixed(1);
+    renderBuildings();
+    renderUpgrades();
+}
+
+loadGame();
+update();
+</script>
+
+</body>
+</html>
