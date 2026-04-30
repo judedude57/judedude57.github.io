@@ -1,79 +1,22 @@
 console.log("FreeGens loaded!");
+<script>
+  const coin = document.getElementById('coin');
+  const flipBtn = document.getElementById('flipBtn');
+  const coinResult = document.getElementById('coinResult');
 
-.tool-card {
-    background: #181818;
-    padding: 20px;
-    border-radius: 12px;
-    max-width: 320px;
-    margin: 20px auto;
-    box-shadow: 0 0 15px rgba(0,0,0,0.5);
-}
+  flipBtn.addEventListener('click', () => {
+    const isHeads = Math.random() < 0.5;
+    const spins = 4; // full spins
+    const finalRotation = isHeads ? 0 : 180;
 
-.coin-container {
-    perspective: 1000px;
-    margin: 20px 0;
-}
+    coin.classList.add('flipping');
+    coin.style.transform = `rotateY(${spins * 360 + finalRotation}deg)`;
 
-.coin {
-    width: 120px;
-    height: 120px;
-    margin: 0 auto;
-    position: relative;
-    transform-style: preserve-3d;
-    transition: transform 1s ease-out;
-}
+    coinResult.textContent = 'Flipping...';
 
-.coin.flipping {
-    transition: transform 1.2s cubic-bezier(0.19, 1, 0.22, 1);
-}
-
-.face {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    backface-visibility: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-    font-size: 20px;
-    color: #fff;
-    border: 3px solid #ffd700;
-    box-shadow: 0 0 10px rgba(0,0,0,0.6);
-}
-
-.front {
-    background: radial-gradient(circle at 30% 30%, #ffe27a, #c89b00);
-}
-
-.back {
-    background: radial-gradient(circle at 30% 30%, #b0c4ff, #3046a8);
-    transform: rotateY(180deg);
-}
-
-#flipBtn {
-    padding: 10px 20px;
-    border-radius: 8px;
-    border: none;
-    background: #3b82f6;
-    color: white;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background 0.2s, transform 0.1s;
-}
-
-#flipBtn:hover {
-    background: #2563eb;
-    transform: translateY(-1px);
-}
-
-#flipBtn:active {
-    transform: translateY(1px);
-}
-
-.coin-result {
-    margin-top: 12px;
-    font-size: 18px;
-    font-weight: bold;
-}
+    setTimeout(() => {
+      coin.classList.remove('flipping');
+      coinResult.textContent = isHeads ? 'Heads!' : 'Tails!';
+    }, 1200);
+  });
+</script>
