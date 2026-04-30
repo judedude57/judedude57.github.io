@@ -1,75 +1,130 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
+    <title>Infinite Play – Home</title>
     <link rel="icon" type="image/png" href="Copilot_20260430_082824 (1).png">
-    <title>FreeGens – Online Generators</title>
-    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            background: #111;
+            color: #f5f5f5;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        /* Page wrapper */
+        .page-wrapper {
+            width: 100%;
+            max-width: 1200px;
+            display: flex;
+            justify-content: center;
+            position: relative;
+            padding-top: 40px;
+        }
+
+        /* Left + Right ad columns (empty for you to fill) */
+        .ad-left, .ad-right {
+            width: 160px;
+            min-height: 600px;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 6px;
+            position: absolute;
+            top: 40px;
+        }
+        .ad-left { left: -180px; }
+        .ad-right { right: -180px; }
+
+        .ad-left p, .ad-right p {
+            text-align: center;
+            font-size: 12px;
+            color: #777;
+            padding: 10px;
+        }
+
+        /* Main content */
+        .content {
+            width: 100%;
+            max-width: 700px;
+            background: #1b1b1b;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.7);
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 40px;
+            margin-bottom: 20px;
+        }
+
+        /* Menu buttons with glow + hover animation */
+        .menu-btn {
+            display: block;
+            width: 80%;
+            margin: 20px auto;
+            padding: 18px;
+            background: #222;
+            color: white;
+            text-decoration: none;
+            font-size: 22px;
+            border-radius: 10px;
+            border: 2px solid #444;
+            transition: 0.25s ease;
+            box-shadow: 0 0 10px rgba(0,0,0,0.4);
+        }
+
+        .menu-btn:hover {
+            background: #333;
+            transform: scale(1.08);
+            border-color: #7a2cff;
+            box-shadow: 0 0 15px #7a2cff, 0 0 30px #7a2cff;
+        }
+
+        /* Logo */
+        .logo {
+            margin-top: 40px;
+            width: 200px;
+            opacity: 0.95;
+        }
+
+        @media (max-width: 1000px) {
+            .ad-left, .ad-right {
+                display: none;
+            }
+        }
+    </style>
 </head>
 <body>
 
-<h1>FreeGens</h1>
-<p>Choose a generator below:</p>
+<div class="page-wrapper">
 
-<div class="menu">
-    <a href="generators/name-generator.html">Random Name Generator</a>
-    <a href="generators/password-generator.html">Password Generator</a>
-    <a href="generators/number-generator.html">Number Generator</a>
+    <!-- Left Ad (you add your code here) -->
+    <div class="ad-left">
+        <p>Ad Space</p>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content">
+        <h1>Infinite Play</h1>
+
+        <a href="Games.html" class="menu-btn">Games</a>
+        <a href="tools.html" class="menu-btn">Tools & Generators</a>
+
+        <img src="https://copilot.microsoft.com/th/id/BCO.75cdd897-a13c-4dc9-a954-d9af160edc26.png"
+             alt="Infinite Play Logo"
+             class="logo">
+    </div>
+
+    <!-- Right Ad (you add your code here) -->
+    <div class="ad-right">
+        <p>Ad Space</p>
+    </div>
+
 </div>
-
-<script src="script.js"></script>
-    <!-- BEGIN AADS AD UNIT 2436014 -->
-<div style="position: absolute; z-index: 99999">
-      <input autocomplete="off" type="checkbox" id="aadsstickymokn73fm" hidden />
-      <div style="padding-top: 0; padding-bottom: auto;">
-        <div style="width:100%;height:auto;position:fixed;text-align:center;font-size:0;bottom:0;left:0;right:0;margin:auto">
-          <label for="aadsstickymokn73fm" style="top: 50%;transform: translateY(-50%);right:24px;; position: absolute;border-radius: 4px; background: rgba(248, 248, 249, 0.70); padding: 4px;z-index: 99999;cursor:pointer">
-            <svg fill="#000000" height="16px" width="16px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 490 490">
-              <polygon points="456.851,0 245,212.564 33.149,0 0.708,32.337 212.669,245.004 0.708,457.678 33.149,490 245,277.443 456.851,490 489.292,457.678 277.331,245.004 489.292,32.337 "/>
-            </svg>
-          </label>
-          <div id="frame" style="width: 100%;margin: auto;position: relative; z-index: 99998;"><iframe data-aa=2436014 src=//acceptable.a-ads.com/2436014/?size=Adaptive style='border:0; padding:0; width:70%; height:auto; overflow:hidden; margin: auto'></iframe></div>
-        </div>
-        <style>
-      #aadsstickymokn73fm:checked + div {
-        display: none;
-      }
-    </style>
-    </div></div>
-<!-- END AADS AD UNIT 2436014 -->
-
-
-    <a href="https://judedude57.github.io" style="
-    position: fixed;
-    top: 10px;
-    left: 10px;
-    background: #222;
-    color: white;
-    padding: 10px 15px;
-    border-radius: 6px;
-    text-decoration: none;
-    font-size: 18px;
-    z-index: 99999;
-">
-    Home
-</a>
-
-
-<a href="https://judedude57.github.io/Games.html"
-   style="display:inline-block;
-          background:#222;
-          color:white;
-          padding:12px 20px;
-          border-radius:6px;
-          text-decoration:none;
-          font-size:18px;">
-   Games
-</a>
-
-    <img src="https://copilot.microsoft.com/th/id/BCO.75cdd897-a13c-4dc9-a954-d9af160edc26.png"
-     alt="Infinite Play Logo"
-     style="width:180px;display:block;margin:20px auto;">
-
 
 </body>
 </html>
-
