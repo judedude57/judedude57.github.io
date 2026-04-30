@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Game Hub</title>
+    <title>Game Hub – Infinite Play</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         body {
@@ -23,6 +23,14 @@
             text-decoration: none;
             font-size: 16px;
             z-index: 99999;
+            border: 1px solid #444;
+            transition: 0.25s;
+        }
+        a.home-btn:hover {
+            background: #333;
+            transform: scale(1.05);
+            border-color: #7a2cff;
+            box-shadow: 0 0 10px #7a2cff;
         }
         .container {
             max-width: 1000px;
@@ -31,6 +39,7 @@
             background: #1b1b1b;
             border-radius: 8px;
             box-shadow: 0 0 15px rgba(0,0,0,0.7);
+            text-align: center;
         }
         h1 {
             text-align: center;
@@ -67,21 +76,44 @@
         .play-btn {
             display: inline-block;
             padding: 10px 16px;
-            background: #333;
+            background: #222;
             color: white;
-            border-radius: 6px;
+            border-radius: 8px;
             text-decoration: none;
             font-size: 16px;
-            border: 1px solid #555;
+            border: 2px solid #444;
+            transition: 0.25s ease;
+            box-shadow: 0 0 10px rgba(0,0,0,0.4);
         }
         .play-btn:hover {
-            background: #444;
+            background: #333;
+            transform: scale(1.08);
+            border-color: #7a2cff;
+            box-shadow: 0 0 15px #7a2cff, 0 0 30px #7a2cff;
+        }
+        .ad-space {
+            width: 100%;
+            height: 120px;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 8px;
+            margin: 30px auto 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #777;
+            font-size: 14px;
+        }
+        .logo {
+            margin-top: 20px;
+            width: 200px;
+            opacity: 0.95;
         }
     </style>
 </head>
 <body>
 
-<a href="index.html" class="home-btn">Home</a>
+<a href="../index.html" class="home-btn">Home</a>
 
 <div class="container">
     <h1>Game Hub</h1>
@@ -94,7 +126,7 @@
             <div class="game-desc">
                 Build a custom character, explore dangerous floors, fight monsters, and survive the dungeon.
             </div>
-            <a href="/Games/dungeon-explorer.html" class="play-btn">Play Now</a>
+            <a href="../Games/dungeon-explorer.html" class="play-btn">Play Now</a>
         </div>
 
         <!-- Life Simulator Mini -->
@@ -103,7 +135,16 @@
             <div class="game-desc">
                 Start at age 18 and make choices that shape your entire life. Careers, health, money, and chaos.
             </div>
-            <a href="/Games/life-sim.html" class="play-btn">Play Now</a>
+            <a href="../Games/life-sim.html" class="play-btn">Play Now</a>
+        </div>
+
+        <!-- Tile Runner -->
+        <div class="game-card">
+            <div class="game-title">Tile Runner</div>
+            <div class="game-desc">
+                Claim tiles, avoid your own trail, and push your score higher in this fast tile-runner.
+            </div>
+            <a href="../Games/tileman.html" class="play-btn">Play Now</a>
         </div>
 
         <!-- Future Games Placeholder -->
@@ -115,57 +156,20 @@
             <a href="#" class="play-btn" style="opacity:0.5; pointer-events:none;">Coming Soon</a>
         </div>
 
-        <!-- BEGIN AADS AD UNIT 2436014 -->
-
-<div style="position: absolute; z-index: 99999">
-      <input autocomplete="off" type="checkbox" id="aadsstickymolgbl2o" hidden />
-      <div style="padding-top: 0; padding-bottom: 0;">
-        <div style="width:15%;height:100%;position:fixed;text-align:center;font-size:0;top:50%;transform:translateY(-50%);left:0;min-width:100px">
-          <label for="aadsstickymolgbl2o" style="bottom: 24px;margin:0 auto;right:0;left:0;max-width:24px; position: absolute;border-radius: 4px; background: rgba(248, 248, 249, 0.70); padding: 4px;z-index: 99999;cursor:pointer">
-            <svg fill="#000000" height="16px" width="16px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 490 490">
-              <polygon points="456.851,0 245,212.564 33.149,0 0.708,32.337 212.669,245.004 0.708,457.678 33.149,490 245,277.443 456.851,490 489.292,457.678 277.331,245.004 489.292,32.337 "/>
-            </svg>
-          </label>
-          <div id="frame" style="width: 100%;margin: auto;position: relative; z-index: 99998;height:100%; display: flex;flex-direction: column; justify-content: center">
-                        <iframe data-aa=2436014 src=//acceptable.a-ads.com/2436014/?size=Adaptive style='border:0; padding:0; width:70%; height:70%; overflow:hidden; margin: 0 auto'></iframe>
-                    </div>
-        </div>
-        <style>
-      #aadsstickymolgbl2o:checked + div {
-        display: none;
-      }
-    </style>
-    </div></div>
-
-<!-- END AADS AD UNIT 2436014 -->
-
-    
     </div>
+
+    <!-- Ad Space Placeholder -->
+    <div class="ad-space">
+        Ad Space (paste your ad code here)
+    </div>
+
+    <!-- Logo -->
+    <img src="https://copilot.microsoft.com/th/id/BCO.75cdd897-a13c-4dc9-a954-d9af160edc26.png"
+         alt="Infinite Play Logo"
+         class="logo">
+
 </div>
-
-    <!-- BEGIN AADS AD UNIT 2436014 -->
-
-<div style="position: absolute; z-index: 99999">
-      <input autocomplete="off" type="checkbox" id="aadsstickymolge2y2" hidden />
-      <div style="padding-top: 0; padding-bottom: 0;">
-        <div style="width:15%;height:100%;position:fixed;text-align:center;font-size:0;top:50%;transform:translateY(-50%);right:0;min-width:100px">
-          <label for="aadsstickymolge2y2" style="bottom: 24px;margin:0 auto;right:0;left:0;max-width:24px; position: absolute;border-radius: 4px; background: rgba(248, 248, 249, 0.70); padding: 4px;z-index: 99999;cursor:pointer">
-            <svg fill="#000000" height="16px" width="16px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 490 490">
-              <polygon points="456.851,0 245,212.564 33.149,0 0.708,32.337 212.669,245.004 0.708,457.678 33.149,490 245,277.443 456.851,490 489.292,457.678 277.331,245.004 489.292,32.337 "/>
-            </svg>
-          </label>
-          <div id="frame" style="width: 100%;margin: auto;position: relative; z-index: 99998;height:100%; display: flex;flex-direction: column; justify-content: center">
-                        <iframe data-aa=2436014 src=//acceptable.a-ads.com/2436014/?size=Adaptive style='border:0; padding:0; width:70%; height:70%; overflow:hidden; margin: 0 auto'></iframe>
-                    </div>
-        </div>
-        <style>
-      #aadsstickymolge2y2:checked + div {
-        display: none;
-      }
-    </style>
-    </div></div>
-
-<!-- END AADS AD UNIT 2436014 -->
 
 </body>
 </html>
+
