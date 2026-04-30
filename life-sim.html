@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Life Simulator Mini</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            background: #111;
+            color: #f5f5f5;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        a.home-btn {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            background: #222;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 16px;
+            z-index: 99999;
+        }
+        .container {
+            max-width: 900px;
+            margin: 80px auto 40px;
+            padding: 20px;
+            background: #1b1b1b;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.7);
+        }
+        h1, h2 {
+            text-align: center;
+            margin-top: 0;
+        }
+        #creator, #game {
+            margin-top: 10px;
+        }
+        .section {
+            margin-bottom: 20px;
+            padding: 10px;
+            background: #151515;
+            border-radius: 6px;
+            border: 1px solid #333;
+        }
+        .field-row {
+            margin-bottom: 10px;
+        }
+        label {
+            display: inline-block;
+            margin-bottom: 4px;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 6px 8px;
+            border-radius: 4px;
+            border: 1px solid #444;
+            background: #101010;
+            color: #f5f5f5;
+        }
+        .trait-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .trait-card {
+            flex: 1 1 30%;
+            background: #202020;
+            border-radius: 6px;
+            border: 1px solid #444;
+            padding: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.15s, border-color 0.15s, transform 0.1s;
+        }
+        .trait-card.selected {
+            background: #333;
+            border-color: #888;
+            transform: translateY(-1px);
+        }
+        .trait-card:hover {
+            background: #2a2a2a;
+        }
+        .trait-title {
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+        .stat-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 6px;
+        }
+        .stat-name {
+            width: 100px;
+        }
+        .stat-controls {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .stat-value {
+            min-width: 24px;
+            text-align: center;
+        }
+        button.small {
+            padding: 2px 8px;
+            background: #2b2b2b;
+            color: #f5f5f5;
+            border: 1px solid #444;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+        button.small:disabled {
+            opacity: 0.4;
+            cursor: default;
+        }
+        #points-remaining {
+            text-align: right;
+            font-size: 14px;
+            margin-top: 4px;
+        }
+        #startBtn {
+            width: 100%;
+            padding: 10px;
+            background: #3a3a3a;
+            color: #f5f5f5;
+            border: 1px solid #555;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        #startBtn:disabled {
+            opacity: 0.4;
+            cursor: default;
+        }
+        #stats {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        .stat-pill {
+            padding: 4px 8px;
+            background: #202020;
+            border-radius: 999px;
+            border: 1px solid #333;
+        }
+        #log {
+            min-height: 200px;
+            max-height: 280px;
+            overflow-y: auto;
+            padding: 10px;
+            background: #101010;
+            border-radius: 6px;
+            border: 1px solid #333;
+            margin-bottom: 15px;
+            font-size: 15px;
+            line-height: 1.4;
+        }
+        .log-entry {
+            margin-bottom: 8px;
+        }
+        .log-entry span.label {
+            color: #888;
+        }
+        #choices {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        button.choice {
+            flex: 1 1 45%;
+            padding: 10px;
+            background: #2b2b2b;
+            color: #f5f5f5;
+            border: 1px solid #444;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 15px;
+            transition: background 0.15s, transform 0.1s;
+        }
+        button.choice:hover {
+            background: #3a3a3a;
+            transform: translateY(-1px);
+        }
+        button.choice:disabled {
+            opacity: 0.4;
+            cursor: default;
+            transform: none;
+        }
+        #message {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #ccc;
+        }
+        #restart {
+            margin-top: 15px;
+            padding: 10px 15px;
+            background: #444;
+            color: #f5f5f5;
+            border: 1px solid #666;
+            border-radius: 6px;
+            cursor: pointer;
+            display: none;
+        }
+        #restart:hover {
+            background: #555;
+        }
+        #ad-slot {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 12px;
+            color: #777;
+        }
+        @media (max-width: 600px) {
+            .container {
+                margin-top: 70px;
+                margin-left: 10px;
+                margin-right: 10px;
+            }
+            .trait-card {
+                flex: 1 1 100%;
+            }
+            button.choice {
+                flex: 1 1 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<a href="https://judedude57.github.io" class="home-btn">Home</a>
+
+<div class="container">
+    <h1>Life Simulator Mini</h1>
+
+    <div id="creator">
+        <h2>Build Your Life</h2>
+
+        <div class="section">
+            <div class="field-row">
+                <label for="nameInput">Name</label>
+                <input type="text" id="nameInput" placeholder="Enter your character's name">
+            </div>
+        </div>
+
+        <div class="section">
+            <label>Distribute Your Life Points</label>
+            <div id="points-remaining">Points remaining: <span id="pointsLeft">12</span></div>
+            <div class="stat-row">
+                <div class="stat-name">Brains (Career)</div>
+                <div class="stat-controls">
+                    <button class="small" data-stat="brains" data-dir="-1">-</button>
+                    <span class="stat-value" id="stat-brains">0</span>
+                    <button class="small" data-stat="brains" data-dir="1">+</button>
+                </div>
+            </div>
+            <div class="stat-row">
+                <div class="stat-name">Charm (Social)</div>
+                <div class="stat-controls">
+                    <button class="small" data-stat="charm" data-dir="-1">-</button>
+                    <span class="stat-value" id="stat-charm">0</span>
+                    <button class="small" data-stat="charm" data-dir="1">+</button>
+                </div>
+            </div>
+            <div class="stat-row">
+                <div class="stat-name">Grit (Health)</div>
+                <div class="stat-controls">
+                    <button class="small" data-stat="grit" data-dir="-1">-</button>
+                    <span class="stat-value" id="stat-grit">0</span>
+                    <button class="small" data-stat="grit" data-dir="1">+</button>
+                </div>
+            </div>
+            <div class="stat-row">
+                <div class="stat-name">Luck</div>
+                <div class="stat-controls">
+                    <button class="small" data-stat="luck" data-dir="-1">-</button>
+                    <span class="stat-value" id="stat-luck">0</span>
+                    <button class="small" data-stat="luck" data-dir="1">+</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <label>Choose a Life Perk</label>
+            <div class="trait-options" id="perkOptions">
+                <div class="trait-card" data-perk="rich_family">
+                    <div class="trait-title">Rich Family</div>
+                    <div>Start with more money, but higher expectations.</div>
+                </div>
+                <div class="trait-card" data-perk="street_smart">
+                    <div class="trait-title">Street Smart</div>
+                    <div>Better at risky choices and side hustles.</div>
+                </div>
+                <div class="trait-card" data-perk="social_butterfly">
+                    <div class="trait-title">Social Butterfly</div>
+                    <div>Friendships and relationships go smoother.</div>
+                </div>
+                <div class="trait-card" data-perk="iron_will">
+                    <div class="trait-title">Iron Will</div>
+                    <div>Health and happiness drop slower.</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <label>Choose a Flaw</label>
+            <div class="trait-options" id="flawOptions">
+                <div class="trait-card" data-flaw="bad_luck">
+                    <div class="trait-title">Bad Luck</div>
+                    <div>Random events tend to go wrong.</div>
+                </div>
+                <div class="trait-card" data-flaw="workaholic">
+                    <div class="trait-title">Workaholic</div>
+                    <div>Money comes easier, but happiness suffers.</div>
+                </div>
+                <div class="trait-card" data-flaw="fragile">
+                    <div class="trait-title">Fragile</div>
+                    <div>Health drops faster from bad events.</div>
+                </div>
+                <div class="trait-card" data-flaw="loner">
+                    <div class="trait-title">Loner</div>
+                    <div>Social life is harder to maintain.</div>
+                </div>
+            </div>
+        </div>
+
+        <button id="startBtn" disabled>Start Life</button>
+    </div>
+
+    <div id="game" style="display:none;">
+        <h2 id="gameTitle">Your Life Story</h2>
+
+        <div id="stats">
+            <div class="stat-pill">Name: <span id="statName"></span></div>
+            <div class="stat-pill">Age: <span id="age"></span></div>
+            <div class="stat-pill">Money: $<span id="money"></span></div>
+            <div class="stat-pill">Health: <span id="health"></span></div>
+            <div class="stat-pill">Happiness: <span id="happy"></span></div>
+            <div class="stat-pill">Brains: <span id="brains"></span></div>
+            <div class="stat-pill">Charm: <span id="charm"></span></div>
+            <div class="stat-pill">Grit: <span id="grit"></span></div>
+            <div class="stat-pill">Luck: <span id="luck"></span></div>
+            <div class="stat-pill">Perk: <span id="perkLabel"></span></div>
+            <div class="stat-pill">Flaw: <span id="flawLabel"></span></div>
+        </div>
+
+        <div id="log"></div>
+
+        <div id="choices">
+            <button class="choice" id="choiceA">Choice A</button>
+            <button class="choice" id="choiceB">Choice B</button>
+            <button class="choice" id="choiceC">Choice C</button>
+        </div>
+
+        <div id="message"></div>
+        <button id="restart">Restart Life</button>
+
+        <div id="ad-slot">
+            <!-- Optional: paste your A-Ads code here -->
+            <!-- Example:
+            <div>
+                YOUR A-ADS SNIPPET
+            </div>
+            -->
+        </div>
+    </div>
+</div>
+
+<script>
+(function() {
+    // CREATION ELEMENTS
+    const nameInput = document.getElementById('nameInput');
+    const statDisplays = {
+        brains: document.getElementById('stat-brains'),
+        charm: document.getElementById('stat-charm'),
+        grit: document.getElementById('stat-grit'),
+        luck: document.getElementById('stat-luck')
+    };
+    const pointsLeftEl = document.getElementById('pointsLeft');
+    const startBtn = document.getElementById('startBtn');
+    const perkCards = document.querySelectorAll('#perkOptions .trait-card');
+    const flawCards = document.querySelectorAll('#flawOptions .trait-card');
+
+    const creatorEl = document.getElementById('creator');
+    const gameEl = document.getElementById('game');
+
+    // GAME ELEMENTS
+    const statNameEl = document.getElementById('statName');
+    const ageEl = document.getElementById('age');
+    const moneyEl = document.getElementById('money');
+    const healthEl = document.getElementById('health');
+    const happyEl = document.getElementById('happy');
+    const brainsEl = document.getElementById('brains');
+    const charmEl = document.getElementById('charm');
+    const gritEl = document.getElementById('grit');
+    const luckEl = document.getElementById('luck');
+    const perkLabelEl = document.getElementById('perkLabel');
+    const flawLabelEl = document.getElementById('flawLabel');
+
+    const logEl = document.getElementById('log');
+    const messageEl = document.getElementById('message');
+    const restartBtn = document.getElementById('restart');
+
+    const choiceA = document.getElementById('choiceA');
+    const choiceB = document.getElementById('choiceB');
+    const choiceC = document.getElementById('choiceC');
+
+    // CREATION STATE
+    let creation = {
+        stats: { brains: 0, charm: 0, grit: 0, luck: 0 },
+        pointsLeft: 12,
+        perk: null,
+        flaw: null
+    };
+
+    // GAME STATE
+    let state = null;
+    let currentScenario = null;
+
+    function randomInt(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    // ----- CREATION LOGIC -----
+    document.querySelectorAll('.stat-controls button').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const stat = btn.getAttribute('data-stat');
+            const dir = parseInt(btn.getAttribute('data-dir'), 10);
+            adjustStat(stat, dir);
+        });
+    });
+
+    function adjustStat(stat, dir) {
+        if (dir === 1 && creation.pointsLeft <= 0) return;
+        if (dir === -1 && creation.stats[stat] <= 0) return;
+
+        creation.stats[stat] += dir;
+        creation.pointsLeft -= dir;
+        statDisplays[stat].textContent = creation.stats[stat];
+        pointsLeftEl.textContent = creation.pointsLeft;
+        validateStart();
+    }
+
+    perkCards.forEach(card => {
+        card.addEventListener('click', () => {
+            perkCards.forEach(c => c.classList.remove('selected'));
+            card.classList.add('selected');
+            creation.perk = card.getAttribute('data-perk');
+            validateStart();
+        });
+    });
+
+    flawCards.forEach(card => {
+        card.addEventListener('click', () => {
+            flawCards.forEach(c => c.classList.remove('selected'));
+            card.classList.add('selected');
+            creation.flaw = card.getAttribute('data-flaw');
+            validateStart();
+        });
+    });
+
+    function validateStart() {
+        const nameOk = nameInput.value.trim().length > 0;
+        const pointsOk = creation.pointsLeft === 0;
+        const perkOk = !!creation.perk;
+        const flawOk = !!creation.flaw;
+        startBtn.disabled = !(nameOk && pointsOk && perkOk && flawOk);
+    }
+
+    nameInput.addEventListener('input', validateStart);
+
+    startBtn.addEventListener('click', () => {
+        startLifeFromCreation();
+    });
+
+    function startLifeFromCreation() {
+        let money = 500;
+        if (creation.perk === 'rich_family') money += 1000;
+
+        state = {
+            name: nameInput.value.trim(),
+            age: 18,
+            money: money,
+            health: 80 + creation.stats.grit * 2,
+            happiness: 70 + creation.stats.charm * 2,
+            brains: creation.stats.brains,
+            charm: creation.stats.charm,
+            grit: creation.stats.grit,
+            luck: creation.stats.luck,
+            perk: creation.perk,
+            flaw: creation.flaw,
+            alive: true,
+            retired: false
+        };
+
+        if (state.health > 100) state.health = 100;
+        if (state.happiness > 100) state.happiness = 100;
+
+        creatorEl.style.display = 'none';
+        gameEl.style.display = 'block';
+
+        initGame();
+    }
+
+    // ----- GAME LOGIC -----
+    function initGame() {
+        logEl.innerHTML = '';
+        messageEl.textContent = 'Your life begins. Make choices, see where it goes.';
+        restartBtn.style.display = 'none';
+        setChoicesEnabled(true);
+        updateStats();
+        statNameEl.textContent = state.name;
+        perkLabelEl.textContent = perkName(state.perk);
+        flawLabelEl.textContent = flawName(state.flaw);
+        addLog('You turn 18. The world is wide open.', 'system');
+        nextYear();
+    }
+
+    function perkName(key) {
+        switch (key) {
+            case 'rich_family': return 'Rich Family';
+            case 'street_smart': return 'Street Smart';
+            case 'social_butterfly': return 'Social Butterfly';
+            case 'iron_will': return 'Iron Will';
+            default: return '-';
+        }
+    }
+
+    function flawName(key) {
+        switch (key) {
+            case 'bad_luck': return 'Bad Luck';
+            case 'workaholic': return 'Workaholic';
+            case 'fragile': return 'Fragile';
+            case 'loner': return 'Loner';
+            default: return '-';
+        }
+    }
+
+    function updateStats() {
+        ageEl.textContent = state.age;
+        moneyEl.textContent = state.money;
+        healthEl.textContent = Math.max(0, Math.min(100, state.health));
+        happyEl.textContent = Math.max(0, Math.min(100, state.happiness));
+        brainsEl.textContent = state.brains;
+        charmEl.textContent = state.charm;
+        gritEl.textContent = state.grit;
+        luckEl.textContent = state.luck;
+    }
+
+    function addLog(text, type) {
+        const div = document.createElement('div');
+        div.className = 'log-entry';
+        if (type === 'system') {
+            div.innerHTML = '<span class="label">[Life]</span> ' + text;
+        } else if (type === 'event') {
+            div.innerHTML = '<span class="label">[Event]</span> ' + text;
+        } else if (type === 'choice') {
+            div.innerHTML = '<span class="label">[Choice]</span> ' + text;
+        } else {
+            div.textContent = text;
+        }
+        logEl.appendChild(div);
+        logEl.scrollTop = logEl.scrollHeight;
+    }
+
+    function setChoicesEnabled(enabled) {
+        [choiceA, choiceB, choiceC].forEach(btn => {
+            btn.disabled = !enabled;
+        });
+    }
+
+    function checkEnd() {
+        if (state.health <= 0) {
+            state.health = 0;
+            updateStats();
+            state.alive = false;
+            addLog('Your health gives out. Your story ends here.', 'system');
+            messageEl.textContent = 'You died at age ' + state.age + ' with $' + state.money + '.';
+            setChoicesEnabled(false);
+            restartBtn.style.display = 'inline-block';
+            return true;
+        }
+        if (state.age >= 80 || state.retired) {
+            state.retired = true;
+            addLog('You reach the later years of your life and slow down.', 'system');
+            messageEl.textContent = 'You retire at age ' + state.age + ' with $' + state.money + ' and ' + Math.round(state.happiness) + ' happiness.';
+            setChoicesEnabled(false);
+            restartBtn.style.display = 'inline-block';
+            return true;
+        }
+        return false;
+    }
+
+    function nextYear() {
+        if (!state.alive) return;
+        if (checkEnd()) return;
+
+        state.age += 1;
+        passiveChanges();
+        updateStats();
+
+        const scenarioType = pickScenarioType();
+        currentScenario = buildScenario(scenarioType);
+        showScenario(currentScenario);
+    }
+
+    function passiveChanges() {
+        state.health -= 1;
+        state.happiness -= 1;
+
+        if (state.perk === 'iron_will') {
+            state.health += 1;
+            state.happiness += 1;
+        }
+        if (state.flaw === 'workaholic') {
+            state.happiness -= 1;
+        }
+        if (state.flaw === 'fragile') {
+            state.health -= 1;
+        }
+        if (state.flaw === 'loner') {
+            state.happiness -= 1;
+        }
+    }
+
+    function pickScenarioType() {
+        const roll = randomInt(1, 100);
+        if (roll <= 35) return 'career';
+        if (roll <= 65) return 'social';
+        if (roll <= 85) return 'health';
+        return 'random';
+    }
+
+    function buildScenario(type) {
+        if (type === 'career') {
+            return {
+                type: 'career',
+                text: 'You get a chance to change your work situation.',
+                choices: [
+                    {
+                        label: 'Apply for a serious job',
+                        effect: function() {
+                            let successChance = 40 + state.brains * 5;
+                            if (state.perk === 'rich_family') successChance += 5;
+                            if (state.perk === 'street_smart') successChance += 5;
+                            if (state.flaw === 'bad_luck') successChance -= 10;
+                            if (state.flaw === 'workaholic') successChance += 5;
+                            const roll = randomInt(1, 100);
+                            if (roll <= successChance) {
+                                const pay = 500 + state.brains * 50;
+                                state.money += pay;
+                                state.happiness += 3;
+                                addLog('You land a solid job and earn $' + pay + '.', 'event');
+                            } else {
+                                state.happiness -= 5;
+                                addLog('You get rejected. It stings.', 'event');
+                            }
+                        }
+                    },
+                    {
+                        label: 'Start a side hustle',
+                        effect: function() {
+                            let successChance = 35 + state.brains * 3 + state.luck * 4;
+                            if (state.perk === 'street_smart') successChance += 15;
+                            if (state.flaw === 'bad_luck') successChance -= 10;
+                            const roll = randomInt(1, 100);
+                            if (roll <= successChance) {
+                                const pay = 300 + state.luck * 40;
+                                state.money += pay;
+                                state.happiness += 5;
+                                addLog('Your side hustle pops off. You earn $' + pay + '.', 'event');
+                            } else {
+                                const loss = 100;
+                                state.money = Math.max(0, state.money - loss);
+                                state.happiness -= 4;
+                                addLog('Your side hustle flops. You lose $' + loss + '.', 'event');
+                            }
+                        }
+                    },
+                    {
+                        label: 'Stay where you are',
+                        effect: function() {
+                            state.happiness -= 1;
+                            addLog('You keep your current situation. Nothing changes.', 'event');
+                        }
+                    }
+                ]
+            };
+        }
+
+        if (type === 'social') {
+            return {
+                type: 'social',
+                text: 'A social opportunity comes up.',
+                choices: [
+                    {
+                        label: 'Go to a party',
+                        effect: function() {
+                            let successChance = 40 + state.charm * 5;
+                            if (state.perk === 'social_butterfly') successChance += 20;
+                            if (state.flaw === 'loner') successChance -= 15;
+                            if (state.flaw === 'bad_luck') successChance -= 5;
+                            const roll = randomInt(1, 100);
+                            if (roll <= successChance) {
+                                state.happiness += 10;
+                                addLog('You have a great time and make new friends.', 'event');
+                            } else {
+                                state.happiness -= 5;
+                                addLog('You feel awkward and leave early.', 'event');
+                            }
+                        }
+                    },
+                    {
+                        label: 'Go on a date',
+                        effect: function() {
+                            let successChance = 35 + state.charm * 6 + state.luck * 3;
+                            if (state.perk === 'social_butterfly') successChance += 10;
+                            if (state.flaw === 'loner') successChance -= 10;
+                            const roll = randomInt(1, 100);
+                            if (roll <= successChance) {
+                                state.happiness += 12;
+                                addLog('The date goes surprisingly well.', 'event');
+                            } else {
+                                state.happiness -= 6;
+                                addLog('The date is awkward and forgettable.', 'event');
+                            }
+                        }
+                    },
+                    {
+                        label: 'Stay home and chill',
+                        effect: function() {
+                            state.happiness += 2;
+                            state.health += 1;
+                            addLog('You stay home, rest, and recharge.', 'event');
+                        }
+                    }
+                ]
+            };
+        }
+
+        if (type === 'health') {
+            return {
+                type: 'health',
+                text: 'You think about your health this year.',
+                choices: [
+                    {
+                        label: 'Start exercising',
+                        effect: function() {
+                            let successChance = 50 + state.grit * 5;
+                            if (state.perk === 'iron_will') successChance += 10;
+                            const roll = randomInt(1, 100);
+                            if (roll <= successChance) {
+                                state.health += 10;
+                                state.happiness += 3;
+                                addLog('You stick to a routine and feel stronger.', 'event');
+                            } else {
+                                state.health += 2;
+                                state.happiness -= 1;
+                                addLog('You start but quickly fall off. Some benefit, though.', 'event');
+                            }
+                        }
+                    },
+                    {
+                        label: 'Ignore your health',
+                        effect: function() {
+                            state.health -= 5;
+                            state.happiness += 1;
+                            addLog('You live recklessly. Fun now, problems later.', 'event');
+                        }
+                    },
+                    {
+                        label: 'Do regular checkups',
+                        effect: function() {
+                            state.health += 5;
+                            state.money -= 100;
+                            if (state.money < 0) state.money = 0;
+                            addLog('You keep up with checkups. It costs money but keeps you stable.', 'event');
+                        }
+                    }
+                ]
+            };
+        }
+
+        // random
+        return {
+            type: 'random',
+            text: 'A random life event happens.',
+            choices: [
+                {
+                    label: 'Take a risky opportunity',
+                    effect: function() {
+                        let successChance = 30 + state.luck * 5;
+                        if (state.perk === 'street_smart') successChance += 10;
+                        if (state.flaw === 'bad_luck') successChance -= 15;
+                        const roll = randomInt(1, 100);
+                        if (roll <= successChance) {
+                            const gain = 800 + state.luck * 50;
+                            state.money += gain;
+                            state.happiness += 8;
+                            addLog('Your risky move pays off. You gain $' + gain + '.', 'event');
+                        } else {
+                            const loss = 400;
+                            state.money = Math.max(0, state.money - loss);
+                            state.health -= 5;
+                            state.happiness -= 8;
+                            if (state.flaw === 'fragile') state.health -= 5;
+                            addLog('The risk backfires badly. You lose $' + loss + ' and feel shaken.', 'event');
+                        }
+                    }
+                },
+                {
+                    label: 'Play it safe',
+                    effect: function() {
+                        state.happiness -= 1;
+                        addLog('You avoid risk. Nothing big happens.', 'event');
+                    }
+                },
+                {
+                    label: 'Focus on hobbies',
+                    effect: function() {
+                        state.happiness += 6;
+                        state.money -= 100;
+                        if (state.money < 0) state.money = 0;
+                        addLog('You spend time on hobbies. It costs a bit, but you feel good.', 'event');
+                    }
+                }
+            ]
+        };
+    }
+
+    function showScenario(scenario) {
+        addLog('Age ' + state.age + ': ' + scenario.text, 'system');
+        choiceA.textContent = scenario.choices[0].label;
+        choiceB.textContent = scenario.choices[1].label;
+        choiceC.textContent = scenario.choices[2].label;
+        messageEl.textContent = 'Choose how this year plays out.';
+    }
+
+    function handleChoice(index) {
+        if (!state.alive) return;
+        if (!currentScenario) return;
+
+        const choice = currentScenario.choices[index];
+        addLog('You choose: ' + choice.label, 'choice');
+        choice.effect();
+        updateStats();
+
+        if (!checkEnd()) {
+            setTimeout(nextYear, 600);
+        }
+    }
+
+    choiceA.addEventListener('click', () => handleChoice(0));
+    choiceB.addEventListener('click', () => handleChoice(1));
+    choiceC.addEventListener('click', () => handleChoice(2));
+
+    restartBtn.addEventListener('click', () => {
+        location.reload();
+    });
+})();
+</script>
+  <!-- BEGIN AADS AD UNIT 2436014 -->
+
+<div style="position: absolute; z-index: 99999">
+      <input autocomplete="off" type="checkbox" id="aadsstickymoku5mgk" hidden />
+      <div style="padding-top: 0; padding-bottom: 0;">
+        <div style="width:15%;height:100%;position:fixed;text-align:center;font-size:0;top:50%;transform:translateY(-50%);left:0;min-width:100px">
+          <label for="aadsstickymoku5mgk" style="bottom: 24px;margin:0 auto;right:0;left:0;max-width:24px; position: absolute;border-radius: 4px; background: rgba(248, 248, 249, 0.70); padding: 4px;z-index: 99999;cursor:pointer">
+            <svg fill="#000000" height="16px" width="16px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 490 490">
+              <polygon points="456.851,0 245,212.564 33.149,0 0.708,32.337 212.669,245.004 0.708,457.678 33.149,490 245,277.443 456.851,490 489.292,457.678 277.331,245.004 489.292,32.337 "/>
+            </svg>
+          </label>
+          <div id="frame" style="width: 100%;margin: auto;position: relative; z-index: 99998;height:100%; display: flex;flex-direction: column; justify-content: center">
+                        <iframe data-aa=2436014 src=//acceptable.a-ads.com/2436014/?size=Adaptive style='border:0; padding:0; width:70%; height:70%; overflow:hidden; margin: 0 auto'></iframe>
+                    </div>
+        </div>
+        <style>
+      #aadsstickymoku5mgk:checked + div {
+        display: none;
+      }
+    </style>
+    </div></div>
+
+<!-- END AADS AD UNIT 2436014 -->
+
+  <!-- BEGIN AADS AD UNIT 2436014 -->
+
+<div style="position: absolute; z-index: 99999">
+      <input autocomplete="off" type="checkbox" id="aadsstickymokv1wae" hidden />
+      <div style="padding-top: 0; padding-bottom: 0;">
+        <div style="width:15%;height:100%;position:fixed;text-align:center;font-size:0;top:50%;transform:translateY(-50%);right:0;min-width:100px">
+          <label for="aadsstickymokv1wae" style="bottom: 24px;margin:0 auto;right:0;left:0;max-width:24px; position: absolute;border-radius: 4px; background: rgba(248, 248, 249, 0.70); padding: 4px;z-index: 99999;cursor:pointer">
+            <svg fill="#000000" height="16px" width="16px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 490 490">
+              <polygon points="456.851,0 245,212.564 33.149,0 0.708,32.337 212.669,245.004 0.708,457.678 33.149,490 245,277.443 456.851,490 489.292,457.678 277.331,245.004 489.292,32.337 "/>
+            </svg>
+          </label>
+          <div id="frame" style="width: 100%;margin: auto;position: relative; z-index: 99998;height:100%; display: flex;flex-direction: column; justify-content: center">
+                        <iframe data-aa=2436014 src=//acceptable.a-ads.com/2436014/?size=Adaptive style='border:0; padding:0; width:70%; height:70%; overflow:hidden; margin: 0 auto'></iframe>
+                    </div>
+        </div>
+        <style>
+      #aadsstickymokv1wae:checked + div {
+        display: none;
+      }
+    </style>
+    </div></div>
+
+<!-- END AADS AD UNIT 2436014 -->
+
+</body>
+</html>
