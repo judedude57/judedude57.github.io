@@ -15,9 +15,7 @@
         --text-muted: #9a8fb8;
     }
 
-    * {
-        box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
         margin: 0;
@@ -32,7 +30,6 @@
         display: flex;
         height: 100vh;
         width: 100vw;
-        color: var(--text-main);
     }
 
     .ad-panel {
@@ -48,14 +45,8 @@
         font-size: 13px;
         text-align: center;
     }
-
-    .ad-panel.left {
-        border-left: none;
-    }
-
-    .ad-panel.right {
-        border-right: none;
-    }
+    .ad-panel.left { border-left: none; }
+    .ad-panel.right { border-right: none; }
 
     .ad-inner {
         width: 100%;
@@ -118,13 +109,11 @@
         color: var(--text-muted);
         font-size: 12px;
     }
-
     .stat-value {
         color: var(--accent-soft);
         font-weight: 600;
         margin-left: 3px;
     }
-
     .zoom-label {
         color: var(--accent-soft);
         font-size: 12px;
@@ -201,13 +190,13 @@
         font-size: 11px;
         margin-bottom: 4px;
     }
-
     #powerStatus {
         color: var(--accent-soft);
         font-size: 11px;
     }
 
-    .leaderboard-list {
+    .leaderboard-list,
+    .scores-list {
         list-style: none;
         padding: 0;
         margin: 4px 0 0;
@@ -215,27 +204,13 @@
         overflow-y: auto;
         font-size: 11px;
     }
-
-    .leaderboard-list li {
+    .leaderboard-list li,
+    .scores-list li {
         padding: 2px 0;
         border-bottom: 1px solid #1a1028;
         color: var(--text-muted);
     }
-
-    .leaderboard-list li span {
-        color: var(--accent-soft);
-    }
-
-    .scores-list {
-        list-style: none;
-        padding: 0;
-        margin: 4px 0 0;
-        max-height: 120px;
-        overflow-y: auto;
-        font-size: 11px;
-        color: var(--text-muted);
-    }
-
+    .leaderboard-list li span,
     .scores-list li span {
         color: var(--accent-soft);
     }
@@ -250,14 +225,12 @@
         opacity: 0.85;
         pointer-events: none;
     }
-
     .bottom-logo img {
         height: 26px;
         width: auto;
         border-radius: 6px;
         box-shadow: 0 0 10px rgba(155,109,255,0.7);
     }
-
     .bottom-logo span {
         font-size: 11px;
         letter-spacing: 0.16em;
@@ -265,7 +238,7 @@
         color: var(--accent-soft);
     }
 
-    /* Popup menu overlay */
+    /* Popup menu */
     .overlay {
         position: fixed;
         inset: 0;
@@ -276,10 +249,7 @@
         z-index: 999;
         backdrop-filter: blur(10px);
     }
-
-    .overlay.hidden {
-        display: none;
-    }
+    .overlay.hidden { display: none; }
 
     .menu-box {
         width: 420px;
@@ -310,10 +280,7 @@
         color: #f5f0ff;
     }
 
-    .menu-content {
-        position: relative;
-        z-index: 2;
-    }
+    .menu-content { position: relative; z-index: 2; }
 
     .menu-logo {
         display: flex;
@@ -322,14 +289,12 @@
         margin-bottom: 10px;
         gap: 4px;
     }
-
     .menu-logo img {
         height: 52px;
         width: auto;
         border-radius: 10px;
         box-shadow: 0 0 18px rgba(155,109,255,0.9);
     }
-
     .menu-logo-text {
         font-size: 11px;
         letter-spacing: 0.22em;
@@ -346,7 +311,6 @@
         color: #fdf7ff;
         margin-bottom: 10px;
     }
-
     .menu-subtitle {
         text-align: center;
         font-size: 11px;
@@ -367,13 +331,11 @@
         gap: 3px;
         font-size: 11px;
     }
-
     .menu-label {
         color: var(--text-muted);
         text-transform: uppercase;
         letter-spacing: 0.12em;
     }
-
     .menu-input {
         padding: 6px 8px;
         border-radius: 8px;
@@ -383,12 +345,10 @@
         font-size: 12px;
         outline: none;
     }
-
     .menu-input:focus {
         border-color: var(--accent-soft);
         box-shadow: 0 0 10px rgba(155,109,255,0.6);
     }
-
     .menu-color {
         padding: 0;
         height: 32px;
@@ -403,10 +363,7 @@
         justify-content: space-between;
         font-size: 11px;
     }
-
-    .menu-score {
-        color: var(--accent-soft);
-    }
+    .menu-score { color: var(--accent-soft); }
 
     .menu-history {
         background: rgba(5,3,15,0.9);
@@ -418,7 +375,6 @@
         font-size: 11px;
         color: var(--text-muted);
     }
-
     .menu-history-title {
         text-transform: uppercase;
         letter-spacing: 0.12em;
@@ -426,21 +382,16 @@
         color: var(--accent-soft);
         margin-bottom: 4px;
     }
-
     .menu-history ul {
         list-style: none;
         padding: 0;
         margin: 0;
     }
-
     .menu-history li {
         padding: 2px 0;
         border-bottom: 1px solid #1a1028;
     }
-
-    .menu-history li span {
-        color: var(--accent-soft);
-    }
+    .menu-history li span { color: var(--accent-soft); }
 
     .menu-footer {
         display: flex;
@@ -450,10 +401,7 @@
         font-size: 10px;
         color: var(--text-muted);
     }
-
-    .menu-how {
-        max-width: 60%;
-    }
+    .menu-how { max-width: 60%; }
 
     .menu-btn {
         padding: 8px 16px;
@@ -471,7 +419,6 @@
             0 0 40px rgba(0,0,0,0.9);
         transition: transform 0.12s ease, box-shadow 0.12s ease, filter 0.12s ease;
     }
-
     .menu-btn:hover {
         transform: translateY(-1px) scale(1.02);
         filter: brightness(1.05);
@@ -479,13 +426,11 @@
             0 0 24px rgba(155,109,255,1),
             0 0 50px rgba(0,0,0,1);
     }
-
     .menu-btn:active {
         transform: translateY(0) scale(0.99);
         filter: brightness(0.96);
     }
 
-    /* Scrollbars small */
     .leaderboard-list::-webkit-scrollbar,
     .scores-list::-webkit-scrollbar,
     .menu-history ul::-webkit-scrollbar {
@@ -499,9 +444,7 @@
     }
 
     @media (max-width: 1100px) {
-        .ad-panel {
-            display: none;
-        }
+        .ad-panel { display: none; }
     }
 </style>
 </head>
@@ -606,7 +549,7 @@
             <div class="menu-footer">
                 <div class="menu-how">
                     <strong>How to Play:</strong><br>
-                    Start with a 3×3 base. Leaving it creates a vulnerable trail. If anyone touches your trail, you die. Return safely to your base to capture the loop and expand your territory.
+                    Start with a 3×3 base. Leaving it creates a vulnerable trail behind you. If anyone touches your trail, you die. Return safely to your base to capture the loop and expand your territory.
                 </div>
                 <button class="menu-btn" id="menuStartBtn">Start Run</button>
             </div>
@@ -661,20 +604,8 @@ let powerEndTime = 0;
 let players = [];
 let playerIndex = 0;
 
-/* Player/Bot structure:
-{
-  id, isBot, name, color,
-  x, y, dx, dy,
-  territory: Set<string>,
-  trail: string[],
-  alive: boolean
-}
-*/
-
 /* === UTILS === */
-function key(x, y) {
-    return x + "," + y;
-}
+function key(x, y) { return x + "," + y; }
 function parseKey(k) {
     const [x, y] = k.split(",").map(Number);
     return { x, y };
@@ -800,31 +731,20 @@ function updatePower(timestamp) {
 }
 
 /* === TERRITORY HELPERS === */
-function seedTerritory(centerX, centerY) {
+function seedTerritory(cx, cy) {
     const set = new Set();
     for (let dx = -1; dx <= 1; dx++) {
         for (let dy = -1; dy <= 1; dy++) {
-            const x = centerX + dx;
-            const y = centerY + dy;
+            const x = cx + dx;
+            const y = cy + dy;
             if (inBounds(x, y)) set.add(key(x, y));
         }
     }
     return set;
 }
-
 function isInTerritory(player, x, y) {
     return player.territory.has(key(x, y));
 }
-
-function isInAnyTrail(x, y) {
-    const k = key(x, y);
-    for (const p of players) {
-        if (!p.alive) continue;
-        if (p.trail.includes(k)) return true;
-    }
-    return false;
-}
-
 function getTrailOwnersAt(x, y) {
     const k = key(x, y);
     const owners = [];
@@ -835,7 +755,7 @@ function getTrailOwnersAt(x, y) {
     return owners;
 }
 
-/* Flood fill capture for a player when they return to territory */
+/* Flood fill capture */
 function captureArea(player) {
     if (!player.trail.length) return;
 
@@ -844,7 +764,6 @@ function captureArea(player) {
         blocked[x] = new Uint8Array(MAP_SIZE);
     }
 
-    // Mark territory and trail as blocked
     player.territory.forEach(k => {
         const { x, y } = parseKey(k);
         blocked[x][y] = 1;
@@ -854,7 +773,6 @@ function captureArea(player) {
         if (inBounds(x, y)) blocked[x][y] = 1;
     });
 
-    // Flood fill from edges to mark outside
     const outside = new Array(MAP_SIZE);
     for (let x = 0; x < MAP_SIZE; x++) {
         outside[x] = new Uint8Array(MAP_SIZE);
@@ -884,7 +802,6 @@ function captureArea(player) {
         pushIfValid(x, y - 1);
     }
 
-    // Any cell not outside and not blocked is interior -> captured
     let gained = 0;
     for (let x = 0; x < MAP_SIZE; x++) {
         for (let y = 0; y < MAP_SIZE; y++) {
@@ -898,11 +815,9 @@ function captureArea(player) {
         }
     }
 
-    // Also add trail tiles themselves to territory
     player.trail.forEach(k => {
         player.territory.add(k);
     });
-
     player.trail = [];
 
     if (player === players[playerIndex]) {
@@ -940,7 +855,8 @@ function initPlayers() {
         territory: seedTerritory(px, py),
         trail: [],
         alive: true,
-        shield: false
+        shield: false,
+        hasLeftTerritory: false
     };
     players.push(player);
     playerIndex = 0;
@@ -960,7 +876,8 @@ function initPlayers() {
             territory: seedTerritory(bx, by),
             trail: [],
             alive: true,
-            shield: false
+            shield: false,
+            hasLeftTerritory: false
         };
         players.push(bot);
     }
@@ -987,35 +904,21 @@ function botChooseDirection(bot) {
 
         const k = key(nx, ny);
 
-        // Avoid trails and walls
-        if (isInAnyTrail(nx, ny)) return -9999;
+        // avoid trails
+        for (const p of players) {
+            if (!p.alive) continue;
+            if (p.trail.includes(k)) return -9999;
+        }
 
-        // Avoid own trail strongly
-        if (bot.trail.includes(k)) return -5000;
-
-        // Avoid leaving map
         let s = 0;
-
         const inTerrNext = isInTerritory(bot, nx, ny);
 
-        if (!inTerr && inTerrNext && trailLen > 4) {
-            s += 40; // good to close loop
-        }
+        if (inTerr && !inTerrNext) s += 15;      // start expansion
+        if (!inTerr && inTerrNext && trailLen > 4) s += 40; // close loop
+        if (!inTerr && !inTerrNext) s += 10;     // exploring
 
-        if (!inTerr && !inTerrNext) {
-            s += 10; // exploring
-        }
+        if (!inTerr && trailLen > 40 && !inTerrNext) s -= 30;
 
-        if (inTerr && !inTerrNext) {
-            s += 15; // start expansion
-        }
-
-        // Avoid going too far with long trail
-        if (!inTerr && trailLen > 40) {
-            if (!inTerrNext) s -= 30;
-        }
-
-        // Slight bias to center
         const cx = MAP_SIZE / 2;
         const cy = MAP_SIZE / 2;
         const dist = Math.hypot(nx - cx, ny - cy);
@@ -1069,16 +972,21 @@ function update(timestamp) {
     if (timestamp - lastMoveTime < moveDelay) return;
     lastMoveTime = timestamp;
 
-    // Move bots first (so player can win head-on)
-    for (let i = 0; i < players.length; i++) {
-        const p = players[i];
+    // bots choose direction first
+    for (const p of players) {
         if (!p.alive || !p.isBot) continue;
         botChooseDirection(p);
     }
 
-    const newPositions = new Map(); // id -> {x,y}
+    const oldPositions = new Map();
+    players.forEach(p => {
+        if (!p.alive) return;
+        oldPositions.set(p.id, { x: p.x, y: p.y });
+    });
 
-    // Move all alive players
+    const newPositions = new Map();
+
+    // move all
     for (const p of players) {
         if (!p.alive) continue;
 
@@ -1086,9 +994,8 @@ function update(timestamp) {
         const ny = p.y + p.dy;
 
         if (!inBounds(nx, ny)) {
-            if (!p.isBot && players[playerIndex].shield) {
-                // clamp and consume shield
-                players[playerIndex].shield = false;
+            if (!p.isBot && p.shield) {
+                p.shield = false;
                 p.x = Math.min(Math.max(nx, 0), MAP_SIZE - 1);
                 p.y = Math.min(Math.max(ny, 0), MAP_SIZE - 1);
             } else {
@@ -1102,44 +1009,70 @@ function update(timestamp) {
         newPositions.set(p.id, { x: p.x, y: p.y });
     }
 
-    // Trail + territory logic and collisions
     const deaths = new Set();
 
-    // 1) Trail collisions and self-trail
+    // trail + territory logic
     for (const p of players) {
         if (!p.alive) continue;
-        const k = key(p.x, p.y);
-        const inTerr = isInTerritory(p, p.x, p.y);
 
-        if (!inTerr) {
-            // outside territory -> trail mode
-            if (!p.trail.includes(k)) {
-                p.trail.push(k);
-            }
+        const pos = newPositions.get(p.id);
+        if (!pos) continue;
+        const { x, y } = pos;
+        const inTerr = isInTerritory(p, x, y);
 
-            // touching any trail (including own) -> death
-            const owners = getTrailOwnersAt(p.x, p.y);
-            if (owners.length > 0) {
-                // both-die rule for trail collisions
-                owners.forEach(o => deaths.add(o.id));
-                deaths.add(p.id);
+        const oldPos = oldPositions.get(p.id);
+        const oldInTerr = isInTerritory(p, oldPos.x, oldPos.y);
+
+        // leaving territory: start trail
+        if (!inTerr && oldInTerr) {
+            p.hasLeftTerritory = true;
+        }
+
+        // add trail only behind you (old tile) and only while outside
+        if (!inTerr && p.hasLeftTerritory) {
+            const trailKey = key(oldPos.x, oldPos.y);
+            if (!p.trail.includes(trailKey)) {
+                p.trail.push(trailKey);
             }
-        } else {
-            // back in territory: if had trail, capture
+        }
+
+        // back in territory: capture if had trail
+        if (inTerr) {
             if (p.trail.length) {
                 captureArea(p);
             }
+            p.hasLeftTerritory = false;
         }
     }
 
-    // 2) Head-on collisions (same tile)
+    // trail collisions (only when outside territory)
+    for (const p of players) {
+        if (!p.alive) continue;
+        const pos = newPositions.get(p.id);
+        if (!pos) continue;
+        const { x, y } = pos;
+        const inTerr = isInTerritory(p, x, y);
+        if (inTerr) continue;
+
+        const owners = getTrailOwnersAt(x, y);
+        if (owners.length > 0) {
+            // both-die rule
+            owners.forEach(o => deaths.add(o.id));
+            deaths.add(p.id);
+        }
+    }
+
+    // head-on collisions
     const posMap = new Map();
     for (const p of players) {
         if (!p.alive) continue;
-        const k = key(p.x, p.y);
+        const pos = newPositions.get(p.id);
+        if (!pos) continue;
+        const k = key(pos.x, pos.y);
         if (!posMap.has(k)) posMap.set(k, []);
         posMap.get(k).push(p);
     }
+
     for (const [k, arr] of posMap.entries()) {
         if (arr.length >= 2) {
             const hasPlayer = arr.some(p => !p.isBot);
@@ -1154,14 +1087,14 @@ function update(timestamp) {
         }
     }
 
-    // Apply deaths
+    // apply deaths
     if (deaths.size) {
         players.forEach(p => {
             if (deaths.has(p.id)) p.alive = false;
         });
     }
 
-    // Power-up pickup (player only)
+    // power-up pickup (player only)
     const player = players[playerIndex];
     if (player.alive) {
         for (let i = powerUps.length - 1; i >= 0; i--) {
@@ -1173,10 +1106,8 @@ function update(timestamp) {
         }
     }
 
-    // Occasionally spawn power-ups
     if (Math.random() < 0.02) spawnPowerUp();
 
-    // Check if player dead
     if (!player.alive) {
         return gameOver();
     }
@@ -1200,7 +1131,7 @@ function draw(timestamp) {
     const startY = Math.floor(camY / TILE_SIZE) - 2;
     const endY = Math.floor((camY + canvas.height / zoom) / TILE_SIZE) + 2;
 
-    // Static neon grid
+    // static neon grid
     for (let gx = startX; gx <= endX; gx++) {
         if (gx < 0 || gx >= MAP_SIZE) continue;
         for (let gy = startY; gy <= endY; gy++) {
@@ -1218,7 +1149,7 @@ function draw(timestamp) {
         }
     }
 
-    // Draw territories
+    // territories
     players.forEach(p => {
         if (!p.alive) return;
         ctx.fillStyle = p.isBot ? p.color + "22" : p.color + "33";
@@ -1230,7 +1161,7 @@ function draw(timestamp) {
         });
     });
 
-    // Draw trails
+    // trails
     players.forEach(p => {
         if (!p.alive) return;
         ctx.fillStyle = p.isBot ? p.color + "aa" : p.color + "dd";
@@ -1242,7 +1173,7 @@ function draw(timestamp) {
         });
     });
 
-    // Power-ups
+    // power-ups
     powerUps.forEach(pu => {
         const px = pu.x * TILE_SIZE - camX;
         const py = pu.y * TILE_SIZE - camY;
@@ -1257,7 +1188,7 @@ function draw(timestamp) {
         ctx.fill();
     });
 
-    // Players
+    // players
     players.forEach(p => {
         if (!p.alive) return;
         const px = p.x * TILE_SIZE - camX;
@@ -1288,7 +1219,6 @@ function drawMinimap() {
     const scaleX = mini.width / MAP_SIZE;
     const scaleY = mini.height / MAP_SIZE;
 
-    // Territories
     players.forEach(p => {
         if (!p.alive) return;
         mctx.fillStyle = p.isBot ? p.color + "33" : p.color + "66";
@@ -1298,7 +1228,6 @@ function drawMinimap() {
         });
     });
 
-    // Trails
     players.forEach(p => {
         if (!p.alive) return;
         mctx.fillStyle = p.isBot ? p.color : p.color;
@@ -1308,7 +1237,6 @@ function drawMinimap() {
         });
     });
 
-    // Players
     players.forEach(p => {
         if (!p.alive) return;
         mctx.fillStyle = p.color;
@@ -1395,3 +1323,4 @@ menuStartBtn.addEventListener("click", () => {
 
 </body>
 </html>
+
