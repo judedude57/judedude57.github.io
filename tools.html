@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Tools & Generators</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            background: #111;
+            color: #f5f5f5;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        a.home-btn {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            background: #222;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 16px;
+            z-index: 99999;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 80px auto 40px;
+            padding: 20px;
+            background: #1b1b1b;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.7);
+        }
+        h1 {
+            text-align: center;
+            margin-top: 0;
+            font-size: 32px;
+        }
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        .tool-card {
+            background: #202020;
+            border-radius: 8px;
+            border: 1px solid #333;
+            padding: 15px;
+            text-align: center;
+            transition: transform 0.15s, background 0.15s;
+        }
+        .tool-card:hover {
+            background: #2a2a2a;
+            transform: translateY(-3px);
+        }
+        .tool-title {
+            font-size: 22px;
+            margin-bottom: 10px;
+        }
+        .tool-desc {
+            font-size: 14px;
+            color: #ccc;
+            margin-bottom: 15px;
+        }
+        .tool-btn {
+            display: inline-block;
+            padding: 10px 16px;
+            background: #333;
+            color: white;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 16px;
+            border: 1px solid #555;
+        }
+        .tool-btn:hover {
+            background: #444;
+        }
+    </style>
+</head>
+<body>
+
+<a href="index.html" class="home-btn">Home</a>
+
+<div class="container">
+    <h1>Tools & Generators</h1>
+
+    <div class="tools-grid">
+
+        <!-- Name Generator -->
+        <div class="tool-card">
+            <div class="tool-title">Name Generator</div>
+            <div class="tool-desc">
+                Create random names for characters, NPCs, or anything else.
+            </div>
+            <a href="name-generator.html" class="tool-btn">Use Tool</a>
+        </div>
+
+        <!-- Number Generator -->
+        <div class="tool-card">
+            <div class="tool-title">Number Generator</div>
+            <div class="tool-desc">
+                Generate random numbers for games, picks, or testing.
+            </div>
+            <a href="number-generator.html" class="tool-btn">Use Tool</a>
+        </div>
+
+        <!-- Password Generator -->
+        <div class="tool-card">
+            <div class="tool-title">Password Generator</div>
+            <div class="tool-desc">
+                Create strong, secure passwords instantly.
+            </div>
+            <a href="password-generator.html" class="tool-btn">Use Tool</a>
+        </div>
+
+        <!-- Future Tools Placeholder -->
+        <div class="tool-card">
+            <div class="tool-title">More Tools Coming Soon</div>
+            <div class="tool-desc">
+                New generators are being added to Infinite Play.
+            </div>
+            <a class="tool-btn" style="opacity:0.5; pointer-events:none;">Coming Soon</a>
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>
