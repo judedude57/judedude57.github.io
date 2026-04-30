@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Dungeon Explorer</title>
+    <title>Dungeon Explorer 2.0</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         body {
@@ -12,23 +12,145 @@
             margin: 0;
             padding: 0;
         }
+        a.home-btn {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            background: #222;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 16px;
+            z-index: 99999;
+        }
         .container {
-            max-width: 800px;
+            max-width: 900px;
             margin: 80px auto 40px;
             padding: 20px;
             background: #1b1b1b;
             border-radius: 8px;
             box-shadow: 0 0 15px rgba(0,0,0,0.7);
         }
-        h1 {
+        h1, h2 {
             text-align: center;
             margin-top: 0;
         }
+        #creator, #game {
+            margin-top: 10px;
+        }
+        .section {
+            margin-bottom: 20px;
+            padding: 10px;
+            background: #151515;
+            border-radius: 6px;
+            border: 1px solid #333;
+        }
+        .field-row {
+            margin-bottom: 10px;
+        }
+        label {
+            display: inline-block;
+            margin-bottom: 4px;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 6px 8px;
+            border-radius: 4px;
+            border: 1px solid #444;
+            background: #101010;
+            color: #f5f5f5;
+        }
+        .class-options, .trait-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .class-card, .trait-card {
+            flex: 1 1 30%;
+            background: #202020;
+            border-radius: 6px;
+            border: 1px solid #444;
+            padding: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.15s, border-color 0.15s, transform 0.1s;
+        }
+        .class-card.selected, .trait-card.selected {
+            background: #333;
+            border-color: #888;
+            transform: translateY(-1px);
+        }
+        .class-card:hover, .trait-card:hover {
+            background: #2a2a2a;
+        }
+        .class-title, .trait-title {
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+        .stat-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 6px;
+        }
+        .stat-name {
+            width: 80px;
+        }
+        .stat-controls {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .stat-value {
+            min-width: 24px;
+            text-align: center;
+        }
+        button.small {
+            padding: 2px 8px;
+            background: #2b2b2b;
+            color: #f5f5f5;
+            border: 1px solid #444;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+        button.small:disabled {
+            opacity: 0.4;
+            cursor: default;
+        }
+        #points-remaining {
+            text-align: right;
+            font-size: 14px;
+            margin-top: 4px;
+        }
+        #startBtn {
+            width: 100%;
+            padding: 10px;
+            background: #3a3a3a;
+            color: #f5f5f5;
+            border: 1px solid #555;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        #startBtn:disabled {
+            opacity: 0.4;
+            cursor: default;
+        }
         #stats {
             display: flex;
-            justify-content: space-between;
-            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 10px;
             font-size: 14px;
+        }
+        .stat-pill {
+            padding: 4px 8px;
+            background: #202020;
+            border-radius: 999px;
+            border: 1px solid #333;
         }
         #log {
             min-height: 180px;
@@ -91,23 +213,20 @@
         #restart:hover {
             background: #555;
         }
-        a.home-btn {
-            position: fixed;
-            top: 10px;
-            left: 10px;
-            background: #222;
-            color: white;
-            padding: 10px 15px;
-            border-radius: 6px;
-            text-decoration: none;
-            font-size: 16px;
-            z-index: 99999;
+        #ad-slot {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 12px;
+            color: #777;
         }
         @media (max-width: 600px) {
             .container {
                 margin-top: 70px;
                 margin-left: 10px;
                 margin-right: 10px;
+            }
+            .class-card, .trait-card {
+                flex: 1 1 100%;
             }
             button.choice {
                 flex: 1 1 100%;
@@ -120,34 +239,200 @@
 <a href="https://judedude57.github.io" class="home-btn">Home</a>
 
 <div class="container">
-    <h1>Dungeon Explorer</h1>
+    <h1>Dungeon Explorer 2.0</h1>
 
-    <div id="stats">
-        <div>HP: <span id="hp">20</span></div>
-        <div>Attack: <span id="atk">3</span></div>
-        <div>Gold: <span id="gold">0</span></div>
-        <div>Floor: <span id="floor">1</span></div>
+    <!-- CHARACTER CREATION -->
+    <div id="creator">
+        <h2>Create Your Adventurer</h2>
+
+        <div class="section">
+            <div class="field-row">
+                <label for="nameInput">Name</label>
+                <input type="text" id="nameInput" placeholder="Enter your character's name">
+            </div>
+        </div>
+
+        <div class="section">
+            <label>Choose a Class</label>
+            <div class="class-options">
+                <div class="class-card" data-class="warrior">
+                    <div class="class-title">Warrior</div>
+                    <div>+ HP, + Defense, solid frontline fighter.</div>
+                    <div style="margin-top:4px;font-size:12px;">
+                        HP +8, DEF +4, SPD -1, LUCK -1
+                    </div>
+                </div>
+                <div class="class-card" data-class="rogue">
+                    <div class="class-title">Rogue</div>
+                    <div>Fast, sneaky, and lucky.</div>
+                    <div style="margin-top:4px;font-size:12px;">
+                        HP -2, DEF -1, SPD +5, LUCK +3
+                    </div>
+                </div>
+                <div class="class-card" data-class="mystic">
+                    <div class="class-title">Mystic</div>
+                    <div>Fragile but extremely fortunate.</div>
+                    <div style="margin-top:4px;font-size:12px;">
+                        HP -3, DEF 0, SPD +1, LUCK +6
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <label>Distribute Your Stat Points</label>
+            <div id="points-remaining">Points remaining: <span id="pointsLeft">20</span></div>
+            <div class="stat-row">
+                <div class="stat-name">HP</div>
+                <div class="stat-controls">
+                    <button class="small" data-stat="hp" data-dir="-1">-</button>
+                    <span class="stat-value" id="stat-hp">0</span>
+                    <button class="small" data-stat="hp" data-dir="1">+</button>
+                </div>
+            </div>
+            <div class="stat-row">
+                <div class="stat-name">Defense</div>
+                <div class="stat-controls">
+                    <button class="small" data-stat="def" data-dir="-1">-</button>
+                    <span class="stat-value" id="stat-def">0</span>
+                    <button class="small" data-stat="def" data-dir="1">+</button>
+                </div>
+            </div>
+            <div class="stat-row">
+                <div class="stat-name">Speed</div>
+                <div class="stat-controls">
+                    <button class="small" data-stat="spd" data-dir="-1">-</button>
+                    <span class="stat-value" id="stat-spd">0</span>
+                    <button class="small" data-stat="spd" data-dir="1">+</button>
+                </div>
+            </div>
+            <div class="stat-row">
+                <div class="stat-name">Luck</div>
+                <div class="stat-controls">
+                    <button class="small" data-stat="luk" data-dir="-1">-</button>
+                    <span class="stat-value" id="stat-luk">0</span>
+                    <button class="small" data-stat="luk" data-dir="1">+</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <label>Choose a Strength</label>
+            <div class="trait-options" id="strengthOptions">
+                <div class="trait-card" data-strength="fast_healer">
+                    <div class="trait-title">Fast Healer</div>
+                    <div>Rest heals you 50% more.</div>
+                </div>
+                <div class="trait-card" data-strength="first_strike">
+                    <div class="trait-title">First Strike</div>
+                    <div>Higher chance to act before enemies.</div>
+                </div>
+                <div class="trait-card" data-strength="lucky_soul">
+                    <div class="trait-title">Lucky Soul</div>
+                    <div>Better loot and event outcomes.</div>
+                </div>
+                <div class="trait-card" data-strength="iron_wall">
+                    <div class="trait-title">Iron Wall</div>
+                    <div>Take 1 less damage from hits.</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <label>Choose a Weakness</label>
+            <div class="trait-options" id="weaknessOptions">
+                <div class="trait-card" data-weakness="frail">
+                    <div class="trait-title">Frail</div>
+                    <div>You take 1 extra damage from hits.</div>
+                </div>
+                <div class="trait-card" data-weakness="slow">
+                    <div class="trait-title">Slow</div>
+                    <div>Lower chance to act first.</div>
+                </div>
+                <div class="trait-card" data-weakness="unlucky">
+                    <div class="trait-title">Unlucky</div>
+                    <div>Worse loot and event outcomes.</div>
+                </div>
+                <div class="trait-card" data-weakness="glass_tank">
+                    <div class="trait-title">Glass Tank</div>
+                    <div>High defense, but rest heals less.</div>
+                </div>
+            </div>
+        </div>
+
+        <button id="startBtn" disabled>Start Adventure</button>
     </div>
 
-    <div id="log"></div>
+    <!-- GAME -->
+    <div id="game" style="display:none;">
+        <h2 id="gameTitle">Dungeon Explorer</h2>
 
-    <div id="choices">
-        <button class="choice" id="exploreBtn">Explore the dungeon</button>
-        <button class="choice" id="restBtn">Rest (recover HP)</button>
-        <button class="choice" id="shopBtn">Check for a merchant</button>
-        <button class="choice" id="descendBtn">Descend to next floor</button>
+        <div id="stats">
+            <div class="stat-pill">Name: <span id="statName"></span></div>
+            <div class="stat-pill">Class: <span id="statClass"></span></div>
+            <div class="stat-pill">HP: <span id="hp"></span></div>
+            <div class="stat-pill">Defense: <span id="def"></span></div>
+            <div class="stat-pill">Speed: <span id="spd"></span></div>
+            <div class="stat-pill">Luck: <span id="luk"></span></div>
+            <div class="stat-pill">Gold: <span id="gold"></span></div>
+            <div class="stat-pill">Floor: <span id="floor"></span></div>
+            <div class="stat-pill">Strength: <span id="strengthLabel"></span></div>
+            <div class="stat-pill">Weakness: <span id="weaknessLabel"></span></div>
+        </div>
+
+        <div id="log"></div>
+
+        <div id="choices">
+            <button class="choice" id="exploreBtn">Explore the dungeon</button>
+            <button class="choice" id="restBtn">Rest (recover HP)</button>
+            <button class="choice" id="shopBtn">Check for a merchant</button>
+            <button class="choice" id="descendBtn">Descend to next floor</button>
+        </div>
+
+        <div id="message"></div>
+        <button id="restart">Restart Adventure</button>
+
+        <div id="ad-slot">
+            <!-- Optional: paste your A-Ads code here -->
+            <!-- Example:
+            <div>
+                YOUR A-ADS SNIPPET
+            </div>
+            -->
+        </div>
     </div>
-
-    <div id="message"></div>
-    <button id="restart">Restart Adventure</button>
 </div>
 
 <script>
 (function() {
+    // CREATION ELEMENTS
+    const nameInput = document.getElementById('nameInput');
+    const classCards = document.querySelectorAll('.class-card');
+    const statDisplays = {
+        hp: document.getElementById('stat-hp'),
+        def: document.getElementById('stat-def'),
+        spd: document.getElementById('stat-spd'),
+        luk: document.getElementById('stat-luk')
+    };
+    const pointsLeftEl = document.getElementById('pointsLeft');
+    const startBtn = document.getElementById('startBtn');
+    const strengthCards = document.querySelectorAll('#strengthOptions .trait-card');
+    const weaknessCards = document.querySelectorAll('#weaknessOptions .trait-card');
+
+    const creatorEl = document.getElementById('creator');
+    const gameEl = document.getElementById('game');
+
+    // GAME ELEMENTS
     const hpEl = document.getElementById('hp');
-    const atkEl = document.getElementById('atk');
+    const defEl = document.getElementById('def');
+    const spdEl = document.getElementById('spd');
+    const lukEl = document.getElementById('luk');
     const goldEl = document.getElementById('gold');
     const floorEl = document.getElementById('floor');
+    const statNameEl = document.getElementById('statName');
+    const statClassEl = document.getElementById('statClass');
+    const strengthLabelEl = document.getElementById('strengthLabel');
+    const weaknessLabelEl = document.getElementById('weaknessLabel');
     const logEl = document.getElementById('log');
     const messageEl = document.getElementById('message');
     const restartBtn = document.getElementById('restart');
@@ -157,28 +442,178 @@
     const shopBtn = document.getElementById('shopBtn');
     const descendBtn = document.getElementById('descendBtn');
 
-    let state;
+    // CREATION STATE
+    let creation = {
+        selectedClass: null,
+        stats: { hp: 0, def: 0, spd: 0, luk: 0 },
+        pointsLeft: 20,
+        strength: null,
+        weakness: null
+    };
 
-    function initGame() {
+    // GAME STATE
+    let state = null;
+
+    function randomInt(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    // ----- CREATION LOGIC -----
+    classCards.forEach(card => {
+        card.addEventListener('click', () => {
+            classCards.forEach(c => c.classList.remove('selected'));
+            card.classList.add('selected');
+            creation.selectedClass = card.getAttribute('data-class');
+            validateStart();
+        });
+    });
+
+    document.querySelectorAll('.stat-controls button').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const stat = btn.getAttribute('data-stat');
+            const dir = parseInt(btn.getAttribute('data-dir'), 10);
+            adjustStat(stat, dir);
+        });
+    });
+
+    function adjustStat(stat, dir) {
+        if (dir === 1 && creation.pointsLeft <= 0) return;
+        if (dir === -1 && creation.stats[stat] <= 0) return;
+
+        creation.stats[stat] += dir;
+        creation.pointsLeft -= dir;
+        statDisplays[stat].textContent = creation.stats[stat];
+        pointsLeftEl.textContent = creation.pointsLeft;
+        validateStart();
+    }
+
+    strengthCards.forEach(card => {
+        card.addEventListener('click', () => {
+            strengthCards.forEach(c => c.classList.remove('selected'));
+            card.classList.add('selected');
+            creation.strength = card.getAttribute('data-strength');
+            validateStart();
+        });
+    });
+
+    weaknessCards.forEach(card => {
+        card.addEventListener('click', () => {
+            weaknessCards.forEach(c => c.classList.remove('selected'));
+            card.classList.add('selected');
+            creation.weakness = card.getAttribute('data-weakness');
+            validateStart();
+        });
+    });
+
+    function validateStart() {
+        const nameOk = nameInput.value.trim().length > 0;
+        const classOk = !!creation.selectedClass;
+        const pointsOk = creation.pointsLeft === 0;
+        const strengthOk = !!creation.strength;
+        const weaknessOk = !!creation.weakness;
+        startBtn.disabled = !(nameOk && classOk && pointsOk && strengthOk && weaknessOk);
+    }
+
+    nameInput.addEventListener('input', validateStart);
+
+    startBtn.addEventListener('click', () => {
+        startGameFromCreation();
+    });
+
+    function startGameFromCreation() {
+        // Base stats from allocation
+        let hp = 20 + creation.stats.hp * 2; // HP scales more
+        let def = creation.stats.def;
+        let spd = creation.stats.spd;
+        let luk = creation.stats.luk;
+
+        // Class modifiers
+        let className = '';
+        if (creation.selectedClass === 'warrior') {
+            hp += 8;
+            def += 4;
+            spd -= 1;
+            luk -= 1;
+            className = 'Warrior';
+        } else if (creation.selectedClass === 'rogue') {
+            hp -= 2;
+            def -= 1;
+            spd += 5;
+            luk += 3;
+            className = 'Rogue';
+        } else if (creation.selectedClass === 'mystic') {
+            hp -= 3;
+            spd += 1;
+            luk += 6;
+            className = 'Mystic';
+        }
+
+        // Clamp some values
+        if (hp < 10) hp = 10;
+        if (def < 0) def = 0;
+        if (spd < 0) spd = 0;
+
         state = {
-            hp: 20,
-            maxHp: 20,
-            atk: 3,
+            name: nameInput.value.trim(),
+            className: className,
+            hp: hp,
+            maxHp: hp,
+            def: def,
+            spd: spd,
+            luk: luk,
             gold: 0,
             floor: 1,
+            strength: creation.strength,
+            weakness: creation.weakness,
             alive: true
         };
-        updateStats();
+
+        // Switch UI
+        creatorEl.style.display = 'none';
+        gameEl.style.display = 'block';
+
+        initGame();
+    }
+
+    // ----- GAME LOGIC -----
+    function initGame() {
         logEl.innerHTML = '';
-        messageEl.textContent = 'You stand at the entrance of a dark dungeon. Will you survive its depths?';
+        messageEl.textContent = 'You descend into the dungeon, ready to test your build.';
         restartBtn.style.display = 'none';
         setButtonsEnabled(true);
-        addLog('You tighten your grip on your weapon and step into the darkness...', 'system');
+        updateStats();
+        addLog('You tighten your gear and step into the darkness...', 'system');
+        statNameEl.textContent = state.name;
+        statClassEl.textContent = state.className;
+        strengthLabelEl.textContent = strengthName(state.strength);
+        weaknessLabelEl.textContent = weaknessName(state.weakness);
+    }
+
+    function strengthName(key) {
+        switch (key) {
+            case 'fast_healer': return 'Fast Healer';
+            case 'first_strike': return 'First Strike';
+            case 'lucky_soul': return 'Lucky Soul';
+            case 'iron_wall': return 'Iron Wall';
+            default: return '-';
+        }
+    }
+
+    function weaknessName(key) {
+        switch (key) {
+            case 'frail': return 'Frail';
+            case 'slow': return 'Slow';
+            case 'unlucky': return 'Unlucky';
+            case 'glass_tank': return 'Glass Tank';
+            default: return '-';
+        }
     }
 
     function updateStats() {
-        hpEl.textContent = state.hp;
-        atkEl.textContent = state.atk;
+        hpEl.textContent = state.hp + ' / ' + state.maxHp;
+        defEl.textContent = state.def;
+        spdEl.textContent = state.spd;
+        lukEl.textContent = state.luk;
         goldEl.textContent = state.gold;
         floorEl.textContent = state.floor;
     }
@@ -207,10 +642,6 @@
         });
     }
 
-    function randomInt(min, max) {
-        return Math.floor(Math.random() * (max - min + 1)) + min;
-    }
-
     function checkDeath() {
         if (state.hp <= 0) {
             state.hp = 0;
@@ -229,40 +660,44 @@
         if (!state.alive) return;
         const roll = randomInt(1, 100);
 
-        if (roll <= 45) {
-            // Monster encounter
+        let luckMod = state.luk;
+        if (state.strength === 'lucky_soul') luckMod += 10;
+        if (state.weakness === 'unlucky') luckMod -= 10;
+
+        if (roll <= 45 + Math.floor(luckMod / 10)) {
             monsterEncounter();
-        } else if (roll <= 70) {
-            // Treasure
-            const goldFound = randomInt(3, 12) + state.floor;
+        } else if (roll <= 70 + Math.floor(luckMod / 8)) {
+            const baseGold = randomInt(3, 12) + state.floor;
+            const bonus = Math.floor(state.luk / 3);
+            const goldFound = baseGold + bonus;
             state.gold += goldFound;
             updateStats();
             addLog('You find a dusty chest containing ' + goldFound + ' gold.', 'loot');
             messageEl.textContent = 'You pocket the gold and move on.';
         } else if (roll <= 85) {
-            // Trap
-            const dmg = randomInt(2, 6) + Math.floor(state.floor / 2);
+            let dmg = randomInt(2, 6) + Math.floor(state.floor / 2);
+            dmg = applyDefenseToTrap(dmg);
             state.hp -= dmg;
             updateStats();
             addLog('A hidden trap springs! You take ' + dmg + ' damage.', 'event');
             messageEl.textContent = 'You grit your teeth and keep going.';
             checkDeath();
         } else {
-            // Strange event
             const eventRoll = randomInt(1, 3);
             if (eventRoll === 1) {
-                const heal = randomInt(3, 7);
+                let heal = randomInt(3, 7);
+                if (state.strength === 'fast_healer') heal = Math.floor(heal * 1.5);
+                if (state.weakness === 'glass_tank') heal = Math.max(1, Math.floor(heal * 0.6));
                 const oldHp = state.hp;
                 state.hp = Math.min(state.maxHp, state.hp + heal);
                 updateStats();
                 addLog('You find a faintly glowing fountain. You drink and recover ' + (state.hp - oldHp) + ' HP.', 'event');
                 messageEl.textContent = 'You feel a little stronger.';
             } else if (eventRoll === 2) {
-                const atkGain = 1;
-                state.atk += atkGain;
+                state.def += 1;
                 updateStats();
-                addLog('You discover an old weapon rack and claim a sharper blade. Attack +1.', 'event');
-                messageEl.textContent = 'Your strikes will hit harder now.';
+                addLog('You discover a piece of sturdy armor. Defense +1.', 'event');
+                messageEl.textContent = 'You feel a bit tougher.';
             } else {
                 addLog('You wander through empty corridors. The silence is unsettling.', 'event');
                 messageEl.textContent = 'Nothing happens... this time.';
@@ -270,12 +705,21 @@
         }
     }
 
+    function applyDefenseToTrap(dmg) {
+        let reduced = dmg - Math.floor(state.def / 3);
+        if (state.strength === 'iron_wall') reduced -= 1;
+        if (state.weakness === 'frail') reduced += 1;
+        if (reduced < 1) reduced = 1;
+        return reduced;
+    }
+
     function monsterEncounter() {
-        const baseHp = 6 + state.floor * 2;
-        const baseAtk = 2 + Math.floor(state.floor / 2);
+        const baseHp = 10 + state.floor * 3;
+        const baseAtk = 3 + Math.floor(state.floor / 2);
         const monster = {
-            hp: randomInt(baseHp - 2, baseHp + 2),
+            hp: randomInt(baseHp - 3, baseHp + 3),
             atk: randomInt(baseAtk - 1, baseAtk + 1),
+            spd: 5 + state.floor
         };
 
         const monsters = ['Goblin', 'Skeleton', 'Cave Rat', 'Shadow Wraith', 'Cultist', 'Stone Golem Fragment'];
@@ -284,53 +728,118 @@
         addLog('A ' + name + ' appears! (HP: ' + monster.hp + ', ATK: ' + monster.atk + ')', 'combat');
         messageEl.textContent = 'You engage the ' + name + ' in battle.';
 
-        // Simple turn-based combat simulation
+        // Turn-based combat with speed / first strike
         while (monster.hp > 0 && state.hp > 0) {
-            const playerDmg = randomInt(state.atk - 1, state.atk + 2);
-            const monsterDmg = randomInt(monster.atk - 1, monster.atk + 1);
+            const playerGoesFirst = decideInitiative(monster.spd);
 
-            monster.hp -= Math.max(1, playerDmg);
-            addLog('You strike the ' + name + ' for ' + Math.max(1, playerDmg) + ' damage.', 'combat');
-
-            if (monster.hp <= 0) {
-                const goldGain = randomInt(4, 10) + state.floor;
-                state.gold += goldGain;
-                updateStats();
-                addLog('The ' + name + ' collapses. You loot ' + goldGain + ' gold.', 'loot');
-
-                // Chance to gain small heal or buff
-                const rewardRoll = randomInt(1, 100);
-                if (rewardRoll <= 25) {
-                    const heal = randomInt(2, 6);
-                    const oldHp = state.hp;
-                    state.hp = Math.min(state.maxHp, state.hp + heal);
-                    updateStats();
-                    addLog('You catch your breath after the fight and recover ' + (state.hp - oldHp) + ' HP.', 'event');
-                } else if (rewardRoll <= 35) {
-                    state.atk += 1;
-                    updateStats();
-                    addLog('You feel more confident in battle. Attack +1.', 'event');
+            if (playerGoesFirst) {
+                if (playerAttack(name, monster)) return;
+                if (monster.hp > 0) {
+                    if (monsterAttack(name, monster)) return;
                 }
-
-                messageEl.textContent = 'You defeated the ' + name + '.';
-                return;
-            }
-
-            state.hp -= Math.max(1, monsterDmg);
-            updateStats();
-            addLog('The ' + name + ' hits you for ' + Math.max(1, monsterDmg) + ' damage.', 'combat');
-
-            if (checkDeath()) {
-                return;
+            } else {
+                if (monsterAttack(name, monster)) return;
+                if (state.hp > 0 && monster.hp > 0) {
+                    if (playerAttack(name, monster)) return;
+                }
             }
         }
+    }
+
+    function decideInitiative(monsterSpd) {
+        let playerScore = state.spd + randomInt(0, 10);
+        let monsterScore = monsterSpd + randomInt(0, 10);
+
+        if (state.strength === 'first_strike') playerScore += 5;
+        if (state.weakness === 'slow') playerScore -= 5;
+
+        return playerScore >= monsterScore;
+    }
+
+    function playerAttack(name, monster) {
+        let baseDmg = 3 + Math.floor(state.floor / 2);
+        baseDmg += Math.floor(state.luk / 4);
+
+        let critChance = 10 + state.luk * 2;
+        if (critChance > 60) critChance = 60;
+        const critRoll = randomInt(1, 100);
+        let isCrit = critRoll <= critChance;
+
+        let dmg = baseDmg;
+        if (isCrit) dmg = Math.floor(dmg * 1.8);
+
+        if (dmg < 1) dmg = 1;
+
+        monster.hp -= dmg;
+        addLog('You strike the ' + name + ' for ' + dmg + ' damage' + (isCrit ? ' (CRIT!)' : '') + '.', 'combat');
+
+        if (monster.hp <= 0) {
+            const baseGold = randomInt(4, 10) + state.floor;
+            let goldGain = baseGold + Math.floor(state.luk / 3);
+            if (state.strength === 'lucky_soul') goldGain += 3;
+            if (state.weakness === 'unlucky') goldGain = Math.max(1, goldGain - 3);
+
+            state.gold += goldGain;
+            updateStats();
+            addLog('The ' + name + ' collapses. You loot ' + goldGain + ' gold.', 'loot');
+
+            const rewardRoll = randomInt(1, 100);
+            if (rewardRoll <= 25) {
+                let heal = randomInt(2, 6);
+                if (state.strength === 'fast_healer') heal = Math.floor(heal * 1.5);
+                if (state.weakness === 'glass_tank') heal = Math.max(1, Math.floor(heal * 0.6));
+                const oldHp = state.hp;
+                state.hp = Math.min(state.maxHp, state.hp + heal);
+                updateStats();
+                addLog('You catch your breath after the fight and recover ' + (state.hp - oldHp) + ' HP.', 'event');
+            } else if (rewardRoll <= 35) {
+                state.def += 1;
+                updateStats();
+                addLog('You feel more confident in battle. Defense +1.', 'event');
+            }
+
+            messageEl.textContent = 'You defeated the ' + name + '.';
+            return true;
+        }
+        return false;
+    }
+
+    function monsterAttack(name, monster) {
+        // Simple dodge chance from speed
+        let dodgeChance = state.spd * 2;
+        if (dodgeChance > 40) dodgeChance = 40;
+        const dodgeRoll = randomInt(1, 100);
+        if (dodgeRoll <= dodgeChance) {
+            addLog('You dodge the ' + name + '\'s attack.', 'combat');
+            return false;
+        }
+
+        let dmg = monster.atk + Math.floor(state.floor / 3);
+        dmg -= Math.floor(state.def / 3);
+        if (state.strength === 'iron_wall') dmg -= 1;
+        if (state.weakness === 'frail') dmg += 1;
+        if (dmg < 1) dmg = 1;
+
+        state.hp -= dmg;
+        updateStats();
+        addLog('The ' + name + ' hits you for ' + dmg + ' damage.', 'combat');
+
+        if (checkDeath()) {
+            return true;
+        }
+        return false;
     }
 
     function rest() {
         if (!state.alive) return;
         const chance = randomInt(1, 100);
-        if (chance <= 70) {
-            const heal = randomInt(4, 9);
+        let successChance = 70;
+        if (state.weakness === 'glass_tank') successChance -= 10;
+
+        if (chance <= successChance) {
+            let heal = randomInt(4, 9);
+            if (state.strength === 'fast_healer') heal = Math.floor(heal * 1.5);
+            if (state.weakness === 'glass_tank') heal = Math.max(1, Math.floor(heal * 0.6));
             const oldHp = state.hp;
             state.hp = Math.min(state.maxHp, state.hp + heal);
             updateStats();
@@ -354,36 +863,45 @@
         addLog('A hooded merchant emerges from the shadows, offering wares.', 'event');
 
         const options = [
-            { type: 'heal', cost: 8 + state.floor * 2, value: 10 },
-            { type: 'atk', cost: 12 + state.floor * 3, value: 1 },
-            { type: 'maxHp', cost: 15 + state.floor * 3, value: 3 }
+            { type: 'heal', cost: 8 + state.floor * 2, value: 12 },
+            { type: 'def', cost: 12 + state.floor * 3, value: 2 },
+            { type: 'spd', cost: 10 + state.floor * 2, value: 2 },
+            { type: 'luk', cost: 10 + state.floor * 2, value: 2 }
         ];
 
         const choice = options[randomInt(0, options.length - 1)];
         let desc = '';
-        if (choice.type === 'heal') desc = 'potion that restores 10 HP';
-        if (choice.type === 'atk') desc = 'sharpened weapon (+1 Attack)';
-        if (choice.type === 'maxHp') desc = 'talisman that increases max HP by 3';
+        if (choice.type === 'heal') desc = 'potion that restores HP';
+        if (choice.type === 'def') desc = 'piece of armor (+2 Defense)';
+        if (choice.type === 'spd') desc = 'light boots (+2 Speed)';
+        if (choice.type === 'luk') desc = 'lucky charm (+2 Luck)';
 
-        if (state.gold < choice.cost) {
-            addLog('The merchant offers a ' + desc + ' for ' + choice.cost + ' gold, but you cannot afford it.', 'event');
+        let finalCost = choice.cost;
+        if (state.weakness === 'greedy') finalCost = Math.floor(finalCost * 1.25);
+
+        if (state.gold < finalCost) {
+            addLog('The merchant offers a ' + desc + ' for ' + finalCost + ' gold, but you cannot afford it.', 'event');
             messageEl.textContent = 'You walk away empty-handed.';
             return;
         }
 
-        // Auto-buy for simplicity
-        state.gold -= choice.cost;
+        state.gold -= finalCost;
         if (choice.type === 'heal') {
+            let heal = choice.value;
+            if (state.strength === 'fast_healer') heal = Math.floor(heal * 1.5);
+            if (state.weakness === 'glass_tank') heal = Math.max(1, Math.floor(heal * 0.6));
             const oldHp = state.hp;
-            state.hp = Math.min(state.maxHp, state.hp + choice.value);
+            state.hp = Math.min(state.maxHp, state.hp + heal);
             addLog('You buy the potion and recover ' + (state.hp - oldHp) + ' HP.', 'event');
-        } else if (choice.type === 'atk') {
-            state.atk += choice.value;
-            addLog('You buy the weapon. Attack +1.', 'event');
-        } else if (choice.type === 'maxHp') {
-            state.maxHp += choice.value;
-            state.hp += choice.value;
-            addLog('You buy the talisman. Max HP +3.', 'event');
+        } else if (choice.type === 'def') {
+            state.def += choice.value;
+            addLog('You buy the armor. Defense +' + choice.value + '.', 'event');
+        } else if (choice.type === 'spd') {
+            state.spd += choice.value;
+            addLog('You buy the boots. Speed +' + choice.value + '.', 'event');
+        } else if (choice.type === 'luk') {
+            state.luk += choice.value;
+            addLog('You buy the charm. Luck +' + choice.value + '.', 'event');
         }
         updateStats();
         messageEl.textContent = 'The merchant vanishes as quickly as they appeared.';
@@ -392,8 +910,8 @@
     function descend() {
         if (!state.alive) return;
         state.floor += 1;
-        state.maxHp += 1;
-        state.hp = Math.min(state.maxHp, state.hp + 2);
+        state.maxHp += 2;
+        state.hp = Math.min(state.maxHp, state.hp + 3);
         updateStats();
         addLog('You find a stairway leading deeper. You descend to floor ' + state.floor + '.', 'system');
 
@@ -416,8 +934,9 @@
 
         const boss = {
             name: 'Dungeon Lord',
-            hp: 80,
-            atk: 7
+            hp: 120,
+            atk: 10,
+            spd: 20
         };
 
         setButtonsEnabled(false);
@@ -425,56 +944,102 @@
         function bossTurn() {
             if (!state.alive) return;
 
-            const playerDmg = randomInt(state.atk - 1, state.atk + 3);
-            const bossDmg = randomInt(boss.atk - 2, boss.atk + 2);
+            const playerFirst = decideInitiative(boss.spd);
 
-            boss.hp -= Math.max(1, playerDmg);
-            addLog('You strike the ' + boss.name + ' for ' + Math.max(1, playerDmg) + ' damage.', 'combat');
-
-            if (boss.hp <= 0) {
-                addLog('The Dungeon Lord roars and crumbles into dust.', 'combat');
-                const rewardGold = 100 + state.floor * 10;
-                state.gold += rewardGold;
-                updateStats();
-                addLog('You claim a hoard of ' + rewardGold + ' gold and a legendary victory.', 'loot');
-                messageEl.textContent = 'You have conquered the dungeon!';
-                state.alive = false;
-                restartBtn.style.display = 'inline-block';
-                return;
+            if (playerFirst) {
+                if (playerBossAttack(boss)) return;
+                if (boss.hp > 0) {
+                    if (bossAttack(boss)) return;
+                }
+            } else {
+                if (bossAttack(boss)) return;
+                if (state.hp > 0 && boss.hp > 0) {
+                    if (playerBossAttack(boss)) return;
+                }
             }
 
-            state.hp -= Math.max(1, bossDmg);
-            updateStats();
-            addLog('The ' + boss.name + ' smashes you for ' + Math.max(1, bossDmg) + ' damage.', 'combat');
-
-            if (checkDeath()) {
-                return;
+            if (state.alive && boss.hp > 0) {
+                setTimeout(bossTurn, 700);
             }
-
-            // Continue the fight with a slight delay for readability
-            setTimeout(bossTurn, 600);
         }
 
-        setTimeout(bossTurn, 600);
+        setTimeout(bossTurn, 700);
+    }
+
+    function playerBossAttack(boss) {
+        let baseDmg = 5 + Math.floor(state.floor / 2);
+        baseDmg += Math.floor(state.luk / 3);
+
+        let critChance = 15 + state.luk * 2;
+        if (critChance > 70) critChance = 70;
+        const critRoll = randomInt(1, 100);
+        let isCrit = critRoll <= critChance;
+
+        let dmg = baseDmg;
+        if (isCrit) dmg = Math.floor(dmg * 2);
+
+        if (dmg < 1) dmg = 1;
+
+        boss.hp -= dmg;
+        addLog('You strike the ' + boss.name + ' for ' + dmg + ' damage' + (isCrit ? ' (CRIT!)' : '') + '.', 'combat');
+
+        if (boss.hp <= 0) {
+            addLog('The Dungeon Lord roars and crumbles into dust.', 'combat');
+            const rewardGold = 200 + state.floor * 15;
+            state.gold += rewardGold;
+            updateStats();
+            addLog('You claim a hoard of ' + rewardGold + ' gold and a legendary victory.', 'loot');
+            messageEl.textContent = 'You have conquered the dungeon!';
+            state.alive = false;
+            restartBtn.style.display = 'inline-block';
+            return true;
+        }
+        return false;
+    }
+
+    function bossAttack(boss) {
+        let dodgeChance = state.spd * 2;
+        if (dodgeChance > 35) dodgeChance = 35;
+        const dodgeRoll = randomInt(1, 100);
+        if (dodgeRoll <= dodgeChance) {
+            addLog('You narrowly dodge the ' + boss.name + '\'s devastating blow.', 'combat');
+            return false;
+        }
+
+        let dmg = boss.atk + Math.floor(state.floor / 2);
+        dmg -= Math.floor(state.def / 3);
+        if (state.strength === 'iron_wall') dmg -= 1;
+        if (state.weakness === 'frail') dmg += 1;
+        if (dmg < 2) dmg = 2;
+
+        state.hp -= dmg;
+        updateStats();
+        addLog('The ' + boss.name + ' smashes you for ' + dmg + ' damage.', 'combat');
+
+        if (checkDeath()) {
+            return true;
+        }
+        return false;
     }
 
     exploreBtn.addEventListener('click', explore);
     restBtn.addEventListener('click', rest);
     shopBtn.addEventListener('click', shop);
     descendBtn.addEventListener('click', descend);
-    restartBtn.addEventListener('click', initGame);
-
-    initGame();
+    restartBtn.addEventListener('click', () => {
+        // Reset to creation screen for a fresh build
+        location.reload();
+    });
 })();
 </script>
 
-  <!-- BEGIN AADS AD UNIT 2436014 -->
+    <!-- BEGIN AADS AD UNIT 2436014 -->
 
 <div style="position: absolute; z-index: 99999">
-      <input autocomplete="off" type="checkbox" id="aadsstickymokt409t" hidden />
-      <div style="padding-top: auto; padding-bottom: 0;">
-        <div style="width:100%;height:auto;position:fixed;text-align:center;font-size:0;top:0;left:0;right:0;margin:auto">
-          <label for="aadsstickymokt409t" style="top: 50%;transform: translateY(-50%);right:24px;; position: absolute;border-radius: 4px; background: rgba(248, 248, 249, 0.70); padding: 4px;z-index: 99999;cursor:pointer">
+      <input autocomplete="off" type="checkbox" id="aadsstickymoktt3bi" hidden />
+      <div style="padding-top: 0; padding-bottom: auto;">
+        <div style="width:100%;height:auto;position:fixed;text-align:center;font-size:0;bottom:0;left:0;right:0;margin:auto">
+          <label for="aadsstickymoktt3bi" style="top: 50%;transform: translateY(-50%);right:24px;; position: absolute;border-radius: 4px; background: rgba(248, 248, 249, 0.70); padding: 4px;z-index: 99999;cursor:pointer">
             <svg fill="#000000" height="16px" width="16px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 490 490">
               <polygon points="456.851,0 245,212.564 33.149,0 0.708,32.337 212.669,245.004 0.708,457.678 33.149,490 245,277.443 456.851,490 489.292,457.678 277.331,245.004 489.292,32.337 "/>
             </svg>
@@ -482,7 +1047,7 @@
           <div id="frame" style="width: 100%;margin: auto;position: relative; z-index: 99998;"><iframe data-aa=2436014 src=//acceptable.a-ads.com/2436014/?size=Adaptive style='border:0; padding:0; width:70%; height:auto; overflow:hidden; margin: auto'></iframe></div>
         </div>
         <style>
-      #aadsstickymokt409t:checked + div {
+      #aadsstickymoktt3bi:checked + div {
         display: none;
       }
     </style>
