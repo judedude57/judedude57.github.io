@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
 
-    <!-- PropellerAds Verification -->
+    <!-- PropellerAds / Monetag Verification -->
     <meta name="monetag" content="9619dae005b21db4fb10a5e88d3bbf27">
 
     <title>Infinite Play – Home</title>
@@ -37,6 +37,7 @@
             border-radius: 6px;
             position: absolute;
             top: 40px;
+            padding: 5px;
         }
         .ad-left { left: -180px; }
         .ad-right { right: -180px; }
@@ -95,12 +96,20 @@
 
 <div class="page-wrapper">
 
-    <!-- Left Ad (PropellerAds code goes here) -->
+    <!-- LEFT AD -->
     <div class="ad-left">
-        <!-- Paste your PropellerAds banner code here -->
+        <div id="left-banner-ad"></div>
+        <script>
+        (function(){
+            var s = document.createElement('script');
+            s.dataset.zone = '10951295';
+            s.src = 'https://n6wxm.com/vignette.min.js';
+            document.getElementById('left-banner-ad').appendChild(s);
+        })();
+        </script>
     </div>
 
-    <!-- Main Content -->
+    <!-- MAIN CONTENT -->
     <div class="content">
         <h1>Infinite Play</h1>
 
@@ -112,29 +121,17 @@
              class="logo">
     </div>
 
-    <!-- Right Ad (PropellerAds code goes here) --> <div id="right-banner-ad"></div>
-<script>
-(function(){
-    var s = document.createElement('script');
-    s.dataset.zone = '10951295';
-    s.src = 'https://n6wxm.com/vignette.min.js';
-    document.getElementById('right-banner-ad').appendChild(s);
-})();
-</script>
-
-    
+    <!-- RIGHT AD -->
     <div class="ad-right">
-        <!-- Paste your PropellerAds banner code here -->
-        <div id="left-banner-ad"></div>
-<script>
-(function(){
-    var s = document.createElement('script');
-    s.dataset.zone = '10951295';
-    s.src = 'https://n6wxm.com/vignette.min.js';
-    document.getElementById('left-banner-ad').appendChild(s);
-})();
-</script>
-
+        <div id="right-banner-ad"></div>
+        <script>
+        (function(){
+            var s = document.createElement('script');
+            s.dataset.zone = '10951295';
+            s.src = 'https://n6wxm.com/vignette.min.js';
+            document.getElementById('right-banner-ad').appendChild(s);
+        })();
+        </script>
     </div>
 
 </div>
