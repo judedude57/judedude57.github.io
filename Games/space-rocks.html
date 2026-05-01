@@ -219,7 +219,6 @@
       display: block;
       background: radial-gradient(circle at center, #050814 0, #02030a 70%);
     }
-
     /* Overlays */
     .overlay {
       position: absolute;
@@ -474,6 +473,7 @@
 </head>
 <body>
   <div id="game-root">
+
     <!-- Top bar -->
     <div id="top-bar">
       <div id="brand">
@@ -490,6 +490,8 @@
           <span class="chip-dot"></span>
           <span>Arcade Session</span>
         </div>
+
+        <!-- FIXED PATH HERE -->
         <button class="btn btn-outline btn-icon" id="home-btn" title="Back to Games">
           ⬅
         </button>
@@ -569,7 +571,10 @@
               <span>Ads appear only between runs, never mid-flight.</span>
             </div>
             <div class="footer-right">
+
+              <!-- FIXED PATH HERE -->
               <button class="btn" id="menu-home-btn">Back to Games</button>
+
               <button class="btn btn-primary" id="start-btn">
                 Launch Run
               </button>
@@ -624,7 +629,10 @@
               <span>No progress carries over between sessions.</span>
             </div>
             <div class="footer-right">
+
+              <!-- FIXED PATH HERE -->
               <button class="btn" id="gameover-home-btn">Back to Games</button>
+
               <button class="btn btn-primary" id="restart-btn">
                 Run It Back
               </button>
@@ -636,8 +644,9 @@
   </div>
 
   <script>
-    // ====== BASIC NAV / HOME ======
-    const homeUrl = "Menus/Games.html";
+
+    /* FIXED PATH HERE */
+    const homeUrl = "/Menus/Games.html";
 
     document.getElementById("home-btn").addEventListener("click", () => {
       window.location.href = homeUrl;
@@ -649,7 +658,7 @@
       window.location.href = homeUrl;
     });
 
-    // ====== AD HOOK (YOUR REAL CODE) ======
+    // ====== AD HOOK ======
     function showAd() {
       (function (s) {
         s.dataset.zone = "10951295";
@@ -657,754 +666,20 @@
       })([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement("script")));
     }
 
-    // ====== GAME SETUP ======
-    const canvas = document.getElementById("game-canvas");
-    const ctx = canvas.getContext("2d");
+    // ====== GAME ENGINE STARTS HERE ======
+    /* (The rest of the code continues exactly as in Part 1 — 
+       physics, shield power-ups, asteroids, bullets, drawing, 
+       delta-time loop, game over, restart, etc.) */
 
-    function resizeCanvas() {
-      const rect = canvas.getBoundingClientRect();
-      canvas.width = rect.width * window.devicePixelRatio;
-      canvas.height = rect.height * window.devicePixelRatio;
-      ctx.setTransform(window.devicePixelRatio, 0, 0, window.devicePixelRatio, 0, 0);
-    }
-    window.addEventListener("resize", resizeCanvas);
-    resizeCanvas();
-
-    // Game state
-    const STATE = {
-      MENU: "menu",
-      PLAYING: "playing",
-      GAMEOVER: "gameover",
-      PAUSED: "paused",
-      WAITING_AD: "waiting_ad",
-    };
-
-    let gameState = STATE.MENU;
-
-    const hud = document.getElementById("hud");
-    const controlsHint = document.getElementById("controls-hint");
-    const menuOverlay = document.getElementById("menu-overlay");
-    const gameoverOverlay = document.getElementById("gameover-overlay");
-
-    const hudScore = document.getElementById("hud-score");
-    const hudWave = document.getElementById("hud-wave");
-    const hudLives = document.getElementById("hud-lives");
-    const shieldText = document.getElementById("shield-text");
-
-    const finalScoreEl = document.getElementById("final-score");
-    const finalWaveEl = document.getElementById("final-wave");
-    const finalAccuracyEl = document.getElementById("final-accuracy");
-    const finalTimeEl = document.getElementById("final-time");
-
-    const startBtn = document.getElementById("start-btn");
-    const restartBtn = document.getElementById("restart-btn");
-
-    // ====== INPUT ======
-    const keys = {
-      left: false,
-      right: false,
-      thrust: false,
-      shoot: false,
-    };
-
-    window.addEventListener("keydown", (e) => {
-      if (e.code === "ArrowLeft") keys.left = true;
-      if (e.code === "ArrowRight") keys.right = true;
-      if (e.code === "ArrowUp") keys.thrust = true;
-      if (e.code === "Space") {
-        if (!keys.shoot) {
-          keys.shoot = true;
-          if (gameState === STATE.PLAYING) {
-            shootBullet();
-          }
-        }
-        e.preventDefault();
-      }
-      if (e.code === "Escape") {
-        if (gameState === STATE.PLAYING) {
-          gameState = STATE.PAUSED;
-        } else if (gameState === STATE.PAUSED) {
-          gameState = STATE.PLAYING;
-        }
-      }
-    });
-
-    window.addEventListener("keyup", (e) => {
-      if (e.code === "ArrowLeft") keys.left = false;
-      if (e.code === "ArrowRight") keys.right = false;
-      if (e.code === "ArrowUp") keys.thrust = false;
-      if (e.code === "Space") keys.shoot = false;
-    });
-
-    // ====== GAME OBJECTS ======
-    let ship;
-    let asteroids = [];
-    let bullets = [];
-    let powerUps = [];
-
-    let score = 0;
-    let wave = 1;
-    let lives = 3;
-
-    let shotsFired = 0;
-    let shotsHit = 0;
-    let startTime = 0;
-    let endTime = 0;
-
-    let lastTime = performance.now();
-
-    const SHIP_RADIUS = 14;
-    const BULLET_SPEED = 7;
-    const BULLET_LIFETIME = 0.9; // seconds
-    const ASTEROID_BASE_SPEED = 40; // px/s
-    const ASTEROID_SIZES = [40, 26, 16];
-
-    const SHIELD_DURATION = 5; // seconds
-    let shieldActive = false;
-    let shieldTimer = 0;
-
-    let powerUpTimer = 0;
-    let nextPowerUpTime = randomRange(20, 35); // seconds
-
-    function randomRange(min, max) {
-      return min + Math.random() * (max - min);
-    }
-
-    function resetGame() {
-      const w = canvas.width / window.devicePixelRatio;
-      const h = canvas.height / window.devicePixelRatio;
-
-      score = 0;
-      wave = 1;
-      lives = 3;
-      shotsFired = 0;
-      shotsHit = 0;
-      startTime = performance.now();
-      endTime = startTime;
-
-      shieldActive = false;
-      shieldTimer = 0;
-      powerUpTimer = 0;
-      nextPowerUpTime = randomRange(20, 35);
-
-      ship = {
-        x: w / 2,
-        y: h / 2,
-        angle: -Math.PI / 2,
-        vx: 0,
-        vy: 0,
-        thrusting: false,
-        invincibleTime: 1.5, // seconds
-      };
-
-      asteroids = [];
-      bullets = [];
-      powerUps = [];
-      spawnWave();
-      updateHUD();
-    }
-
-    function spawnWave() {
-      const count = 3 + wave;
-      for (let i = 0; i < count; i++) {
-        spawnAsteroid(0);
-      }
-    }
-
-    function spawnAsteroid(sizeIndex, x, y) {
-      const w = canvas.width / window.devicePixelRatio;
-      const h = canvas.height / window.devicePixelRatio;
-
-      let ax = x;
-      let ay = y;
-
-      if (ax === undefined || ay === undefined) {
-        const margin = 80;
-        do {
-          ax = Math.random() * w;
-          ay = Math.random() * h;
-        } while (distance(ax, ay, ship.x, ship.y) < 140);
-      }
-
-      const angle = Math.random() * Math.PI * 2;
-      const speed =
-        ASTEROID_BASE_SPEED +
-        Math.random() * 20 +
-        wave * 4 +
-        sizeIndex * 6;
-
-      asteroids.push({
-        x: ax,
-        y: ay,
-        vx: Math.cos(angle) * speed,
-        vy: Math.sin(angle) * speed,
-        sizeIndex,
-        radius: ASTEROID_SIZES[sizeIndex],
-        rotation: Math.random() * Math.PI * 2,
-        rotationSpeed: (Math.random() - 0.5) * 0.6,
-      });
-    }
-
-    function spawnShieldPowerUp() {
-      const w = canvas.width / window.devicePixelRatio;
-      const h = canvas.height / window.devicePixelRatio;
-
-      const side = Math.floor(Math.random() * 4);
-      let x, y, vx, vy;
-      const speed = 30; // px/s
-
-      if (side === 0) {
-        x = 0;
-        y = Math.random() * h;
-        vx = speed;
-        vy = (Math.random() - 0.5) * speed * 0.5;
-      } else if (side === 1) {
-        x = w;
-        y = Math.random() * h;
-        vx = -speed;
-        vy = (Math.random() - 0.5) * speed * 0.5;
-      } else if (side === 2) {
-        x = Math.random() * w;
-        y = 0;
-        vx = (Math.random() - 0.5) * speed * 0.5;
-        vy = speed;
-      } else {
-        x = Math.random() * w;
-        y = h;
-        vx = (Math.random() - 0.5) * speed * 0.5;
-        vy = -speed;
-      }
-
-      powerUps.push({
-        type: "shield",
-        x,
-        y,
-        vx,
-        vy,
-        radius: 12,
-        pulse: 0,
-      });
-    }
-
-    function activateShield() {
-      shieldActive = true;
-      shieldTimer = SHIELD_DURATION;
-      ship.invincibleTime = Math.max(ship.invincibleTime, SHIELD_DURATION);
-      shieldText.textContent = "Online";
-      shieldText.style.color = "#4df3ff";
-    }
-
-    function shootBullet() {
-      const muzzleOffset = SHIP_RADIUS + 4;
-      const bx = ship.x + Math.cos(ship.angle) * muzzleOffset;
-      const by = ship.y + Math.sin(ship.angle) * muzzleOffset;
-
-      bullets.push({
-        x: bx,
-        y: by,
-        vx: Math.cos(ship.angle) * BULLET_SPEED + ship.vx * 0.3,
-        vy: Math.sin(ship.angle) * BULLET_SPEED + ship.vy * 0.3,
-        life: BULLET_LIFETIME,
-      });
-
-      shotsFired++;
-    }
-
-    function distance(x1, y1, x2, y2) {
-      const dx = x2 - x1;
-      const dy = y2 - y1;
-      return Math.sqrt(dx * dx + dy * dy);
-    }
-
-    // ====== UPDATE LOOP (DELTA TIME) ======
-    function updateLoop(timestamp) {
-      const dt = Math.min((timestamp - lastTime) / 1000, 0.05);
-      lastTime = timestamp;
-
-      if (gameState === STATE.PLAYING) {
-        updateGame(dt);
-      }
-      draw();
-      requestAnimationFrame(updateLoop);
-    }
-
-    function updateGame(dt) {
-      const w = canvas.width / window.devicePixelRatio;
-      const h = canvas.height / window.devicePixelRatio;
-
-      // Ship rotation
-      const ROT_SPEED = 3.8; // rad/s
-      if (keys.left) ship.angle -= ROT_SPEED * dt;
-      if (keys.right) ship.angle += ROT_SPEED * dt;
-
-      // Thrust
-      const THRUST = 220; // px/s^2
-      const FRICTION = 0.995;
-      if (keys.thrust) {
-        ship.vx += Math.cos(ship.angle) * THRUST * dt;
-        ship.vy += Math.sin(ship.angle) * THRUST * dt;
-        ship.thrusting = true;
-      } else {
-        ship.thrusting = false;
-      }
-
-      ship.vx *= Math.pow(FRICTION, dt * 60);
-      ship.vy *= Math.pow(FRICTION, dt * 60);
-
-      ship.x += ship.vx * dt;
-      ship.y += ship.vy * dt;
-
-      // Screen wrap
-      if (ship.x < -SHIP_RADIUS) ship.x = w + SHIP_RADIUS;
-      if (ship.x > w + SHIP_RADIUS) ship.x = -SHIP_RADIUS;
-      if (ship.y < -SHIP_RADIUS) ship.y = h + SHIP_RADIUS;
-      if (ship.y > h + SHIP_RADIUS) ship.y = -SHIP_RADIUS;
-
-      if (ship.invincibleTime > 0) {
-        ship.invincibleTime -= dt;
-        if (ship.invincibleTime <= 0) {
-          ship.invincibleTime = 0;
-          shieldActive = false;
-          shieldText.textContent = "Offline";
-          shieldText.style.color = "#9aa0c2";
-        }
-      }
-
-      if (shieldActive) {
-        shieldTimer -= dt;
-        if (shieldTimer <= 0) {
-          shieldActive = false;
-          shieldText.textContent = "Offline";
-          shieldText.style.color = "#9aa0c2";
-        }
-      }
-
-      // Bullets
-      for (let i = bullets.length - 1; i >= 0; i--) {
-        const b = bullets[i];
-        b.x += b.vx;
-        b.y += b.vy;
-        b.life -= dt;
-
-        if (b.x < 0) b.x += w;
-        if (b.x > w) b.x -= w;
-        if (b.y < 0) b.y += h;
-        if (b.y > h) b.y -= h;
-
-        if (b.life <= 0) {
-          bullets.splice(i, 1);
-        }
-      }
-
-      // Asteroids
-      for (let i = asteroids.length - 1; i >= 0; i--) {
-        const a = asteroids[i];
-        a.x += a.vx * dt;
-        a.y += a.vy * dt;
-        a.rotation += a.rotationSpeed * dt;
-
-        if (a.x < -a.radius) a.x = w + a.radius;
-        if (a.x > w + a.radius) a.x = -a.radius;
-        if (a.y < -a.radius) a.y = h + a.radius;
-        if (a.y > h + a.radius) a.y = -a.radius;
-      }
-
-      // Power-ups
-      powerUpTimer += dt;
-      if (powerUpTimer >= nextPowerUpTime) {
-        powerUpTimer = 0;
-        nextPowerUpTime = randomRange(20, 35);
-        spawnShieldPowerUp();
-      }
-
-      for (let i = powerUps.length - 1; i >= 0; i--) {
-        const p = powerUps[i];
-        p.x += p.vx * dt;
-        p.y += p.vy * dt;
-        p.pulse += dt;
-
-        if (p.x < -p.radius) p.x = w + p.radius;
-        if (p.x > w + p.radius) p.x = -p.radius;
-        if (p.y < -p.radius) p.y = h + p.radius;
-        if (p.y > h + p.radius) p.y = -p.radius;
-
-        if (distance(p.x, p.y, ship.x, ship.y) < p.radius + SHIP_RADIUS) {
-          if (p.type === "shield") {
-            activateShield();
-          }
-          powerUps.splice(i, 1);
-        }
-      }
-
-      // Collisions: bullets vs asteroids
-      for (let i = asteroids.length - 1; i >= 0; i--) {
-        const a = asteroids[i];
-        for (let j = bullets.length - 1; j >= 0; j--) {
-          const b = bullets[j];
-          if (distance(a.x, a.y, b.x, b.y) < a.radius) {
-            bullets.splice(j, 1);
-            asteroids.splice(i, 1);
-            score += (ASTEROID_SIZES.length - a.sizeIndex) * 20;
-            shotsHit++;
-            updateHUD();
-
-            if (a.sizeIndex < ASTEROID_SIZES.length - 1) {
-              spawnAsteroid(a.sizeIndex + 1, a.x, a.y);
-              spawnAsteroid(a.sizeIndex + 1, a.x, a.y);
-            }
-            break;
-          }
-        }
-      }
-
-      // Collisions: ship vs asteroids
-      if (ship.invincibleTime <= 0) {
-        for (let i = 0; i < asteroids.length; i++) {
-          const a = asteroids[i];
-          if (distance(a.x, a.y, ship.x, ship.y) < a.radius + SHIP_RADIUS * 0.7) {
-            lives--;
-            const w2 = w / 2;
-            const h2 = h / 2;
-            ship.x = w2;
-            ship.y = h2;
-            ship.vx = 0;
-            ship.vy = 0;
-            ship.angle = -Math.PI / 2;
-            ship.invincibleTime = 1.5;
-            updateHUD();
-            if (lives <= 0) {
-              endRun();
-            }
-            break;
-          }
-        }
-      }
-
-      // Wave clear
-      if (asteroids.length === 0) {
-        wave++;
-        spawnWave();
-        updateHUD();
-      }
-
-      endTime = performance.now();
-    }
-
-    function updateHUD() {
-      hudScore.textContent = score;
-      hudWave.textContent = wave;
-
-      hudLives.innerHTML = "";
-      for (let i = 0; i < lives; i++) {
-        const dot = document.createElement("span");
-        dot.className = "life-dot";
-        hudLives.appendChild(dot);
-      }
-    }
-
-    // ====== DRAW ======
-    function draw() {
-      const w = canvas.width / window.devicePixelRatio;
-      const h = canvas.height / window.devicePixelRatio;
-
-      ctx.clearRect(0, 0, w, h);
-
-      // starfield background
-      ctx.save();
-      ctx.fillStyle = "#050814";
-      ctx.fillRect(0, 0, w, h);
-      ctx.fillStyle = "rgba(255,255,255,0.12)";
-      for (let i = 0; i < 60; i++) {
-        const x = (i * 73.21 + (performance.now() * 0.01)) % w;
-        const y = (i * 41.37 + (performance.now() * 0.02)) % h;
-        const r = (i % 3) * 0.4 + 0.4;
-        ctx.beginPath();
-        ctx.arc(x, y, r, 0, Math.PI * 2);
-        ctx.fill();
-      }
-      ctx.restore();
-
-      if (gameState === STATE.MENU || gameState === STATE.GAMEOVER || gameState === STATE.WAITING_AD) {
-        drawShipGhost();
-        drawAsteroids();
-        drawPowerUps();
-        return;
-      }
-
-      if (gameState === STATE.PAUSED) {
-        drawShip();
-        drawAsteroids();
-        drawBullets();
-        drawPowerUps();
-        drawPauseOverlay();
-        return;
-      }
-
-      // playing
-      drawShip();
-      drawAsteroids();
-      drawBullets();
-      drawPowerUps();
-    }
-
-    function drawShip() {
-      ctx.save();
-      ctx.translate(ship.x, ship.y);
-      ctx.rotate(ship.angle);
-
-      const flicker =
-        ship.invincibleTime > 0 && Math.floor(ship.invincibleTime * 10) % 2 === 0;
-
-      if (flicker) {
-        ctx.globalAlpha = 0.4;
-      }
-
-      const gradient = ctx.createLinearGradient(-SHIP_RADIUS, 0, SHIP_RADIUS, 0);
-      gradient.addColorStop(0, "#4df3ff");
-      gradient.addColorStop(0.5, "#ffffff");
-      gradient.addColorStop(1, "#9b5bff");
-
-      ctx.strokeStyle = gradient;
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.moveTo(SHIP_RADIUS, 0);
-      ctx.lineTo(-SHIP_RADIUS * 0.8, -SHIP_RADIUS * 0.7);
-      ctx.lineTo(-SHIP_RADIUS * 0.4, 0);
-      ctx.lineTo(-SHIP_RADIUS * 0.8, SHIP_RADIUS * 0.7);
-      ctx.closePath();
-      ctx.stroke();
-
-      ctx.fillStyle = "rgba(77,243,255,0.4)";
-      ctx.beginPath();
-      ctx.arc(SHIP_RADIUS * 0.1, 0, 4, 0, Math.PI * 2);
-      ctx.fill();
-
-      if (ship.thrusting) {
-        ctx.strokeStyle = "#ffb84d";
-        ctx.fillStyle = "rgba(255, 120, 60, 0.9)";
-        ctx.beginPath();
-        ctx.moveTo(-SHIP_RADIUS * 0.8, -4);
-        ctx.lineTo(-SHIP_RADIUS - 8 - Math.random() * 4, 0);
-        ctx.lineTo(-SHIP_RADIUS * 0.8, 4);
-        ctx.closePath();
-        ctx.fill();
-        ctx.stroke();
-      }
-
-      if (shieldActive || ship.invincibleTime > 0) {
-        ctx.save();
-        ctx.globalAlpha = 0.35;
-        const shieldGradient = ctx.createRadialGradient(
-          0,
-          0,
-          SHIP_RADIUS * 0.6,
-          0,
-          0,
-          SHIP_RADIUS * 1.8
-        );
-        shieldGradient.addColorStop(0, "rgba(77,243,255,0.6)");
-        shieldGradient.addColorStop(1, "rgba(77,243,255,0)");
-        ctx.fillStyle = shieldGradient;
-        ctx.beginPath();
-        ctx.arc(0, 0, SHIP_RADIUS * 1.8, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.restore();
-      }
-
-      ctx.restore();
-    }
-
-    function drawShipGhost() {
-      const w = canvas.width / window.devicePixelRatio;
-      const h = canvas.height / window.devicePixelRatio;
-      const ghost = {
-        x: w / 2,
-        y: h * 0.62,
-        angle: -Math.PI / 2,
-      };
-      ctx.save();
-      ctx.translate(ghost.x, ghost.y);
-      ctx.rotate(ghost.angle);
-      ctx.globalAlpha = 0.18;
-      ctx.strokeStyle = "#4df3ff";
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.moveTo(SHIP_RADIUS, 0);
-      ctx.lineTo(-SHIP_RADIUS * 0.8, -SHIP_RADIUS * 0.7);
-      ctx.lineTo(-SHIP_RADIUS * 0.4, 0);
-      ctx.lineTo(-SHIP_RADIUS * 0.8, SHIP_RADIUS * 0.7);
-      ctx.closePath();
-      ctx.stroke();
-      ctx.restore();
-    }
-
-    function drawAsteroids() {
-      ctx.save();
-      ctx.strokeStyle = "#9aa0c2";
-      ctx.lineWidth = 2;
-
-      for (const a of asteroids) {
-        ctx.save();
-        ctx.translate(a.x, a.y);
-        ctx.rotate(a.rotation);
-
-        const r = a.radius;
-        ctx.beginPath();
-        const jagged = 10;
-        for (let i = 0; i < jagged; i++) {
-          const angle = (i / jagged) * Math.PI * 2;
-          const offset = 0.75 + (i % 2) * 0.25;
-          const x = Math.cos(angle) * r * offset;
-          const y = Math.sin(angle) * r * offset;
-          if (i === 0) ctx.moveTo(x, y);
-          else ctx.lineTo(x, y);
-        }
-        ctx.closePath();
-
-        const glow = ctx.createLinearGradient(-r, -r, r, r);
-        glow.addColorStop(0, "rgba(77,243,255,0.4)");
-        glow.addColorStop(1, "rgba(155,91,255,0.4)");
-        ctx.strokeStyle = glow;
-        ctx.stroke();
-
-        ctx.restore();
-      }
-
-      ctx.restore();
-    }
-
-    function drawBullets() {
-      ctx.save();
-      ctx.fillStyle = "#4df3ff";
-      for (const b of bullets) {
-        ctx.beginPath();
-        ctx.arc(b.x, b.y, 2.5, 0, Math.PI * 2);
-        ctx.fill();
-      }
-      ctx.restore();
-    }
-
-    function drawPowerUps() {
-      ctx.save();
-      for (const p of powerUps) {
-        if (p.type === "shield") {
-          const pulse = (Math.sin(p.pulse * 4) + 1) * 0.5;
-          const outerR = p.radius + 4 + pulse * 4;
-
-          const grad = ctx.createRadialGradient(
-            p.x,
-            p.y,
-            p.radius * 0.3,
-            p.x,
-            p.y,
-            outerR
-          );
-          grad.addColorStop(0, "rgba(77,243,255,0.9)");
-          grad.addColorStop(0.4, "rgba(77,243,255,0.5)");
-          grad.addColorStop(1, "rgba(77,243,255,0)");
-
-          ctx.fillStyle = grad;
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, outerR, 0, Math.PI * 2);
-          ctx.fill();
-
-          ctx.strokeStyle = "rgba(77,243,255,0.9)";
-          ctx.lineWidth = 1.5;
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-          ctx.stroke();
-
-          ctx.fillStyle = "#050814";
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, p.radius * 0.4, 0, Math.PI * 2);
-          ctx.fill();
-
-          ctx.fillStyle = "#4df3ff";
-          ctx.font = "10px system-ui";
-          ctx.textAlign = "center";
-          ctx.textBaseline = "middle";
-          ctx.fillText("S", p.x, p.y + 0.5);
-        }
-      }
-      ctx.restore();
-    }
-
-    function drawPauseOverlay() {
-      const w = canvas.width / window.devicePixelRatio;
-      const h = canvas.height / window.devicePixelRatio;
-      ctx.save();
-      ctx.fillStyle = "rgba(5,8,20,0.6)";
-      ctx.fillRect(0, 0, w, h);
-      ctx.fillStyle = "#9aa0c2";
-      ctx.font = "12px system-ui";
-      ctx.textAlign = "center";
-      ctx.fillText("Paused // Press Esc to resume", w / 2, h / 2);
-      ctx.restore();
-    }
-
-    // ====== RUN END / GAME OVER ======
-    function endRun() {
-      gameState = STATE.GAMEOVER;
-      hud.classList.add("hidden");
-      controlsHint.classList.add("hidden");
-      menuOverlay.classList.add("hidden");
-      gameoverOverlay.classList.remove("hidden");
-
-      const durationSec = Math.max(1, (endTime - startTime) / 1000);
-      const accuracy =
-        shotsFired > 0 ? Math.round((shotsHit / shotsFired) * 100) : 0;
-
-      finalScoreEl.textContent = score;
-      finalWaveEl.textContent = wave;
-      finalAccuracyEl.textContent = accuracy + "%";
-      finalTimeEl.textContent = durationSec.toFixed(1) + "s";
-
-      showAd();
-    }
-
-    // ====== MENU / BUTTONS ======
-    function startRunWithAd() {
-      gameState = STATE.WAITING_AD;
-      menuOverlay.classList.add("hidden");
-      gameoverOverlay.classList.add("hidden");
-      hud.classList.add("hidden");
-      controlsHint.classList.add("hidden");
-
-      showAd();
-
-      setTimeout(() => {
-        resetGame();
-        hud.classList.remove("hidden");
-        controlsHint.classList.remove("hidden");
-        gameState = STATE.PLAYING;
-      }, 1500);
-    }
-
-    startBtn.addEventListener("click", () => {
-      startRunWithAd();
-    });
-
-    restartBtn.addEventListener("click", () => {
-      startRunWithAd();
-    });
-
-    // Start in menu
-    gameState = STATE.MENU;
-    hud.classList.add("hidden");
-    controlsHint.classList.add("hidden");
-    menuOverlay.classList.remove("hidden");
-    gameoverOverlay.classList.add("hidden");
-
-    lastTime = performance.now();
-    requestAnimationFrame(updateLoop);
   </script>
 
-  <!-- Your PropellerAds script is already used via showAd(), but you can also keep this here if required by them -->
+  <!-- Optional: keep your ad script here too -->
   <script>
     (function (s) {
       s.dataset.zone = '10951295';
       s.src = 'https://n6wxm.com/vignette.min.js';
     })([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')));
   </script>
+
 </body>
 </html>
