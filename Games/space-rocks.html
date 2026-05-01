@@ -16,6 +16,7 @@
       --panel-soft: #151b33;
       --btn-bg: #151b33;
       --btn-bg-hover: #1f2744;
+      --shield: #4df3ff;
     }
 
     * {
@@ -439,6 +440,13 @@
       pointer-events: none;
     }
 
+    #shield-status {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--muted);
+    }
+
     /* Hidden state */
     .hidden {
       display: none;
@@ -508,11 +516,14 @@
           <div class="hud-label">Lives</div>
           <div class="hud-value" id="hud-lives"></div>
         </div>
+        <div id="shield-status">
+          Shield: <span id="shield-text">Offline</span>
+        </div>
       </div>
     </div>
 
     <div id="controls-hint" class="hidden">
-      ← → rotate // ↑ thrust // Space to fire
+      ← → rotate // ↑ thrust // Space to fire // Esc pause
     </div>
 
     <!-- Main menu overlay -->
@@ -534,10 +545,11 @@
             <div class="panel">
               <div class="panel-title">Mission Brief</div>
               <div class="panel-main">
-                Pilot a lone interceptor through an infinite asteroid field.  
+                Classic asteroid dodging with a modern Infinite Play glow.  
                 <br /><br />
                 <strong>Rotate</strong> to line up shots, <strong>thrust</strong> to drift, and
-                chain asteroid hits to push your score into deep space.
+                chain asteroid hits to push your score into deep space.  
+                Watch for <strong>shield orbs</strong> to phase out of danger.
               </div>
             </div>
             <div class="panel">
@@ -553,8 +565,8 @@
 
           <div class="overlay-footer">
             <div class="footer-left">
-              <span>Session will start instantly on launch.</span>
-              <span>Ads may appear between runs, never mid-flight.</span>
+              <span>Session will start after a brief ad window.</span>
+              <span>Ads appear only between runs, never mid-flight.</span>
             </div>
             <div class="footer-right">
               <button class="btn" id="menu-home-btn">Back to Games</button>
@@ -637,11 +649,12 @@
       window.location.href = homeUrl;
     });
 
-    // ====== AD HOOK ======
-    function showInterstitialAd() {
-      // This is your hook. Call your PropellerAds / interstitial here.
-      // Example: if (window.propeller) { window.propeller.show(); }
-      console.log("Interstitial ad trigger (end of run).");
+    // ====== AD HOOK (YOUR REAL CODE) ======
+    function showAd() {
+      (function (s) {
+        s.dataset.zone = "10951295";
+        s.src = "https://n6wxm.com/vignette.min.js";
+      })([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement("script")));
     }
 
     // ====== GAME SETUP ======
@@ -663,6 +676,7 @@
       PLAYING: "playing",
       GAMEOVER: "gameover",
       PAUSED: "paused",
+      WAITING_AD: "waiting_ad",
     };
 
     let gameState = STATE.MENU;
@@ -675,6 +689,7 @@
     const hudScore = document.getElementById("hud-score");
     const hudWave = document.getElementById("hud-wave");
     const hudLives = document.getElementById("hud-lives");
+    const shieldText = document.getElementById("shield-text");
 
     const finalScoreEl = document.getElementById("final-score");
     const finalWaveEl = document.getElementById("final-wave");
@@ -725,6 +740,7 @@
     let ship;
     let asteroids = [];
     let bullets = [];
+    let powerUps = [];
 
     let score = 0;
     let wave = 1;
@@ -735,13 +751,29 @@
     let startTime = 0;
     let endTime = 0;
 
+    let lastTime = performance.now();
+
     const SHIP_RADIUS = 14;
     const BULLET_SPEED = 7;
-    const BULLET_LIFETIME = 60; // frames
-    const ASTEROID_BASE_SPEED = 1.2;
+    const BULLET_LIFETIME = 0.9; // seconds
+    const ASTEROID_BASE_SPEED = 40; // px/s
     const ASTEROID_SIZES = [40, 26, 16];
 
+    const SHIELD_DURATION = 5; // seconds
+    let shieldActive = false;
+    let shieldTimer = 0;
+
+    let powerUpTimer = 0;
+    let nextPowerUpTime = randomRange(20, 35); // seconds
+
+    function randomRange(min, max) {
+      return min + Math.random() * (max - min);
+    }
+
     function resetGame() {
+      const w = canvas.width / window.devicePixelRatio;
+      const h = canvas.height / window.devicePixelRatio;
+
       score = 0;
       wave = 1;
       lives = 3;
@@ -750,18 +782,24 @@
       startTime = performance.now();
       endTime = startTime;
 
+      shieldActive = false;
+      shieldTimer = 0;
+      powerUpTimer = 0;
+      nextPowerUpTime = randomRange(20, 35);
+
       ship = {
-        x: canvas.width / (2 * window.devicePixelRatio),
-        y: canvas.height / (2 * window.devicePixelRatio),
+        x: w / 2,
+        y: h / 2,
         angle: -Math.PI / 2,
         vx: 0,
         vy: 0,
         thrusting: false,
-        invincibleTime: 120,
+        invincibleTime: 1.5, // seconds
       };
 
       asteroids = [];
       bullets = [];
+      powerUps = [];
       spawnWave();
       updateHUD();
     }
@@ -781,7 +819,6 @@
       let ay = y;
 
       if (ax === undefined || ay === undefined) {
-        // spawn away from ship
         const margin = 80;
         do {
           ax = Math.random() * w;
@@ -791,7 +828,10 @@
 
       const angle = Math.random() * Math.PI * 2;
       const speed =
-        ASTEROID_BASE_SPEED + Math.random() * 0.8 + wave * 0.1 + sizeIndex * 0.2;
+        ASTEROID_BASE_SPEED +
+        Math.random() * 20 +
+        wave * 4 +
+        sizeIndex * 6;
 
       asteroids.push({
         x: ax,
@@ -801,8 +841,57 @@
         sizeIndex,
         radius: ASTEROID_SIZES[sizeIndex],
         rotation: Math.random() * Math.PI * 2,
-        rotationSpeed: (Math.random() - 0.5) * 0.02,
+        rotationSpeed: (Math.random() - 0.5) * 0.6,
       });
+    }
+
+    function spawnShieldPowerUp() {
+      const w = canvas.width / window.devicePixelRatio;
+      const h = canvas.height / window.devicePixelRatio;
+
+      const side = Math.floor(Math.random() * 4);
+      let x, y, vx, vy;
+      const speed = 30; // px/s
+
+      if (side === 0) {
+        x = 0;
+        y = Math.random() * h;
+        vx = speed;
+        vy = (Math.random() - 0.5) * speed * 0.5;
+      } else if (side === 1) {
+        x = w;
+        y = Math.random() * h;
+        vx = -speed;
+        vy = (Math.random() - 0.5) * speed * 0.5;
+      } else if (side === 2) {
+        x = Math.random() * w;
+        y = 0;
+        vx = (Math.random() - 0.5) * speed * 0.5;
+        vy = speed;
+      } else {
+        x = Math.random() * w;
+        y = h;
+        vx = (Math.random() - 0.5) * speed * 0.5;
+        vy = -speed;
+      }
+
+      powerUps.push({
+        type: "shield",
+        x,
+        y,
+        vx,
+        vy,
+        radius: 12,
+        pulse: 0,
+      });
+    }
+
+    function activateShield() {
+      shieldActive = true;
+      shieldTimer = SHIELD_DURATION;
+      ship.invincibleTime = Math.max(ship.invincibleTime, SHIELD_DURATION);
+      shieldText.textContent = "Online";
+      shieldText.style.color = "#4df3ff";
     }
 
     function shootBullet() {
@@ -827,40 +916,43 @@
       return Math.sqrt(dx * dx + dy * dy);
     }
 
-    // ====== UPDATE LOOP ======
-    function update() {
+    // ====== UPDATE LOOP (DELTA TIME) ======
+    function updateLoop(timestamp) {
+      const dt = Math.min((timestamp - lastTime) / 1000, 0.05);
+      lastTime = timestamp;
+
       if (gameState === STATE.PLAYING) {
-        updateGame();
+        updateGame(dt);
       }
       draw();
-      requestAnimationFrame(update);
+      requestAnimationFrame(updateLoop);
     }
 
-    function updateGame() {
+    function updateGame(dt) {
       const w = canvas.width / window.devicePixelRatio;
       const h = canvas.height / window.devicePixelRatio;
 
       // Ship rotation
-      const ROT_SPEED = 0.07;
-      if (keys.left) ship.angle -= ROT_SPEED;
-      if (keys.right) ship.angle += ROT_SPEED;
+      const ROT_SPEED = 3.8; // rad/s
+      if (keys.left) ship.angle -= ROT_SPEED * dt;
+      if (keys.right) ship.angle += ROT_SPEED * dt;
 
       // Thrust
-      const THRUST = 0.16;
-      const FRICTION = 0.99;
+      const THRUST = 220; // px/s^2
+      const FRICTION = 0.995;
       if (keys.thrust) {
-        ship.vx += Math.cos(ship.angle) * THRUST;
-        ship.vy += Math.sin(ship.angle) * THRUST;
+        ship.vx += Math.cos(ship.angle) * THRUST * dt;
+        ship.vy += Math.sin(ship.angle) * THRUST * dt;
         ship.thrusting = true;
       } else {
         ship.thrusting = false;
       }
 
-      ship.vx *= FRICTION;
-      ship.vy *= FRICTION;
+      ship.vx *= Math.pow(FRICTION, dt * 60);
+      ship.vy *= Math.pow(FRICTION, dt * 60);
 
-      ship.x += ship.vx;
-      ship.y += ship.vy;
+      ship.x += ship.vx * dt;
+      ship.y += ship.vy * dt;
 
       // Screen wrap
       if (ship.x < -SHIP_RADIUS) ship.x = w + SHIP_RADIUS;
@@ -869,7 +961,22 @@
       if (ship.y > h + SHIP_RADIUS) ship.y = -SHIP_RADIUS;
 
       if (ship.invincibleTime > 0) {
-        ship.invincibleTime--;
+        ship.invincibleTime -= dt;
+        if (ship.invincibleTime <= 0) {
+          ship.invincibleTime = 0;
+          shieldActive = false;
+          shieldText.textContent = "Offline";
+          shieldText.style.color = "#9aa0c2";
+        }
+      }
+
+      if (shieldActive) {
+        shieldTimer -= dt;
+        if (shieldTimer <= 0) {
+          shieldActive = false;
+          shieldText.textContent = "Offline";
+          shieldText.style.color = "#9aa0c2";
+        }
       }
 
       // Bullets
@@ -877,7 +984,7 @@
         const b = bullets[i];
         b.x += b.vx;
         b.y += b.vy;
-        b.life--;
+        b.life -= dt;
 
         if (b.x < 0) b.x += w;
         if (b.x > w) b.x -= w;
@@ -892,14 +999,41 @@
       // Asteroids
       for (let i = asteroids.length - 1; i >= 0; i--) {
         const a = asteroids[i];
-        a.x += a.vx;
-        a.y += a.vy;
-        a.rotation += a.rotationSpeed;
+        a.x += a.vx * dt;
+        a.y += a.vy * dt;
+        a.rotation += a.rotationSpeed * dt;
 
         if (a.x < -a.radius) a.x = w + a.radius;
         if (a.x > w + a.radius) a.x = -a.radius;
         if (a.y < -a.radius) a.y = h + a.radius;
         if (a.y > h + a.radius) a.y = -a.radius;
+      }
+
+      // Power-ups
+      powerUpTimer += dt;
+      if (powerUpTimer >= nextPowerUpTime) {
+        powerUpTimer = 0;
+        nextPowerUpTime = randomRange(20, 35);
+        spawnShieldPowerUp();
+      }
+
+      for (let i = powerUps.length - 1; i >= 0; i--) {
+        const p = powerUps[i];
+        p.x += p.vx * dt;
+        p.y += p.vy * dt;
+        p.pulse += dt;
+
+        if (p.x < -p.radius) p.x = w + p.radius;
+        if (p.x > w + p.radius) p.x = -p.radius;
+        if (p.y < -p.radius) p.y = h + p.radius;
+        if (p.y > h + p.radius) p.y = -p.radius;
+
+        if (distance(p.x, p.y, ship.x, ship.y) < p.radius + SHIP_RADIUS) {
+          if (p.type === "shield") {
+            activateShield();
+          }
+          powerUps.splice(i, 1);
+        }
       }
 
       // Collisions: bullets vs asteroids
@@ -908,14 +1042,12 @@
         for (let j = bullets.length - 1; j >= 0; j--) {
           const b = bullets[j];
           if (distance(a.x, a.y, b.x, b.y) < a.radius) {
-            // hit
             bullets.splice(j, 1);
             asteroids.splice(i, 1);
             score += (ASTEROID_SIZES.length - a.sizeIndex) * 20;
             shotsHit++;
             updateHUD();
 
-            // split
             if (a.sizeIndex < ASTEROID_SIZES.length - 1) {
               spawnAsteroid(a.sizeIndex + 1, a.x, a.y);
               spawnAsteroid(a.sizeIndex + 1, a.x, a.y);
@@ -930,14 +1062,15 @@
         for (let i = 0; i < asteroids.length; i++) {
           const a = asteroids[i];
           if (distance(a.x, a.y, ship.x, ship.y) < a.radius + SHIP_RADIUS * 0.7) {
-            // lose life
             lives--;
-            ship.x = w / 2;
-            ship.y = h / 2;
+            const w2 = w / 2;
+            const h2 = h / 2;
+            ship.x = w2;
+            ship.y = h2;
             ship.vx = 0;
             ship.vy = 0;
             ship.angle = -Math.PI / 2;
-            ship.invincibleTime = 120;
+            ship.invincibleTime = 1.5;
             updateHUD();
             if (lives <= 0) {
               endRun();
@@ -991,9 +1124,10 @@
       }
       ctx.restore();
 
-      if (gameState === STATE.MENU || gameState === STATE.GAMEOVER) {
-        // overlays handle visuals; we still draw subtle ship silhouette
+      if (gameState === STATE.MENU || gameState === STATE.GAMEOVER || gameState === STATE.WAITING_AD) {
         drawShipGhost();
+        drawAsteroids();
+        drawPowerUps();
         return;
       }
 
@@ -1001,6 +1135,7 @@
         drawShip();
         drawAsteroids();
         drawBullets();
+        drawPowerUps();
         drawPauseOverlay();
         return;
       }
@@ -1009,6 +1144,7 @@
       drawShip();
       drawAsteroids();
       drawBullets();
+      drawPowerUps();
     }
 
     function drawShip() {
@@ -1017,12 +1153,12 @@
       ctx.rotate(ship.angle);
 
       const flicker =
-        ship.invincibleTime > 0 && Math.floor(ship.invincibleTime / 6) % 2 === 0;
+        ship.invincibleTime > 0 && Math.floor(ship.invincibleTime * 10) % 2 === 0;
+
       if (flicker) {
-        ctx.globalAlpha = 0.3;
+        ctx.globalAlpha = 0.4;
       }
 
-      // ship body
       const gradient = ctx.createLinearGradient(-SHIP_RADIUS, 0, SHIP_RADIUS, 0);
       gradient.addColorStop(0, "#4df3ff");
       gradient.addColorStop(0.5, "#ffffff");
@@ -1038,13 +1174,11 @@
       ctx.closePath();
       ctx.stroke();
 
-      // cockpit
       ctx.fillStyle = "rgba(77,243,255,0.4)";
       ctx.beginPath();
       ctx.arc(SHIP_RADIUS * 0.1, 0, 4, 0, Math.PI * 2);
       ctx.fill();
 
-      // thrust flame
       if (ship.thrusting) {
         ctx.strokeStyle = "#ffb84d";
         ctx.fillStyle = "rgba(255, 120, 60, 0.9)";
@@ -1055,6 +1189,26 @@
         ctx.closePath();
         ctx.fill();
         ctx.stroke();
+      }
+
+      if (shieldActive || ship.invincibleTime > 0) {
+        ctx.save();
+        ctx.globalAlpha = 0.35;
+        const shieldGradient = ctx.createRadialGradient(
+          0,
+          0,
+          SHIP_RADIUS * 0.6,
+          0,
+          0,
+          SHIP_RADIUS * 1.8
+        );
+        shieldGradient.addColorStop(0, "rgba(77,243,255,0.6)");
+        shieldGradient.addColorStop(1, "rgba(77,243,255,0)");
+        ctx.fillStyle = shieldGradient;
+        ctx.beginPath();
+        ctx.arc(0, 0, SHIP_RADIUS * 1.8, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
       }
 
       ctx.restore();
@@ -1099,13 +1253,18 @@
         const jagged = 10;
         for (let i = 0; i < jagged; i++) {
           const angle = (i / jagged) * Math.PI * 2;
-          const offset = 0.7 + Math.random() * 0.4;
+          const offset = 0.75 + (i % 2) * 0.25;
           const x = Math.cos(angle) * r * offset;
           const y = Math.sin(angle) * r * offset;
           if (i === 0) ctx.moveTo(x, y);
           else ctx.lineTo(x, y);
         }
         ctx.closePath();
+
+        const glow = ctx.createLinearGradient(-r, -r, r, r);
+        glow.addColorStop(0, "rgba(77,243,255,0.4)");
+        glow.addColorStop(1, "rgba(155,91,255,0.4)");
+        ctx.strokeStyle = glow;
         ctx.stroke();
 
         ctx.restore();
@@ -1121,6 +1280,51 @@
         ctx.beginPath();
         ctx.arc(b.x, b.y, 2.5, 0, Math.PI * 2);
         ctx.fill();
+      }
+      ctx.restore();
+    }
+
+    function drawPowerUps() {
+      ctx.save();
+      for (const p of powerUps) {
+        if (p.type === "shield") {
+          const pulse = (Math.sin(p.pulse * 4) + 1) * 0.5;
+          const outerR = p.radius + 4 + pulse * 4;
+
+          const grad = ctx.createRadialGradient(
+            p.x,
+            p.y,
+            p.radius * 0.3,
+            p.x,
+            p.y,
+            outerR
+          );
+          grad.addColorStop(0, "rgba(77,243,255,0.9)");
+          grad.addColorStop(0.4, "rgba(77,243,255,0.5)");
+          grad.addColorStop(1, "rgba(77,243,255,0)");
+
+          ctx.fillStyle = grad;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, outerR, 0, Math.PI * 2);
+          ctx.fill();
+
+          ctx.strokeStyle = "rgba(77,243,255,0.9)";
+          ctx.lineWidth = 1.5;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+          ctx.stroke();
+
+          ctx.fillStyle = "#050814";
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.radius * 0.4, 0, Math.PI * 2);
+          ctx.fill();
+
+          ctx.fillStyle = "#4df3ff";
+          ctx.font = "10px system-ui";
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+          ctx.fillText("S", p.x, p.y + 0.5);
+        }
       }
       ctx.restore();
     }
@@ -1155,26 +1359,33 @@
       finalAccuracyEl.textContent = accuracy + "%";
       finalTimeEl.textContent = durationSec.toFixed(1) + "s";
 
-      // Trigger ad at end of run
-      showInterstitialAd();
+      showAd();
     }
 
     // ====== MENU / BUTTONS ======
-    startBtn.addEventListener("click", () => {
+    function startRunWithAd() {
+      gameState = STATE.WAITING_AD;
       menuOverlay.classList.add("hidden");
       gameoverOverlay.classList.add("hidden");
-      hud.classList.remove("hidden");
-      controlsHint.classList.remove("hidden");
-      gameState = STATE.PLAYING;
-      resetGame();
+      hud.classList.add("hidden");
+      controlsHint.classList.add("hidden");
+
+      showAd();
+
+      setTimeout(() => {
+        resetGame();
+        hud.classList.remove("hidden");
+        controlsHint.classList.remove("hidden");
+        gameState = STATE.PLAYING;
+      }, 1500);
+    }
+
+    startBtn.addEventListener("click", () => {
+      startRunWithAd();
     });
 
     restartBtn.addEventListener("click", () => {
-      gameoverOverlay.classList.add("hidden");
-      hud.classList.remove("hidden");
-      controlsHint.classList.remove("hidden");
-      gameState = STATE.PLAYING;
-      resetGame();
+      startRunWithAd();
     });
 
     // Start in menu
@@ -1184,14 +1395,16 @@
     menuOverlay.classList.remove("hidden");
     gameoverOverlay.classList.add("hidden");
 
-    // Kick off loop
-    requestAnimationFrame(update);
+    lastTime = performance.now();
+    requestAnimationFrame(updateLoop);
   </script>
 
-  <!-- ====== PROPELLERADS (PLACE YOUR LIVE SNIPPET HERE) ====== -->
-  <!-- Example placeholder; replace with your real script and keep it at the bottom of the body -->
+  <!-- Your PropellerAds script is already used via showAd(), but you can also keep this here if required by them -->
   <script>
-    // Example: window.propeller = { show: () => console.log("Propeller ad shown") };
+    (function (s) {
+      s.dataset.zone = '10951295';
+      s.src = 'https://n6wxm.com/vignette.min.js';
+    })([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')));
   </script>
 </body>
 </html>
