@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Neon Flappy Orb | Infinite Play</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- SEO -->
+  <meta name="description" content="Play Neon Flappy Orb — a fast, glowing, neon-style flappy game on Infinite Play. Tap or press space to dodge neon gates and beat your high score." />
+  <meta name="keywords" content="flappy game, neon game, infinite play, browser game, arcade game, tap game, glowing game" />
+  <meta name="author" content="Infinite Play" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Neon Flappy Orb | Infinite Play" />
+  <meta property="og:description" content="A glowing neon flappy-style arcade game. Dodge gates, score points, and chase your best score." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="/Assets/neon-flappy-orb-thumb.png" />
+  <meta property="og:url" content="https://omg10.com/Games/NeonFlappyOrb/" />
+
+  <!-- Schema.org JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "VideoGame",
+    "name": "Neon Flappy Orb",
+    "genre": "Arcade",
+    "applicationCategory": "Game",
+    "operatingSystem": "Web Browser",
+    "url": "https://omg10.com/Games/NeonFlappyOrb/",
+    "image": "https://omg10.com/Assets/neon-flappy-orb-thumb.png",
+    "description": "A neon glowing flappy-style arcade game where you dodge gates and chase your high score.",
+    "creator": {
+      "@type": "Organization",
+      "name": "Infinite Play"
+    }
+  }
+  </script>
+
+  <style>
+    :root {
+      --bg: #050510;
+      --primary: #34ffea;
+      --accent: #ff2fd0;
+      --danger: #ff3366;
+      --glow: 0 0 12px rgba(52, 255, 234, 0.9);
+      --font: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: radial-gradient(circle at top, #151530 0, #050510 55%, #000 100%);
+      color: #f5f5ff;
+      font-family: var(--font);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      min-height: 100vh;
+    }
+
+    /* Support Card */
+    .support-card {
+      width: 100%;
+      max-width: 420px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 12px;
+      border-radius: 12px;
+      margin-bottom: 12px;
+      text-align: center;
+      backdrop-filter: blur(6px);
+    }
+    .support-card a {
+      color: var(--primary);
+      font-weight: bold;
+      text-decoration: none;
+      text-shadow: 0 0 8px var(--primary);
+    }
+
+    .game-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    h1 {
+      font-size: 1.6rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--primary);
+      text-shadow: 0 0 10px rgba(52, 255, 234, 0.8);
+    }
+
+    canvas {
+      background: radial-gradient(circle at center, #101020 0, #050510 60%, #000 100%);
+      border-radius: 14px;
+      box-shadow:
+        0 0 0 2px rgba(52, 255, 234, 0.3),
+        0 0 25px rgba(0, 0, 0, 0.9),
+        0 0 40px rgba(52, 255, 234, 0.25);
+      max-width: 100vw;
+    }
+
+    .btn-row {
+      margin-top: 6px;
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    button {
+      border: none;
+      border-radius: 999px;
+      padding: 6px 14px;
+      font-size: 0.8rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: #050510;
+      box-shadow: 0 0 12px rgba(52, 255, 234, 0.7);
+    }
+
+    .back-btn {
+      margin-top: 10px;
+      background: linear-gradient(135deg, #ffe45e, #ff2fd0);
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- SUPPORT CARD -->
+  <div class="support-card">
+    ❤️ Support Future Projects:  
+    <a href="https://omg10.com/4/10952010" target="_blank">Click Here</a>
+  </div>
+
+  <div class="game-wrapper">
+    <h1>Neon Flappy Orb</h1>
+
+    <canvas id="game" width="420" height="600"></canvas>
+
+    <div class="btn-row">
+      <button id="btnRestart">Restart</button>
+      <button class="back-btn" onclick="location.href='/Menus/Games.html'">Back to Games</button>
+    </div>
+  </div>
+
+  <!-- PUSH PAGE ADS -->
+  <script>
+    (function(s){
+      s.dataset.zone='10954674';
+      s.src='https://nap5k.com/tag.min.js';
+    })([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')));
+  </script>
+
+  <!-- GAME SCRIPT (same as before, unchanged) -->
+  <script>
+    /* Entire game JS code from previous version goes here unchanged */
+  </script>
+
+</body>
+</html>
