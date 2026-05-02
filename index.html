@@ -11,6 +11,16 @@
     <title>Infinite Play – Home</title>
     <link rel="icon" type="image/png" href="Copilot_20260430_082824 (1).png">
 
+    <!-- PROPELLERADS MULTI-TAG -->
+    <script>
+        (function(s,u,b,i,z){
+            z = s.createElement('script');
+            z.src = 'https://n6wxm.com/vignette.min.js';
+            z.dataset.zone = '10952010';
+            (s.head || s.body).appendChild(z);
+        })(document);
+    </script>
+
     <style>
         body {
             background: #111;
@@ -22,6 +32,42 @@
             justify-content: center;
         }
 
+        /* SUPPORT CARD */
+        .support-card {
+            position: fixed;
+            top: 120px;
+            left: 10px;
+            width: 220px;
+            background: #1b1b1b;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 15px;
+            z-index: 9999;
+            text-align: center;
+            box-shadow: 0 0 12px rgba(0,0,0,0.6);
+            animation: fadeIn 0.8s ease-out;
+        }
+        .support-card h3 {
+            margin: 0 0 10px;
+            font-size: 18px;
+        }
+        .support-btn {
+            display: inline-block;
+            padding: 10px 14px;
+            background: #222;
+            color: white;
+            border-radius: 8px;
+            text-decoration: none;
+            border: 2px solid #444;
+            transition: 0.25s ease;
+        }
+        .support-btn:hover {
+            background: #333;
+            border-color: #7a2cff;
+            transform: scale(1.07);
+            box-shadow: 0 0 15px #7a2cff;
+        }
+
         .page-wrapper {
             width: 100%;
             max-width: 1200px;
@@ -29,6 +75,7 @@
             justify-content: center;
             position: relative;
             padding-top: 40px;
+            animation: fadeIn 0.6s ease-out;
         }
 
         .ad-left, .ad-right {
@@ -40,6 +87,7 @@
             position: absolute;
             top: 40px;
             padding: 5px;
+            animation: fadeInUp 0.6s ease-out;
         }
         .ad-left { left: -180px; }
         .ad-right { right: -180px; }
@@ -52,11 +100,14 @@
             border-radius: 10px;
             box-shadow: 0 0 15px rgba(0,0,0,0.7);
             text-align: center;
+            animation: fadeInUp 0.6s ease-out;
         }
 
         h1 {
             font-size: 40px;
             margin-bottom: 20px;
+            text-shadow: 0 0 10px #7a2cff;
+            animation: glowPulse 2.5s infinite ease-in-out;
         }
 
         .menu-btn {
@@ -85,16 +136,43 @@
             margin-top: 40px;
             width: 200px;
             opacity: 0.95;
+            animation: fadeIn 1s ease-out;
         }
 
         @media (max-width: 1000px) {
             .ad-left, .ad-right {
                 display: none;
             }
+            .support-card {
+                display: none;
+            }
+        }
+
+        /* ANIMATIONS */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes glowPulse {
+            0% { text-shadow: 0 0 5px #7a2cff; }
+            50% { text-shadow: 0 0 20px #7a2cff; }
+            100% { text-shadow: 0 0 5px #7a2cff; }
         }
     </style>
 </head>
 <body>
+
+<!-- SUPPORT CARD -->
+<div class="support-card">
+    <h3>Support Future Projects</h3>
+    <a href="https://omg10.com/4/10952010" class="support-btn" target="_blank">
+        Support Infinite Play
+    </a>
+</div>
 
 <div class="page-wrapper">
 
