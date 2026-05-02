@@ -5,6 +5,30 @@
   <title>Life Sim — InfinitePlayGames</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+  <!-- SEO TAGS -->
+  <meta name="description" content="Life Sim — grow from age 3 to adulthood, build a career, start a family, buy homes, and shape your destiny in this free browser life simulator.">
+  <meta name="keywords" content="life simulator, life sim game, infiniteplaygames, browser sim, free life game, grow up game, life choices game">
+  <meta name="robots" content="index, follow">
+
+  <!-- SCHEMA.ORG JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "VideoGame",
+    "name": "Life Sim",
+    "url": "https://infiniteplaygames.github.io/Games/LifeSim/life-sim.html",
+    "image": "https://infiniteplaygames.github.io/Assets/lifesim-thumb.png",
+    "author": {
+      "@type": "Organization",
+      "name": "InfinitePlayGames"
+    },
+    "description": "A browser-based life simulator where you grow from age 3 to adulthood, build a career, start a family, and shape your destiny.",
+    "genre": "Simulation",
+    "operatingSystem": "Web Browser",
+    "applicationCategory": "Game"
+  }
+  </script>
+
   <style>
     body {
       background: #050816;
@@ -81,12 +105,6 @@
       box-shadow: 0 0 10px #6366f155;
       transform: translateY(-1px);
     }
-    button.choice:disabled {
-      opacity: 0.4;
-      cursor: default;
-      box-shadow: none;
-      transform: none;
-    }
     .log-content {
       max-height: 260px;
       overflow-y: auto;
@@ -102,59 +120,47 @@
       font-weight: 600;
       margin-right: 4px;
     }
-    .game-over {
-      color: #f97373;
-      font-weight: 700;
-      margin-top: 10px;
+    .back-btn {
+      display: inline-block;
+      margin-bottom: 15px;
+      background: #1d243b;
+      padding: 10px 14px;
+      border-radius: 6px;
+      color: #e5e7eb;
+      text-decoration: none;
+      border: 1px solid #374151;
+      transition: 0.15s;
+    }
+    .back-btn:hover {
+      background: #273152;
+      box-shadow: 0 0 10px #6366f155;
     }
   </style>
 </head>
+
 <body>
+
+<!-- GLOBAL INFINITEPLAY AD LOADER -->
+<script src="/Ads/adloader.js"></script>
+
 <div class="container">
+
+  <a href="/Menus/Games.html" class="back-btn">← Back to Games Menu</a>
+
   <h1>Life Sim — InfinitePlayGames</h1>
 
   <div class="stats">
     <div class="stats-row">
-      <div class="stat">
-        <div class="label">Age</div>
-        <div class="value" id="age"></div>
-      </div>
-      <div class="stat">
-        <div class="label">Money</div>
-        <div class="value" id="money"></div>
-      </div>
-      <div class="stat">
-        <div class="label">Health</div>
-        <div class="value" id="health"></div>
-      </div>
-      <div class="stat">
-        <div class="label">Happiness</div>
-        <div class="value" id="happiness"></div>
-      </div>
-      <div class="stat">
-        <div class="label">Hunger</div>
-        <div class="value" id="hunger"></div>
-      </div>
-      <div class="stat">
-        <div class="label">Education</div>
-        <div class="value" id="education"></div>
-      </div>
-      <div class="stat">
-        <div class="label">Job</div>
-        <div class="value" id="job"></div>
-      </div>
-      <div class="stat">
-        <div class="label">Relationship</div>
-        <div class="value" id="relationship"></div>
-      </div>
-      <div class="stat">
-        <div class="label">Home</div>
-        <div class="value" id="home"></div>
-      </div>
-      <div class="stat">
-        <div class="label">Children</div>
-        <div class="value" id="children"></div>
-      </div>
+      <div class="stat"><div class="label">Age</div><div class="value" id="age"></div></div>
+      <div class="stat"><div class="label">Money</div><div class="value" id="money"></div></div>
+      <div class="stat"><div class="label">Health</div><div class="value" id="health"></div></div>
+      <div class="stat"><div class="label">Happiness</div><div class="value" id="happiness"></div></div>
+      <div class="stat"><div class="label">Hunger</div><div class="value" id="hunger"></div></div>
+      <div class="stat"><div class="label">Education</div><div class="value" id="education"></div></div>
+      <div class="stat"><div class="label">Job</div><div class="value" id="job"></div></div>
+      <div class="stat"><div class="label">Relationship</div><div class="value" id="relationship"></div></div>
+      <div class="stat"><div class="label">Home</div><div class="value" id="home"></div></div>
+      <div class="stat"><div class="label">Children</div><div class="value" id="children"></div></div>
     </div>
   </div>
 
@@ -166,106 +172,88 @@
   <div class="log">
     <h2>Life Log</h2>
     <div class="log-content" id="log"></div>
-    <div class="game-over" id="gameOver"></div>
   </div>
+
 </div>
 
 <script>
   const state = {
     age: 3,
     money: 0,
-    health: 80,
-    happiness: 70,
-    hunger: 60, // 0 = starving, 100 = full
-    educationLevel: 0, // 0 none, 1 school, 2 high school, 3 college
+    health: 90,
+    happiness: 80,
+    hunger: 80,
+    educationLevel: 0,
     job: null,
     relationshipStatus: "Single",
     partner: null,
     children: [],
     home: "Living with family",
-    alive: true,
-    year: 1
+    alive: true
   };
 
   const logEl = document.getElementById("log");
   const choiceListEl = document.getElementById("choiceList");
-  const gameOverEl = document.getElementById("gameOver");
 
-  function log(message) {
-    const entry = document.createElement("div");
-    entry.className = "log-entry";
-    entry.innerHTML = `<span class="year-label">Age ${state.age}:</span> ${message}`;
-    logEl.prepend(entry);
+  function log(msg) {
+    const div = document.createElement("div");
+    div.className = "log-entry";
+    div.innerHTML = `<span class="year-label">Age ${state.age}:</span> ${msg}`;
+    logEl.prepend(div);
   }
 
-  function clamp(val, min, max) {
-    return Math.max(min, Math.min(max, val));
+  function clamp(v, min, max) {
+    return Math.max(min, Math.min(max, v));
   }
 
-  function updateStatsUI() {
+  function updateUI() {
     document.getElementById("age").textContent = state.age;
-    document.getElementById("money").textContent = `$${state.money.toLocaleString()}`;
-    document.getElementById("health").textContent = `${state.health}/100`;
-    document.getElementById("happiness").textContent = `${state.happiness}/100`;
-    document.getElementById("hunger").textContent = `${state.hunger}/100`;
+    document.getElementById("money").textContent = "$" + state.money;
+    document.getElementById("health").textContent = state.health;
+    document.getElementById("happiness").textContent = state.happiness;
+    document.getElementById("hunger").textContent = state.hunger;
 
-    const eduMap = ["None", "School", "High School", "College"];
-    document.getElementById("education").textContent = eduMap[state.educationLevel] || "None";
+    const edu = ["None", "School", "High School", "College"];
+    document.getElementById("education").textContent = edu[state.educationLevel];
+
     document.getElementById("job").textContent = state.job || "None";
     document.getElementById("relationship").textContent = state.relationshipStatus;
     document.getElementById("home").textContent = state.home;
     document.getElementById("children").textContent = state.children.length;
   }
 
-  function checkLifeStatus() {
-    if (!state.alive) return;
+  function endYear() {
+    state.age++;
+    state.hunger = clamp(state.hunger - 8, 0, 100);
+    state.health = clamp(state.health - (state.hunger < 20 ? 5 : 1), 0, 100);
+
+    if (state.happiness < 20) {
+      state.health = clamp(state.health - 2, 0, 100);
+    }
+
+    if (state.age > 75) {
+      state.health = clamp(state.health - 2, 0, 100);
+    }
 
     if (state.health <= 0 || state.hunger <= 0) {
       state.alive = false;
-      gameOverEl.textContent = "Your life has ended. Refresh the page to start a new life.";
+      log("Your life ended. Refresh to restart.");
       choiceListEl.innerHTML = "";
-      log("Your body couldn’t keep going. Game over.");
-      return;
-    }
-
-    if (state.age >= 100) {
-      state.alive = false;
-      gameOverEl.textContent = "You lived a long life. Refresh to start a new one.";
-      choiceListEl.innerHTML = "";
-      log("You reached old age and passed peacefully.");
     }
   }
 
-  function endOfYearEffects() {
-    // Natural aging effects
-    state.age += 1;
-    state.hunger = clamp(state.hunger - 15, 0, 100);
-    state.health = clamp(state.health - (state.hunger < 30 ? 10 : 2), 0, 100);
-
-    if (state.happiness < 30) {
-      state.health = clamp(state.health - 3, 0, 100);
-    }
-
-    if (state.age > 60) {
-      state.health = clamp(state.health - 3, 0, 100);
-    }
-
-    checkLifeStatus();
-  }
-
-  function addChoice(label, handler, condition = true) {
-    if (!condition) return;
+  function addChoice(label, fn, cond = true) {
+    if (!cond) return;
     const btn = document.createElement("button");
     btn.className = "choice";
     btn.textContent = label;
     btn.onclick = () => {
       if (!state.alive) return;
-      handler();
-      updateStatsUI();
-      checkLifeStatus();
+      fn();
+      updateUI();
       if (state.alive) {
-        endOfYearEffects();
-        updateStatsUI();
+        endYear();
+        updateUI();
         renderChoices();
       }
     };
@@ -274,234 +262,144 @@
 
   function renderChoices() {
     choiceListEl.innerHTML = "";
-
     if (!state.alive) return;
 
-    // Age-based phases
     if (state.age <= 5) {
       addChoice("Play with toys", () => {
-        state.happiness = clamp(state.happiness + 10, 0, 100);
-        state.hunger = clamp(state.hunger - 5, 0, 100);
-        log("You spent the year playing and exploring. Childhood vibes.");
+        state.happiness += 10;
+        state.hunger -= 3;
+        log("You played happily.");
       });
-      addChoice("Stay close to family", () => {
-        state.happiness = clamp(state.happiness + 5, 0, 100);
-        log("You stayed close to family and felt safe.");
+      addChoice("Stay with family", () => {
+        state.happiness += 5;
+        log("You stayed close to family.");
       });
-    } else if (state.age <= 12) {
+    }
+
+    else if (state.age <= 12) {
       addChoice("Go to school", () => {
         state.educationLevel = Math.max(state.educationLevel, 1);
-        state.happiness = clamp(state.happiness - 5, 0, 100);
-        log("You attended school and learned the basics.");
+        state.happiness -= 2;
+        log("You learned new things.");
       });
       addChoice("Play with friends", () => {
-        state.happiness = clamp(state.happiness + 10, 0, 100);
-        state.health = clamp(state.health + 2, 0, 100);
-        log("You played with friends and had a great time.");
+        state.happiness += 12;
+        state.health += 2;
+        log("You had fun with friends.");
       });
-      addChoice("Stay home and chill", () => {
-        state.happiness = clamp(state.happiness + 3, 0, 100);
-        log("You had a quiet year at home.");
+      addChoice("Stay home", () => {
+        state.happiness += 4;
+        log("You relaxed at home.");
       });
-    } else if (state.age <= 18) {
-      addChoice("Focus on school", () => {
+    }
+
+    else if (state.age <= 18) {
+      addChoice("Study hard", () => {
         state.educationLevel = Math.max(state.educationLevel, 2);
-        state.happiness = clamp(state.happiness - 5, 0, 100);
-        log("You focused on your studies and finished high school.");
+        state.happiness -= 3;
+        log("You focused on school.");
       });
       addChoice("Part-time job", () => {
-        const income = 800 + Math.floor(Math.random() * 400);
-        state.money += income;
-        state.happiness = clamp(state.happiness - 3, 0, 100);
-        state.health = clamp(state.health - 2, 0, 100);
-        log(`You worked a part-time job and earned $${income}.`);
+        const pay = 600 + Math.floor(Math.random() * 400);
+        state.money += pay;
+        log("You earned $" + pay);
       });
-      addChoice("Hang out and have fun", () => {
-        state.happiness = clamp(state.happiness + 12, 0, 100);
-        state.money = Math.max(0, state.money - 50);
-        log("You spent the year hanging out and enjoying life.");
+      addChoice("Hang out", () => {
+        state.happiness += 10;
+        state.money -= 20;
+        log("You chilled with friends.");
       });
-    } else {
-      // Adult life
-      addChoice("Look for a job / improve career", () => {
-        if (!state.job) {
-          if (state.educationLevel >= 3) {
-            state.job = "Office Job";
-            log("You landed an office job.");
-          } else if (state.educationLevel >= 2) {
-            state.job = "Retail Job";
-            log("You got a retail job.");
-          } else {
-            state.job = "Basic Labor Job";
-            log("You found a basic labor job.");
-          }
-        } else {
-          const raise = 500 + Math.floor(Math.random() * 500);
-          state.money += raise;
-          log(`You improved at your job and earned a bonus of $${raise}.`);
-        }
-        state.happiness = clamp(state.happiness - 3, 0, 100);
+    }
+
+    else {
+      addChoice("Work", () => {
+        let pay = 2000 + Math.floor(Math.random() * 1500);
+        state.money += pay;
+        state.hunger -= 5;
+        state.happiness -= 1;
+        log("You worked and earned $" + pay);
       });
 
-      addChoice("Work full-time", () => {
-        let income = 0;
-        if (state.job === "Office Job") income = 4000 + Math.floor(Math.random() * 1500);
-        else if (state.job === "Retail Job") income = 2500 + Math.floor(Math.random() * 800);
-        else if (state.job === "Basic Labor Job") income = 2200 + Math.floor(Math.random() * 700);
-        else income = 1500 + Math.floor(Math.random() * 500);
-
-        state.money += income;
-        state.health = clamp(state.health - 5, 0, 100);
-        state.happiness = clamp(state.happiness - 2, 0, 100);
-        state.hunger = clamp(state.hunger - 10, 0, 100);
-        log(`You worked hard this year and earned $${income}.`);
-      });
-
-      addChoice("Take care of yourself (eat, rest, relax)", () => {
+      addChoice("Take care of yourself", () => {
         state.hunger = clamp(state.hunger + 25, 0, 100);
-        state.health = clamp(state.health + 10, 0, 100);
-        state.happiness = clamp(state.happiness + 8, 0, 100);
-        state.money = Math.max(0, state.money - 200);
-        log("You focused on food, rest, and mental wellbeing this year.");
+        state.health = clamp(state.health + 15, 0, 100);
+        state.happiness = clamp(state.happiness + 10, 0, 100);
+        state.money -= 150;
+        log("You rested, ate well, and recovered.");
       });
 
-      addChoice("Study / go to college", () => {
+      addChoice("Study more", () => {
         if (state.educationLevel < 3) {
           state.educationLevel = 3;
-          state.money = Math.max(0, state.money - 2000);
-          state.happiness = clamp(state.happiness - 5, 0, 100);
-          log("You studied hard and completed college.");
+          state.money -= 1500;
+          log("You completed college.");
         } else {
-          log("You already have a solid education. You did some extra courses.");
-          state.happiness = clamp(state.happiness + 2, 0, 100);
+          log("You took extra courses.");
         }
       });
 
-      // Relationship & family
       if (state.relationshipStatus === "Single") {
         addChoice("Start dating", () => {
-          const success = Math.random() < 0.7;
-          if (success) {
+          if (Math.random() < 0.7) {
             state.relationshipStatus = "In a relationship";
-            state.partner = { name: "Partner", happiness: 70 };
-            state.happiness = clamp(state.happiness + 12, 0, 100);
-            log("You met someone and started a relationship.");
+            log("You started dating someone.");
           } else {
-            state.happiness = clamp(state.happiness - 5, 0, 100);
-            log("Dating didn’t work out this year.");
+            log("Dating didn’t work out.");
           }
         });
       } else if (state.relationshipStatus === "In a relationship") {
-        addChoice("Strengthen relationship", () => {
-          state.happiness = clamp(state.happiness + 8, 0, 100);
-          log("You spent quality time with your partner.");
-        });
         addChoice("Get married", () => {
           state.relationshipStatus = "Married";
-          state.happiness = clamp(state.happiness + 15, 0, 100);
-          log("You got married and started a new chapter.");
+          log("You got married.");
         });
         addChoice("Break up", () => {
           state.relationshipStatus = "Single";
-          state.partner = null;
-          state.happiness = clamp(state.happiness - 10, 0, 100);
           log("You ended the relationship.");
         });
       } else if (state.relationshipStatus === "Married") {
-        addChoice("Spend time with family", () => {
-          state.happiness = clamp(state.happiness + 10, 0, 100);
-          log("You spent time with your partner and family.");
-        });
         addChoice("Have a child", () => {
-          const childName = `Child ${state.children.length + 1}`;
-          state.children.push({ name: childName, age: 0 });
-          state.happiness = clamp(state.happiness + 12, 0, 100);
-          state.money = Math.max(0, state.money - 500);
-          log(`You welcomed ${childName} into your family.`);
+          const name = "Child " + (state.children.length + 1);
+          state.children.push({ name, age: 0 });
+          log("You had " + name);
         });
-        addChoice("Consider divorce", () => {
-          const chance = Math.random();
-          if (chance < 0.5) {
-            state.relationshipStatus = "Single";
-            state.partner = null;
-            state.money = Math.max(0, state.money - 2000);
-            state.happiness = clamp(state.happiness - 15, 0, 100);
-            log("You went through a divorce. It was rough emotionally and financially.");
-          } else {
-            state.happiness = clamp(state.happiness - 5, 0, 100);
-            log("You decided to work things out and stay together.");
-          }
+        addChoice("Spend time with family", () => {
+          state.happiness += 10;
+          log("You enjoyed family time.");
         });
       }
 
-      // Housing
       if (state.home === "Living with family") {
-        addChoice("Rent an apartment", () => {
-          if (state.money >= 2000) {
-            state.money -= 2000;
+        addChoice("Rent apartment", () => {
+          if (state.money >= 1500) {
+            state.money -= 1500;
             state.home = "Rented apartment";
-            state.happiness = clamp(state.happiness + 8, 0, 100);
-            log("You moved into your own rented apartment.");
-          } else {
-            log("You don’t have enough money to move out yet.");
-          }
+            log("You moved out.");
+          } else log("Not enough money.");
         });
       } else if (state.home === "Rented apartment") {
-        addChoice("Buy a small house", () => {
-          if (state.money >= 20000) {
-            state.money -= 20000;
+        addChoice("Buy small house", () => {
+          if (state.money >= 15000) {
+            state.money -= 15000;
             state.home = "Small house";
-            state.happiness = clamp(state.happiness + 12, 0, 100);
-            log("You bought a small house. Big milestone.");
-          } else {
-            log("You need more savings to buy a house.");
-          }
+            log("You bought a small house.");
+          } else log("Not enough money.");
         });
       } else if (state.home === "Small house") {
         addChoice("Upgrade to big house", () => {
-          if (state.money >= 60000) {
-            state.money -= 60000;
+          if (state.money >= 50000) {
+            state.money -= 50000;
             state.home = "Big house";
-            state.happiness = clamp(state.happiness + 15, 0, 100);
-            log("You upgraded to a big house. Life feels comfortable.");
-          } else {
-            log("You don’t have enough money to upgrade your home.");
-          }
-        });
-        addChoice("Sell house and rent", () => {
-          state.money += 30000;
-          state.home = "Rented apartment";
-          state.happiness = clamp(state.happiness - 5, 0, 100);
-          log("You sold your house and went back to renting.");
-        });
-      } else if (state.home === "Big house") {
-        addChoice("Maintain big house", () => {
-          state.money = Math.max(0, state.money - 3000);
-          state.happiness = clamp(state.happiness + 5, 0, 100);
-          log("You maintained your big house and enjoyed the comfort.");
-        });
-        addChoice("Downsize to small house", () => {
-          state.money += 30000;
-          state.home = "Small house";
-          state.happiness = clamp(state.happiness - 3, 0, 100);
-          log("You downsized to a smaller house to save money.");
+            log("You upgraded your home.");
+          } else log("Not enough money.");
         });
       }
-
-      // Free time
-      addChoice("Take a year to relax", () => {
-        state.happiness = clamp(state.happiness + 10, 0, 100);
-        state.health = clamp(state.health + 5, 0, 100);
-        state.money = Math.max(0, state.money - 1000);
-        log("You took a slower year to rest and reset.");
-      });
     }
   }
 
-  // Init
-  updateStatsUI();
-  log("Your life begins at age 3. See where it goes.");
+  updateUI();
+  log("Your life begins at age 3.");
   renderChoices();
 </script>
+
 </body>
 </html>
