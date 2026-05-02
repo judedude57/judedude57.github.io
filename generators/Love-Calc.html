@@ -3,68 +3,27 @@
 <head>
 <meta charset="UTF-8">
 <title>Infinite Play – Love Calculator</title>
-<meta name="description" content="Fun Infinite Play Love Calculator. Enter two names, spin the wheel, and see your match!">
-<meta name="keywords" content="love calculator, name match, generator, infinite play, fun tool">
+
+<meta name="description" content="Try the Infinite Play Love Calculator! Enter two names, spin the wheel, and get a fun match score.">
+<meta name="keywords" content="love calculator, name match, compatibility test, love match, infinite play, generator">
+
 <style>
-
-<title>Infinite Play – Love Calculator | Spin the Wheel Match Test</title>
-
-<meta name="description" content="Try the Infinite Play Love Calculator! Enter two names, spin the wheel, and get a fun match score. Free, fast, and mobile-friendly.">
-
-<meta name="keywords" content="love calculator, name match, compatibility test, love match, relationship test, infinite play, love generator">
-
-<meta name="robots" content="index, follow">
-
-<meta property="og:title" content="Infinite Play – Love Calculator">
-<meta property="og:description" content="Enter two names, spin the wheel, and see your match score!">
-<meta property="og:url" content="https://infiniteplaygames.github.io/generators/lovecalc.html">
-<meta property="og:type" content="website">
-<meta property="og:image" content="https://infiniteplaygames.github.io/Assets/lovecalc-thumb.png">
-
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Infinite Play – Love Calculator">
-<meta name="twitter:description" content="Spin the wheel and discover your love match score!">
-<meta name="twitter:image" content="https://infiniteplaygames.github.io/Assets/lovecalc-thumb.png">
-
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "WebApplication",
-  "name": "Infinite Play Love Calculator",
-  "url": "https://infiniteplaygames.github.io/generators/lovecalc.html",
-  "description": "Enter two names, spin the wheel, and get a fun match score with the Infinite Play Love Calculator.",
-  "applicationCategory": "EntertainmentApplication",
-  "operatingSystem": "All",
-  "creator": {
-    "@type": "Organization",
-    "name": "Infinite Play Games"
-  },
-  "featureList": [
-    "Name-based love match test",
-    "Random wheel spin animation",
-    "Share button",
-    "Mobile-friendly design",
-    "Infinite Play neon branding"
-  ],
-  "image": "https://infiniteplaygames.github.io/Assets/lovecalc-thumb.png"
-}
-</script>
-
-
     body {
-        background: #0a0a0a;
-        color: #fff;
+        background: #000000; /* PURE BLACK */
+        color: #ffffff;
         font-family: Arial, sans-serif;
         text-align: center;
         padding: 20px;
     }
+
     h1 {
         font-size: 2.5rem;
         color: #ff2bd4;
         text-shadow: 0 0 10px #ff2bd4;
     }
+
     .box {
-        background: #111;
+        background: #0a0a0a;
         border: 2px solid #ff2bd4;
         padding: 20px;
         border-radius: 10px;
@@ -73,6 +32,7 @@
         margin: auto;
         box-shadow: 0 0 20px #ff2bd4;
     }
+
     input {
         width: 80%;
         padding: 10px;
@@ -81,6 +41,7 @@
         border: none;
         font-size: 1rem;
     }
+
     button {
         background: #ff2bd4;
         border: none;
@@ -92,9 +53,11 @@
         margin-top: 10px;
         box-shadow: 0 0 10px #ff2bd4;
     }
+
     button:hover {
         background: #ff4be0;
     }
+
     #wheel {
         margin: 20px auto;
         width: 150px;
@@ -107,19 +70,30 @@
         font-size: 1.5rem;
         text-shadow: 0 0 10px #ff2bd4;
     }
+
     .nav-buttons {
         margin-top: 20px;
     }
+
     .nav-buttons button {
         width: 45%;
         margin: 5px;
     }
+
+    /* FIXED SUPPORT BOX */
     .support {
         margin-top: 25px;
         padding: 15px;
         border: 2px solid #00eaff;
         border-radius: 10px;
+        background: #000000;
+        color: #ffffff;
         box-shadow: 0 0 15px #00eaff;
+    }
+
+    .support h3 {
+        color: #00eaff;
+        margin-bottom: 5px;
     }
 </style>
 </head>
@@ -140,7 +114,7 @@
     <button onclick="shareLove()">Share This</button>
 
     <div class="nav-buttons">
-        <button onclick="location.href='/Tools.html'">🔙 Back to Tools</button>
+        <button onclick="location.href='/Menus/Tools.html'">🔙 Back to Tools</button>
         <button onclick="location.href='/Menus/Games.html'">🎮 Games Menu</button>
     </div>
 
@@ -151,8 +125,6 @@
 </div>
 
 <script>
-let useCount = 0;
-
 function spinWheel() {
     const n1 = document.getElementById("name1").value.trim();
     const n2 = document.getElementById("name2").value.trim();
@@ -162,9 +134,6 @@ function spinWheel() {
         return;
     }
 
-    useCount++;
-
-    // Random wheel spin animation
     const wheel = document.getElementById("wheel");
     wheel.style.transition = "transform 1s ease-out";
     wheel.style.transform = "rotate(" + (Math.random() * 720 + 360) + "deg)";
@@ -174,12 +143,6 @@ function spinWheel() {
         document.getElementById("result").innerHTML =
             `${n1} ❤️ ${n2}<br><br>Match Score: <strong>${match}%</strong>`;
     }, 1000);
-
-    // Random ad trigger (1–3 uses)
-    const trigger = Math.floor(Math.random() * 3) + 1;
-    if (useCount % trigger === 0) {
-        alert("Ad break! (Insert your ad script here)");
-    }
 }
 
 function shareLove() {
@@ -193,6 +156,14 @@ function shareLove() {
         alert("Link copied!");
     }
 }
+</script>
+
+<!-- IN-PAGE PUSH AD (your new zone) -->
+<script>
+(function(s){
+    s.dataset.zone='10954674';
+    s.src='https://nap5k.com/tag.min.js';
+})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))
 </script>
 
 </body>
