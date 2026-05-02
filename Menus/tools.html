@@ -46,7 +46,7 @@
             box-shadow: 0 0 10px #7a2cff;
         }
 
-        /* SUPPORT CARD */
+        /* SUPPORT CARD (LEFT) */
         .support-card {
             position: fixed;
             top: 120px;
@@ -153,6 +153,30 @@
             box-shadow: 0 0 15px #7a2cff;
         }
 
+        /* AD BANNER (top of page) */
+        .top-ad {
+            width: 100%;
+            max-width: 1000px;
+            margin: 18px auto 0;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            gap:12px;
+        }
+        .ad-placeholder {
+            width: 728px;
+            max-width:100%;
+            height:90px;
+            background:#151515;
+            border:1px solid #222;
+            border-radius:8px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            color:#777;
+            font-size:14px;
+        }
+
         /* ANIMATIONS */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
@@ -167,16 +191,26 @@
             50% { text-shadow: 0 0 20px #7a2cff; }
             100% { text-shadow: 0 0 5px #7a2cff; }
         }
+
+        @media (max-width: 900px) {
+            .support-card { display: none; }
+        }
     </style>
 </head>
 <body>
 
+<!-- TOP AD BANNER -->
+<div class="top-ad" aria-hidden="false">
+    <div class="ad-placeholder">
+        <!-- PropellerAds banner placeholder (Multi‑Tag handles formats) -->
+        Global Ad Space (loaded automatically)
+    </div>
+</div>
+
 <!-- SUPPORT CARD -->
 <div class="support-card">
     <h3>Support Future Projects</h3>
-    <a href="https://omg10.com/4/10952010" class="support-btn" target="_blank">
-        Support Infinite Play
-    </a>
+    <a href="https://omg10.com/4/10952010" class="support-btn" target="_blank" rel="noopener">Support Infinite Play</a>
 </div>
 
 <a href="index.html" class="home-btn">Home</a>
@@ -208,9 +242,18 @@
         <div class="tool-card">
             <div class="tool-title">Password Generator</div>
             <div class="tool-desc">
-                Create strong, secure passwords instantly.
+                Create strong, secure passwords with custom length and character options.
             </div>
             <a href="/generators/password-generator.html" class="tool-btn">Use Tool</a>
+        </div>
+
+        <!-- Calculator (NEW) -->
+        <div class="tool-card">
+            <div class="tool-title">Calculator</div>
+            <div class="tool-desc">
+                Basic + − × ÷ calculator — accurate, keyboard friendly, and easy to use.
+            </div>
+            <a href="/genrators/calc.html" class="tool-btn">Use Tool</a>
         </div>
 
         <!-- Future Tools Placeholder -->
