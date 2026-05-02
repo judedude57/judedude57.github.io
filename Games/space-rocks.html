@@ -2,27 +2,28 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Space Roks – Infinite Play</title>
+<title>Space Roks — Infinite Play Neon Edition</title>
+
 <style>
     body {
         margin: 0;
-        background: black;
         overflow: hidden;
+        background: black;
         font-family: Arial, sans-serif;
         color: white;
-        text-align: center;
     }
 
-    #ui {
-        position: absolute;
-        top: 20px;
-        width: 100%;
-        z-index: 10;
-        font-size: 22px;
-        font-weight: bold;
-        pointer-events: none;
+    /* Neon Glow Helpers */
+    .neon {
+        color: #9d4bff;
+        text-shadow:
+            0 0 10px #9d4bff,
+            0 0 20px #9d4bff,
+            0 0 40px #4bb8ff,
+            0 0 80px #4bb8ff;
     }
 
+    /* Menu Overlay */
     #menu, #gameOver {
         position: absolute;
         top: 0; left: 0;
@@ -33,15 +34,35 @@
         justify-content: center;
         align-items: center;
         z-index: 20;
+        text-align: center;
+    }
+
+    #menu h1 {
+        font-size: 60px;
+        margin-bottom: 10px;
+    }
+
+    #menu h2 {
+        font-size: 40px;
+        margin-bottom: 40px;
     }
 
     button {
-        padding: 15px 30px;
-        margin: 10px;
-        font-size: 20px;
-        cursor: pointer;
-        border-radius: 10px;
+        padding: 15px 35px;
+        font-size: 24px;
         border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        background: #4bb8ff;
+        color: black;
+        font-weight: bold;
+        transition: 0.2s;
+    }
+
+    button:hover {
+        background: #9d4bff;
+        color: white;
+        box-shadow: 0 0 20px #9d4bff;
     }
 
     #homeBtn {
@@ -52,28 +73,63 @@
         padding: 10px 20px;
         font-size: 18px;
     }
+
+    #ui {
+        position: absolute;
+        top: 20px;
+        width: 100%;
+        text-align: center;
+        z-index: 10;
+        font-size: 22px;
+        font-weight: bold;
+    }
+
+    #shieldBar {
+        width: 200px;
+        height: 10px;
+        background: rgba(255,255,255,0.1);
+        border-radius: 5px;
+        margin: 10px auto 0;
+        overflow: hidden;
+        display: none;
+    }
+
+    #shieldFill {
+        height: 100%;
+        width: 100%;
+        background: #4bb8ff;
+        box-shadow: 0 0 10px #4bb8ff;
+    }
 </style>
 </head>
+
 <body>
 
 <button id="homeBtn">🏠 Home</button>
 
-<div id="ui">Lives: <span id="lives">3</span></div>
+<div id="ui" class="neon">
+    Lives: <span id="lives">3</span> |
+    Score: <span id="score">0</span>
+    <div id="shieldBar"><div id="shieldFill"></div></div>
+</div>
 
 <div id="menu">
-    <h1>🚀 SPACE ROKS</h1>
-    <p>Infinite Play Edition</p>
+    <h1 class="neon">INFINITE PLAY</h1>
+    <h2 class="neon">SPACE ROKS</h2>
+    <p>High Score: <span id="bestScore">0</span></p>
     <button id="startBtn">Start Game</button>
 </div>
 
 <div id="gameOver" style="display:none;">
-    <h1>💀 GAME OVER 💀</h1>
+    <h1 class="neon">GAME OVER</h1>
+    <p>Your Score: <span id="finalScore">0</span></p>
+    <p>Best Score: <span id="bestScore2">0</span></p>
     <button id="restartBtn">Play Again</button>
 </div>
 
 <canvas id="gameCanvas"></canvas>
 
-<!-- ADS SCRIPT -->
+<!-- ADS -->
 <script>
 (function(s){
     s.dataset.zone='10951295';
@@ -82,147 +138,280 @@
 </script>
 
 <script>
-/* -------------------------
-   BASIC GAME SETUP
--------------------------- */
+/* ============================================================
+   CORE GAME VARIABLES
+============================================================ */
 
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+canvas.width = innerWidth;
+canvas.height = innerHeight;
+
+let playing = false;
+let score = 0;
+let bestScore = Number(localStorage.getItem("spaceRoksBest")) || 0;
+document.getElementById("bestScore").innerText = bestScore;
 
 let lives = 3;
-let playing = false;
-let asteroids = [];
-let bullets = [];
-let ship;
+let ship, asteroids, bullets, particles;
+let shieldActive = false;
+let shieldTimer = 0;
+
+let shakeX = 0, shakeY = 0;
+
+/* ============================================================
+   UTILITY FUNCTIONS
+============================================================ */
+
+function rand(min, max) {
+    return Math.random() * (max - min) + min;
+}
+
+function screenShake(intensity) {
+    shakeX = rand(-intensity, intensity);
+    shakeY = rand(-intensity, intensity);
+    setTimeout(() => { shakeX = 0; shakeY = 0; }, 150);
+}
+
+/* ============================================================
+   SHIP
+============================================================ */
+
+function createShip() {
+    return {
+        x: canvas.width / 2,
+        y: canvas.height / 2,
+        angle: 0,
+        vx: 0,
+        vy: 0,
+        thrusting: false
+    };
+}
+
+/* ============================================================
+   ASTEROIDS
+============================================================ */
+
+function createAsteroid(x, y, size) {
+    const points = [];
+    const jag = rand(0.3, 0.6);
+
+    for (let i = 0; i < 10; i++) {
+        const angle = (Math.PI * 2 / 10) * i;
+        const radius = size * (1 - jag + Math.random() * jag);
+        points.push({ x: Math.cos(angle) * radius, y: Math.sin(angle) * radius });
+    }
+
+    return {
+        x, y,
+        size,
+        points,
+        vx: rand(-1, 1),
+        vy: rand(0.5, 2),
+        rot: rand(-0.02, 0.02),
+        angle: 0
+    };
+}
+
+/* ============================================================
+   PARTICLES
+============================================================ */
+
+function spawnParticles(x, y, color, count = 20) {
+    for (let i = 0; i < count; i++) {
+        particles.push({
+            x, y,
+            vx: rand(-3, 3),
+            vy: rand(-3, 3),
+            life: rand(20, 40),
+            color
+        });
+    }
+}
+
+/* ============================================================
+   POWER-UP: SHIELD
+============================================================ */
+
+function activateShield() {
+    shieldActive = true;
+    shieldTimer = 300; // 5 seconds at 60fps
+    document.getElementById("shieldBar").style.display = "block";
+}
+
+/* ============================================================
+   GAME RESET
+============================================================ */
 
 function resetGame() {
+    score = 0;
     lives = 3;
-    document.getElementById("lives").innerText = lives;
+    shieldActive = false;
+    shieldTimer = 0;
+
+    ship = createShip();
     asteroids = [];
     bullets = [];
-    ship = { x: canvas.width/2, y: canvas.height/2, angle: 0 };
+    particles = [];
+
+    for (let i = 0; i < 5; i++) {
+        asteroids.push(createAsteroid(rand(0, canvas.width), rand(0, canvas.height / 2), 60));
+    }
+
+    document.getElementById("lives").innerText = lives;
+    document.getElementById("score").innerText = score;
 }
 
-/* -------------------------
-   ASTEROIDS + BULLETS
--------------------------- */
+/* ============================================================
+   GAME LOOP
+============================================================ */
 
-function spawnAsteroid() {
-    asteroids.push({
-        x: Math.random() * canvas.width,
-        y: -50,
-        size: 40 + Math.random()*40,
-        speed: 1 + Math.random()*2
-    });
-}
+function gameLoop() {
+    if (!playing) return;
 
-function updateAsteroids() {
-    asteroids.forEach(a => a.y += a.speed);
-    asteroids = asteroids.filter(a => a.y < canvas.height + 100);
-}
+    ctx.save();
+    ctx.translate(shakeX, shakeY);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-function updateBullets() {
-    bullets.forEach(b => {
-        b.x += Math.cos(b.angle) * 10;
-        b.y += Math.sin(b.angle) * 10;
-    });
-    bullets = bullets.filter(b => b.x > 0 && b.x < canvas.width && b.y > 0 && b.y < canvas.height);
-}
+    /* Starfield */
+    ctx.fillStyle = "#111";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-function detectCollisions() {
-    asteroids.forEach((a, ai) => {
-        bullets.forEach((b, bi) => {
-            const dx = a.x - b.x;
-            const dy = a.y - b.y;
-            if (Math.hypot(dx, dy) < a.size) {
-                asteroids.splice(ai, 1);
-                bullets.splice(bi, 1);
-            }
-        });
-
-        const dx = a.x - ship.x;
-        const dy = a.y - ship.y;
-        if (Math.hypot(dx, dy) < a.size) {
-            lives--;
-            document.getElementById("lives").innerText = lives;
-            asteroids.splice(ai, 1);
-
-            if (lives <= 0) endGame();
-        }
-    });
-}
-
-/* -------------------------
-   DRAWING
--------------------------- */
-
-function drawShip() {
+    /* Ship */
     ctx.save();
     ctx.translate(ship.x, ship.y);
     ctx.rotate(ship.angle);
+    ctx.strokeStyle = shieldActive ? "#4bb8ff" : "#9d4bff";
+    ctx.lineWidth = 3;
     ctx.beginPath();
     ctx.moveTo(20, 0);
     ctx.lineTo(-20, 15);
     ctx.lineTo(-20, -15);
     ctx.closePath();
-    ctx.strokeStyle = "white";
     ctx.stroke();
     ctx.restore();
-}
 
-function drawAsteroids() {
-    ctx.strokeStyle = "gray";
-    asteroids.forEach(a => {
-        ctx.beginPath();
-        ctx.arc(a.x, a.y, a.size, 0, Math.PI*2);
-        ctx.stroke();
-    });
-}
+    /* Update ship */
+    if (ship.thrusting) {
+        ship.vx += Math.cos(ship.angle) * 0.2;
+        ship.vy += Math.sin(ship.angle) * 0.2;
+    }
+    ship.vx *= 0.99;
+    ship.vy *= 0.99;
+    ship.x += ship.vx;
+    ship.y += ship.vy;
 
-function drawBullets() {
-    ctx.fillStyle = "yellow";
+    /* Wrap ship */
+    if (ship.x < 0) ship.x = canvas.width;
+    if (ship.x > canvas.width) ship.x = 0;
+    if (ship.y < 0) ship.y = canvas.height;
+    if (ship.y > canvas.height) ship.y = 0;
+
+    /* Bullets */
+    ctx.fillStyle = "#4bb8ff";
     bullets.forEach(b => {
+        b.x += Math.cos(b.angle) * 10;
+        b.y += Math.sin(b.angle) * 10;
         ctx.beginPath();
-        ctx.arc(b.x, b.y, 4, 0, Math.PI*2);
+        ctx.arc(b.x, b.y, 4, 0, Math.PI * 2);
         ctx.fill();
     });
-}
 
-/* -------------------------
-   GAME LOOP
--------------------------- */
+    /* Particles */
+    particles.forEach((p, i) => {
+        p.x += p.vx;
+        p.y += p.vy;
+        p.life--;
+        ctx.fillStyle = p.color;
+        ctx.fillRect(p.x, p.y, 3, 3);
+        if (p.life <= 0) particles.splice(i, 1);
+    });
 
-function gameLoop() {
-    if (!playing) return;
+    /* Asteroids */
+    asteroids.forEach((a, ai) => {
+        a.x += a.vx;
+        a.y += a.vy;
+        a.angle += a.rot;
 
-    ctx.clearRect(0,0,canvas.width,canvas.height);
+        if (a.x < -100) a.x = canvas.width + 100;
+        if (a.x > canvas.width + 100) a.x = -100;
+        if (a.y < -100) a.y = canvas.height + 100;
+        if (a.y > canvas.height + 100) a.y = -100;
 
-    if (Math.random() < 0.02) spawnAsteroid();
+        ctx.save();
+        ctx.translate(a.x, a.y);
+        ctx.rotate(a.angle);
+        ctx.strokeStyle = "#9d4bff";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        a.points.forEach((p, i) => {
+            if (i === 0) ctx.moveTo(p.x, p.y);
+            else ctx.lineTo(p.x, p.y);
+        });
+        ctx.closePath();
+        ctx.stroke();
+        ctx.restore();
 
-    updateAsteroids();
-    updateBullets();
-    detectCollisions();
+        /* Bullet collisions */
+        bullets.forEach((b, bi) => {
+            const dx = a.x - b.x;
+            const dy = a.y - b.y;
+            if (Math.hypot(dx, dy) < a.size) {
+                bullets.splice(bi, 1);
+                spawnParticles(a.x, a.y, "#9d4bff", 30);
+                screenShake(10);
 
-    drawShip();
-    drawAsteroids();
-    drawBullets();
+                if (a.size > 20) {
+                    asteroids.push(createAsteroid(a.x, a.y, a.size / 2));
+                    asteroids.push(createAsteroid(a.x, a.y, a.size / 2));
+                }
 
+                asteroids.splice(ai, 1);
+                score += 10;
+                document.getElementById("score").innerText = score;
+            }
+        });
+
+        /* Ship collision */
+        const dx = a.x - ship.x;
+        const dy = a.y - ship.y;
+        if (Math.hypot(dx, dy) < a.size && !shieldActive) {
+            lives--;
+            document.getElementById("lives").innerText = lives;
+            spawnParticles(ship.x, ship.y, "#4bb8ff", 40);
+            screenShake(20);
+
+            if (lives <= 0) return endGame();
+            ship = createShip();
+        }
+    });
+
+    /* Shield timer */
+    if (shieldActive) {
+        shieldTimer--;
+        document.getElementById("shieldFill").style.width = (shieldTimer / 300) * 100 + "%";
+        if (shieldTimer <= 0) {
+            shieldActive = false;
+            document.getElementById("shieldBar").style.display = "none";
+        }
+    }
+
+    ctx.restore();
     requestAnimationFrame(gameLoop);
 }
 
-/* -------------------------
+/* ============================================================
    INPUT
--------------------------- */
+============================================================ */
 
 document.addEventListener("keydown", e => {
     if (!playing) return;
 
     if (e.key === "ArrowLeft" || e.key === "a") ship.angle -= 0.1;
     if (e.key === "ArrowRight" || e.key === "d") ship.angle += 0.1;
+    if (e.key === "ArrowUp" || e.key === "w") ship.thrusting = true;
 
-    if (e.key === " " || e.key === "ArrowUp" || e.key === "w") {
+    if (e.key === " ") {
         bullets.push({
             x: ship.x,
             y: ship.y,
@@ -231,13 +420,17 @@ document.addEventListener("keydown", e => {
     }
 });
 
-/* -------------------------
-   MENU + ADS + BUTTONS
--------------------------- */
+document.addEventListener("keyup", e => {
+    if (e.key === "ArrowUp" || e.key === "w") ship.thrusting = false;
+});
 
-function showAdThen(callback) {
+/* ============================================================
+   MENU + ADS + GAME FLOW
+============================================================ */
+
+function showAdThen(cb) {
     try { propellerAds.show(); } catch(e) {}
-    setTimeout(callback, 1500);
+    setTimeout(cb, 1500);
 }
 
 document.getElementById("startBtn").onclick = () => {
@@ -264,10 +457,25 @@ document.getElementById("homeBtn").onclick = () => {
 
 function endGame() {
     playing = false;
+
+    if (score > bestScore) {
+        bestScore = score;
+        localStorage.setItem("spaceRoksBest", bestScore);
+    }
+
+    document.getElementById("finalScore").innerText = score;
+    document.getElementById("bestScore2").innerText = bestScore;
+
     showAdThen(() => {
         document.getElementById("gameOver").style.display = "flex";
     });
 }
+
+/* Leaderboard Hook */
+function sendScoreToLeaderboard(score) {
+    // Placeholder — ready for your backend
+}
+
 </script>
 
 </body>
