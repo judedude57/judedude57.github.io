@@ -6,6 +6,51 @@
 <meta name="description" content="Fun Infinite Play Love Calculator. Enter two names, spin the wheel, and see your match!">
 <meta name="keywords" content="love calculator, name match, generator, infinite play, fun tool">
 <style>
+
+<title>Infinite Play – Love Calculator | Spin the Wheel Match Test</title>
+
+<meta name="description" content="Try the Infinite Play Love Calculator! Enter two names, spin the wheel, and get a fun match score. Free, fast, and mobile-friendly.">
+
+<meta name="keywords" content="love calculator, name match, compatibility test, love match, relationship test, infinite play, love generator">
+
+<meta name="robots" content="index, follow">
+
+<meta property="og:title" content="Infinite Play – Love Calculator">
+<meta property="og:description" content="Enter two names, spin the wheel, and see your match score!">
+<meta property="og:url" content="https://infiniteplaygames.github.io/generators/lovecalc.html">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://infiniteplaygames.github.io/Assets/lovecalc-thumb.png">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Infinite Play – Love Calculator">
+<meta name="twitter:description" content="Spin the wheel and discover your love match score!">
+<meta name="twitter:image" content="https://infiniteplaygames.github.io/Assets/lovecalc-thumb.png">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Infinite Play Love Calculator",
+  "url": "https://infiniteplaygames.github.io/generators/lovecalc.html",
+  "description": "Enter two names, spin the wheel, and get a fun match score with the Infinite Play Love Calculator.",
+  "applicationCategory": "EntertainmentApplication",
+  "operatingSystem": "All",
+  "creator": {
+    "@type": "Organization",
+    "name": "Infinite Play Games"
+  },
+  "featureList": [
+    "Name-based love match test",
+    "Random wheel spin animation",
+    "Share button",
+    "Mobile-friendly design",
+    "Infinite Play neon branding"
+  ],
+  "image": "https://infiniteplaygames.github.io/Assets/lovecalc-thumb.png"
+}
+</script>
+
+
     body {
         background: #0a0a0a;
         color: #fff;
