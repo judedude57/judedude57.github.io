@@ -5,80 +5,106 @@
   <title>Life Sim — InfinitePlayGames</title>
   <meta name="viewport" content="width=device-width,initial-scale=1" />
 
-  <!-- SEO TAGS -->
-  <meta name="description" content="Life Sim — grow from age 3 to adulthood, build a career, start a family, buy homes, and shape your destiny in this free browser life simulator." />
-  <meta name="keywords" content="life simulator, life sim game, infiniteplaygames, browser sim, free life game, grow up game, life choices game" />
-  <meta name="robots" content="index, follow" />
-
-  <!-- SCHEMA.ORG JSON-LD -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "VideoGame",
-    "name": "Life Sim",
-    "url": "https://infiniteplaygames.github.io/Games/life-sim.html",
-    "image": "https://infiniteplaygames.github.io/Assets/lifesim-thumb.png",
-    "author": { "@type": "Organization", "name": "InfinitePlayGames" },
-    "description": "A browser-based life simulator where you grow from age 3 to adulthood, build a career, start a family, and shape your destiny.",
-    "genre": "Simulation",
-    "operatingSystem": "Web Browser",
-    "applicationCategory": "Game"
-  }
-  </script>
-
   <style>
     body {
       background: #050816;
       color: #f5f5f5;
       font-family: system-ui, sans-serif;
       margin: 0;
-      padding: 20px;
+      padding: 0;
       display: flex;
-      justify-content: center;
     }
-    .wrap { max-width: 980px; width: 100%; }
-    h1 { color: #7df9ff; text-shadow: 0 0 10px #7df9ff55; }
-    .back-btn {
-      background: #1d243b; padding: 8px 12px; border-radius: 8px;
-      color: #e5e7eb; text-decoration: none; border: 1px solid #374151;
+
+    /* LEFT SUPPORT CARD */
+    #supportCard {
+      width: 180px;
+      background: #0b1020;
+      padding: 14px;
+      border-right: 2px solid #111827;
+      box-shadow: 4px 0 10px #000;
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh;
     }
+    #supportCard h3 {
+      margin-top: 0;
+      color: #7df9ff;
+      text-shadow: 0 0 8px #7df9ff55;
+    }
+    #supportCard a {
+      display: block;
+      background: #1d243b;
+      padding: 10px;
+      border-radius: 8px;
+      color: #e5e7eb;
+      text-decoration: none;
+      border: 1px solid #374151;
+      margin-top: 10px;
+      text-align: center;
+    }
+    #supportCard a:hover {
+      background: #273152;
+    }
+
+    /* MAIN CONTENT */
+    .wrap {
+      margin-left: 200px;
+      padding: 20px;
+      width: calc(100% - 200px);
+      max-width: 900px;
+    }
+
+    h1 {
+      color: #7df9ff;
+      text-shadow: 0 0 10px #7df9ff55;
+    }
+
     .panel {
-      background: #0b1020; padding: 14px; border-radius: 10px;
-      box-shadow: 0 0 15px #000; margin-bottom: 14px;
+      background: #0b1020;
+      padding: 14px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px #000;
+      margin-bottom: 14px;
     }
-    .ad-slot {
-      background: #0f1724; border: 1px dashed #334155; border-radius: 8px;
-      text-align: center; color: #94a3b8; padding: 10px; min-height: 90px;
+
+    .choice {
+      background: #1d243b;
+      color: #e5e7eb;
+      border: 1px solid #374151;
+      padding: 8px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin: 4px 0;
+      display: block;
+      width: 100%;
+      text-align: left;
     }
-    .choice { background: #1d243b; color: #e5e7eb; border: 1px solid #374151;
-      padding: 8px 10px; border-radius: 8px; cursor: pointer; margin: 4px 0; }
-    .log { max-height: 300px; overflow-y: auto; }
-    .log-entry { padding: 6px; border-bottom: 1px solid #111827; }
-    .modal {
-      position: fixed; inset: 0; background: rgba(0,0,0,0.7);
-      display: none; align-items: center; justify-content: center;
+
+    .log {
+      max-height: 300px;
+      overflow-y: auto;
     }
-    .modal-card {
-      background: #0b1020; padding: 20px; border-radius: 10px;
-      width: 90%; max-width: 500px; box-shadow: 0 0 20px #000;
+
+    .log-entry {
+      padding: 6px;
+      border-bottom: 1px solid #111827;
     }
   </style>
 </head>
 
 <body>
 
-<!-- LOAD YOUR REAL MULTITAG AD SYSTEM -->
-<script src="/Ads/adloader.js"></script>
+<!-- LEFT SUPPORT CARD -->
+<div id="supportCard">
+  <h3>Support Future Projects</h3>
+  <p>Help keep InfinitePlay growing!</p>
+  <a href="https://omg10.com/4/10952010" target="_blank">Support Here</a>
+</div>
 
 <div class="wrap">
 
-  <header style="display:flex;justify-content:space-between;align-items:center;">
-    <h1>Life Sim — InfinitePlayGames</h1>
-    <a class="back-btn" href="/Menus/Games.html">← Back to Games Menu</a>
-  </header>
-
-  <!-- TOP BANNER AD -->
-  <div id="ad-top" class="ad-slot">Loading ad…</div>
+  <h1>Life Sim — InfinitePlayGames</h1>
 
   <!-- START SCREEN -->
   <div id="startScreen" class="panel">
@@ -104,9 +130,6 @@
     <button id="btnReset" class="choice">Reset</button>
   </div>
 
-  <!-- INLINE AD -->
-  <div id="ad-inline" class="ad-slot">Loading ad…</div>
-
   <!-- CHOICES -->
   <div class="panel">
     <h2>Choices for this year (Age <span id="age">3</span>)</h2>
@@ -119,26 +142,16 @@
     <div id="log" class="log"></div>
   </div>
 
-  <!-- BOTTOM BANNER AD -->
-  <div id="ad-bottom" class="ad-slot">Loading ad…</div>
-
 </div>
 
-<!-- AD MODAL -->
-<div id="adModal" class="modal">
-  <div class="modal-card">
-    <h3 id="adModalTitle">Sponsored</h3>
-    <div id="adModalSlot" class="ad-slot" style="min-height:120px;">Loading ad…</div>
-    <button id="adCloseBtn" class="choice">Close</button>
-  </div>
-</div>
+<!-- LOAD VIGNETTE ADS -->
+<script src="/Ads/adloader.js"></script>
 
 <script>
 /* ============================================================
-   LIFE SIM — FULL GAME + AD LOGIC
+   LIFE SIM — CLEAN VERSION (ONLY FULLSCREEN ADS EVERY 5 MIN)
    ============================================================ */
 
-/* ---------- STATE ---------- */
 let state = {
   age: 3,
   money: 0,
@@ -148,16 +161,13 @@ let state = {
   educationLevel: 0,
   job: null,
   relationshipStatus: "Single",
-  partner: null,
   children: [],
   home: "Living with family",
   alive: true
 };
 
-/* ---------- DOM SHORTCUT ---------- */
 const $ = id => document.getElementById(id);
 
-/* ---------- LOGGING ---------- */
 function log(msg) {
   const div = document.createElement("div");
   div.className = "log-entry";
@@ -165,197 +175,40 @@ function log(msg) {
   $("log").prepend(div);
 }
 
-/* ---------- CLAMP ---------- */
 function clamp(v, min, max) {
   return Math.max(min, Math.min(max, v));
 }
 
-/* ---------- UPDATE UI ---------- */
 function updateUI() {
   $("age").textContent = state.age;
-  $("money").textContent = "$" + state.money;
-  $("health").textContent = state.health;
-  $("happiness").textContent = state.happiness;
-  $("hunger").textContent = state.hunger;
-
-  const edu = ["None", "School", "High School", "College"];
-  $("education").textContent = edu[state.educationLevel];
-
-  $("job").textContent = state.job || "None";
-  $("relationship").textContent = state.relationshipStatus;
-  $("home").textContent = state.home;
-  $("children").textContent = state.children.length;
-
-  refreshAds();
 }
 
-/* ---------- REFRESH ADS ---------- */
-function refreshAds() {
-  try {
-    if (window.refreshAdSlot) {
-      window.refreshAdSlot("ad-top");
-      window.refreshAdSlot("ad-inline");
-      window.refreshAdSlot("ad-bottom");
-      window.refreshAdSlot("adModalSlot");
-    }
-  } catch (e) {}
-}
-
-/* ---------- AD MODAL ---------- */
-function showAdModal(title, callback) {
-  $("adModalTitle").textContent = title;
-  $("adModal").style.display = "flex";
-
-  refreshAds();
-
-  let done = false;
-
-  function finish() {
-    if (done) return;
-    done = true;
-    $("adModal").style.display = "none";
-    callback();
-  }
-
-  $("adCloseBtn").onclick = finish;
-
-  setTimeout(finish, 2500);
-}
-
-/* ---------- START SCREEN LOGIC ---------- */
-const startHealth = $("startHealth");
-const startHappy = $("startHappy");
-const startHunger = $("startHunger");
-const startMoney = $("startMoney");
-
-function updateStartStats() {
-  $("startHealthVal").textContent = startHealth.value;
-  $("startHappyVal").textContent = startHappy.value;
-  $("startHungerVal").textContent = startHunger.value;
-  $("startMoneyVal").textContent = startMoney.value;
-
-  const used =
-    Number(startHealth.value) +
-    Number(startHappy.value) +
-    Number(startHunger.value) +
-    Number(startMoney.value);
-
-  $("pointsLeft").textContent = 13 - used;
-}
-
-[startHealth, startHappy, startHunger, startMoney].forEach(slider =>
-  slider.addEventListener("input", updateStartStats)
-);
-
-updateStartStats();
-
-/* ---------- START GAME ---------- */
-$("btnStart").onclick = () => {
-  state.health = Number(startHealth.value) * 15 + 30;
-  state.happiness = Number(startHappy.value) * 12 + 20;
-  state.hunger = Number(startHunger.value) * 12 + 20;
-  state.money = Number(startMoney.value) * 500;
-
-  $("startScreen").style.display = "none";
-
-  updateUI();
-  log("Your life begins at age 3.");
-
-  showAdModal("Welcome — Sponsored", () => {});
-};
-
-$("btnRandom").onclick = () => {
-  startHealth.value = 2 + Math.floor(Math.random() * 4);
-  startHappy.value = 2 + Math.floor(Math.random() * 4);
-  startHunger.value = 2 + Math.floor(Math.random() * 4);
-  startMoney.value = Math.floor(Math.random() * 4);
-  updateStartStats();
-};
-
-$("btnReset").onclick = () => {
-  startHealth.value = 3;
-  startHappy.value = 3;
-  startHunger.value = 3;
-  startMoney.value = 1;
-  updateStartStats();
-};
-
-/* ---------- END OF YEAR ---------- */
 function endOfYear() {
   state.age++;
-  state.children.forEach(c => (c.age += 1));
-
   state.hunger = clamp(state.hunger - 8, 0, 100);
   state.health = clamp(state.health - (state.hunger < 20 ? 6 : 1), 0, 100);
 
-  if (state.happiness < 20) state.health = clamp(state.health - 2, 0, 100);
-  if (state.age > 75) state.health = clamp(state.health - 2, 0, 100);
-
-  if (Math.random() < 0.03) {
-    const dmg = 8 + Math.floor(Math.random() * 12);
-    state.health = clamp(state.health - dmg, 0, 100);
-    log("A small accident occurred. Health -" + dmg + ".");
-  }
-
-  if (Math.random() < 0.04) {
-    const bonus = 100 + Math.floor(Math.random() * 400);
-    state.money += bonus;
-    log("You received a bonus of $" + bonus + ".");
-  }
-
   if (state.health <= 0 || state.hunger <= 0) {
     state.alive = false;
-    log("Your life ended. Refresh to start again.");
-    updateUI();
-    return;
-  }
-
-  if (state.age >= 100) {
-    state.alive = false;
-    log("You lived a long life and passed peacefully.");
-    updateUI();
+    log("Your life ended. Refresh to restart.");
     return;
   }
 
   updateUI();
 }
 
-/* ---------- ADD CHOICE BUTTON ---------- */
 function addChoice(label, fn) {
   const btn = document.createElement("button");
   btn.className = "choice";
   btn.textContent = label;
-
   btn.onclick = () => {
-    const preAd = Math.random() < 0.18;
-
-    if (preAd) {
-      showAdModal("Sponsored", () => {
-        fn();
-        postAction();
-      });
-    } else {
-      fn();
-      postAction();
-    }
+    fn();
+    endOfYear();
+    renderChoices();
   };
-
   $("choiceArea").appendChild(btn);
 }
 
-function postAction() {
-  const postAd = Math.random() < 0.18;
-
-  if (postAd) {
-    showAdModal("Thanks for playing", () => {
-      endOfYear();
-    });
-  } else {
-    endOfYear();
-  }
-}
-
-/* ---------- RENDER CHOICES ---------- */
 function renderChoices() {
   $("choiceArea").innerHTML = "";
 
@@ -389,11 +242,6 @@ function renderChoices() {
       state.health += 2;
       log("You had fun with friends.");
     });
-
-    addChoice("Stay home", () => {
-      state.happiness += 5;
-      log("You relaxed at home.");
-    });
   }
 
   else if (state.age <= 18) {
@@ -409,12 +257,6 @@ function renderChoices() {
       state.hunger -= 6;
       log("You earned $" + pay + ".");
     });
-
-    addChoice("Hang out", () => {
-      state.happiness += 10;
-      state.money -= 20;
-      log("You chilled with friends.");
-    });
   }
 
   else {
@@ -422,7 +264,6 @@ function renderChoices() {
       const pay = 2000 + Math.floor(Math.random() * 1500);
       state.money += pay;
       state.hunger -= 8;
-      state.happiness -= 2;
       log("You worked and earned $" + pay + ".");
     });
 
@@ -441,43 +282,79 @@ function renderChoices() {
         log("You bought groceries.");
       } else log("Not enough money.");
     });
-
-    addChoice("Eat at restaurant ($120)", () => {
-      if (state.money >= 120) {
-        state.money -= 120;
-        state.hunger = clamp(state.hunger + 60, 0, 100);
-        state.happiness += 6;
-        log("You ate at a restaurant.");
-      } else log("Not enough money.");
-    });
-
-    addChoice("Watch ad for snack (+40 Hunger)", () => {
-      showAdModal("Watch ad for snack", () => {
-        state.hunger = clamp(state.hunger + 40, 0, 100);
-        log("You watched an ad and got a snack.");
-        updateUI();
-      });
-    });
-
-    addChoice("Watch ad for $200", () => {
-      showAdModal("Watch ad for cash", () => {
-        state.money += 200;
-        log("You watched an ad and got $200.");
-        updateUI();
-      });
-    });
   }
-
-  updateUI();
 }
 
-/* ---------- INITIALIZE ---------- */
-function renderAll() {
+/* ---------- START SCREEN ---------- */
+const startHealth = $("startHealth");
+const startHappy = $("startHappy");
+const startHunger = $("startHunger");
+const startMoney = $("startMoney");
+
+function updateStartStats() {
+  $("startHealthVal").textContent = startHealth.value;
+  $("startHappyVal").textContent = startHappy.value;
+  $("startHungerVal").textContent = startHunger.value;
+  $("startMoneyVal").textContent = startMoney.value;
+
+  const used =
+    Number(startHealth.value) +
+    Number(startHappy.value) +
+    Number(startHunger.value) +
+    Number(startMoney.value);
+
+  $("pointsLeft").textContent = 13 - used;
+}
+
+[startHealth, startHappy, startHunger, startMoney].forEach(slider =>
+  slider.addEventListener("input", updateStartStats)
+);
+
+updateStartStats();
+
+$("btnStart").onclick = () => {
+  state.health = Number(startHealth.value) * 15 + 30;
+  state.happiness = Number(startHappy.value) * 12 + 20;
+  state.hunger = Number(startHunger.value) * 12 + 20;
+  state.money = Number(startMoney.value) * 500;
+
+  $("startScreen").style.display = "none";
+
   updateUI();
+  log("Your life begins at age 3.");
   renderChoices();
-}
+};
 
-renderAll();
+$("btnRandom").onclick = () => {
+  startHealth.value = 2 + Math.floor(Math.random() * 4);
+  startHappy.value = 2 + Math.floor(Math.random() * 4);
+  startHunger.value = 2 + Math.floor(Math.random() * 4);
+  startMoney.value = Math.floor(Math.random() * 4);
+  updateStartStats();
+};
+
+$("btnReset").onclick = () => {
+  startHealth.value = 3;
+  startHappy.value = 3;
+  startHunger.value = 3;
+  startMoney.value = 1;
+  updateStartStats();
+};
+
+/* ============================================================
+   FULLSCREEN AD EVERY 5 MINUTES
+   ============================================================ */
+setInterval(() => {
+  try {
+    const s = document.createElement("script");
+    s.dataset.zone = "10951295";
+    s.src = "https://n6wxm.com/vignette.min.js";
+    document.body.appendChild(s);
+  } catch (e) {
+    console.log("Ad failed to load");
+  }
+}, 300000); // 5 minutes
+
 </script>
 
 </body>
