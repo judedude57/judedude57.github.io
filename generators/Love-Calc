@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Infinite Play – Love Calculator</title>
+<meta name="description" content="Fun Infinite Play Love Calculator. Enter two names, spin the wheel, and see your match!">
+<meta name="keywords" content="love calculator, name match, generator, infinite play, fun tool">
+<style>
+    body {
+        background: #0a0a0a;
+        color: #fff;
+        font-family: Arial, sans-serif;
+        text-align: center;
+        padding: 20px;
+    }
+    h1 {
+        font-size: 2.5rem;
+        color: #ff2bd4;
+        text-shadow: 0 0 10px #ff2bd4;
+    }
+    .box {
+        background: #111;
+        border: 2px solid #ff2bd4;
+        padding: 20px;
+        border-radius: 10px;
+        width: 90%;
+        max-width: 500px;
+        margin: auto;
+        box-shadow: 0 0 20px #ff2bd4;
+    }
+    input {
+        width: 80%;
+        padding: 10px;
+        margin: 10px;
+        border-radius: 5px;
+        border: none;
+        font-size: 1rem;
+    }
+    button {
+        background: #ff2bd4;
+        border: none;
+        padding: 12px 20px;
+        color: #fff;
+        font-size: 1.1rem;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-top: 10px;
+        box-shadow: 0 0 10px #ff2bd4;
+    }
+    button:hover {
+        background: #ff4be0;
+    }
+    #wheel {
+        margin: 20px auto;
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        border: 5px solid #ff2bd4;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        text-shadow: 0 0 10px #ff2bd4;
+    }
+    .nav-buttons {
+        margin-top: 20px;
+    }
+    .nav-buttons button {
+        width: 45%;
+        margin: 5px;
+    }
+    .support {
+        margin-top: 25px;
+        padding: 15px;
+        border: 2px solid #00eaff;
+        border-radius: 10px;
+        box-shadow: 0 0 15px #00eaff;
+    }
+</style>
+</head>
+<body>
+
+<h1>💖 Infinite Play Love Calculator 💖</h1>
+
+<div class="box">
+    <input id="name1" placeholder="First Person: First & Last Name">
+    <input id="name2" placeholder="Second Person: First & Last Name">
+
+    <button onclick="spinWheel()">Spin the Love Wheel</button>
+
+    <div id="wheel">❤️</div>
+
+    <h2 id="result"></h2>
+
+    <button onclick="shareLove()">Share This</button>
+
+    <div class="nav-buttons">
+        <button onclick="location.href='/Tools.html'">🔙 Back to Tools</button>
+        <button onclick="location.href='/Menus/Games.html'">🎮 Games Menu</button>
+    </div>
+
+    <div class="support">
+        <h3>Support Infinite Play</h3>
+        <p>Help keep the games and tools growing!</p>
+    </div>
+</div>
+
+<script>
+let useCount = 0;
+
+function spinWheel() {
+    const n1 = document.getElementById("name1").value.trim();
+    const n2 = document.getElementById("name2").value.trim();
+
+    if (!n1 || !n2) {
+        alert("Enter both names first!");
+        return;
+    }
+
+    useCount++;
+
+    // Random wheel spin animation
+    const wheel = document.getElementById("wheel");
+    wheel.style.transition = "transform 1s ease-out";
+    wheel.style.transform = "rotate(" + (Math.random() * 720 + 360) + "deg)";
+
+    setTimeout(() => {
+        const match = Math.floor(Math.random() * 101);
+        document.getElementById("result").innerHTML =
+            `${n1} ❤️ ${n2}<br><br>Match Score: <strong>${match}%</strong>`;
+    }, 1000);
+
+    // Random ad trigger (1–3 uses)
+    const trigger = Math.floor(Math.random() * 3) + 1;
+    if (useCount % trigger === 0) {
+        alert("Ad break! (Insert your ad script here)");
+    }
+}
+
+function shareLove() {
+    const text = "Check out this Love Calculator on Infinite Play!";
+    const url = window.location.href;
+
+    if (navigator.share) {
+        navigator.share({ title: "Love Calculator", text, url });
+    } else {
+        navigator.clipboard.writeText(url);
+        alert("Link copied!");
+    }
+}
+</script>
+
+</body>
+</html>
