@@ -4,17 +4,19 @@
   <meta charset="utf-8" />
   <title>Life Sim — InfinitePlayGames</title>
   <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+  <!-- SEO TAGS -->
   <meta name="description" content="Life Sim — grow from age 3 to adulthood, build a career, start a family, buy homes, and shape your destiny in this free browser life simulator." />
   <meta name="keywords" content="life simulator, life sim game, infiniteplaygames, browser sim, free life game, grow up game, life choices game" />
   <meta name="robots" content="index, follow" />
 
-  <!-- Schema.org JSON-LD -->
+  <!-- SCHEMA.ORG JSON-LD -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "VideoGame",
     "name": "Life Sim",
-    "url": "https://infiniteplaygames.github.io/Games/LifeSim/life-sim.html",
+    "url": "https://infiniteplaygames.github.io/Games/life-sim.html",
     "image": "https://infiniteplaygames.github.io/Assets/lifesim-thumb.png",
     "author": { "@type": "Organization", "name": "InfinitePlayGames" },
     "description": "A browser-based life simulator where you grow from age 3 to adulthood, build a career, start a family, and shape your destiny.",
@@ -25,502 +27,463 @@
   </script>
 
   <style>
-    :root{
-      --bg:#050816; --panel:#0b1020; --muted:#9ca3af; --accent:#7df9ff; --card:#11172a; --btn:#1d243b;
+    body {
+      background: #050816;
+      color: #f5f5f5;
+      font-family: system-ui, sans-serif;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
     }
-    html,body{height:100%;margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;}
-    body{background:var(--bg);color:#f5f5f5;display:flex;align-items:flex-start;justify-content:center;padding:20px;}
-    .wrap{max-width:980px;width:100%;}
-    header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
-    h1{margin:0;color:var(--accent);text-shadow:0 0 8px #7df9ff33}
-    .back-btn{background:var(--btn);color:#e5e7eb;padding:8px 12px;border-radius:8px;text-decoration:none;border:1px solid #374151}
-    .grid{display:grid;grid-template-columns:1fr 360px;gap:14px}
-    .panel{background:var(--panel);padding:14px;border-radius:10px;box-shadow:0 6px 20px #000}
-    .stats{display:flex;flex-wrap:wrap;gap:8px}
-    .stat{background:var(--card);padding:8px 10px;border-radius:8px;min-width:120px}
-    .label{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.06em}
-    .value{font-weight:700;font-size:1rem;margin-top:4px}
-    .choices{display:flex;flex-direction:column;gap:8px}
-    .choice-row{display:flex;flex-wrap:wrap;gap:8px}
-    button.choice{background:var(--btn);color:#e5e7eb;border:1px solid #374151;padding:8px 10px;border-radius:8px;cursor:pointer}
-    button.choice:disabled{opacity:.45;cursor:default}
-    .log{max-height:360px;overflow:auto;font-size:14px}
-    .log-entry{padding:8px;border-bottom:1px solid #0b1220}
-    .year-label{color:#60a5fa;font-weight:700;margin-right:6px}
-    .small{font-size:13px;color:var(--muted)}
-    .center{display:flex;justify-content:center;gap:8px}
-    .ad-slot{background:#0f1724;border:1px dashed #263044;border-radius:8px;padding:8px;text-align:center;color:#9aa6b8}
-    .top-ad{margin:10px 0}
-    .inline-ad{margin:8px 0}
-    .modal{position:fixed;inset:0;background:rgba(2,6,23,0.7);display:flex;align-items:center;justify-content:center;z-index:9999}
-    .modal-card{background:#071028;padding:18px;border-radius:10px;max-width:720px;width:92%;box-shadow:0 10px 40px #000}
-    .modal-close{background:#1f2937;color:#fff;padding:6px 10px;border-radius:6px;border:none;cursor:pointer}
-    .start-screen{background:linear-gradient(180deg,#071026,#07102a);padding:18px;border-radius:10px;margin-bottom:12px}
-    .stat-slider{display:flex;align-items:center;gap:8px}
-    input[type=range]{width:100%}
-    .perk-badge{display:inline-block;background:#0b1220;padding:6px 8px;border-radius:6px;border:1px solid #233044;color:#9fe7ff}
-    footer{margin-top:12px;color:var(--muted);font-size:13px;text-align:center}
-    @media(max-width:980px){.grid{grid-template-columns:1fr;}.panel{padding:12px}}
+    .wrap { max-width: 980px; width: 100%; }
+    h1 { color: #7df9ff; text-shadow: 0 0 10px #7df9ff55; }
+    .back-btn {
+      background: #1d243b; padding: 8px 12px; border-radius: 8px;
+      color: #e5e7eb; text-decoration: none; border: 1px solid #374151;
+    }
+    .panel {
+      background: #0b1020; padding: 14px; border-radius: 10px;
+      box-shadow: 0 0 15px #000; margin-bottom: 14px;
+    }
+    .ad-slot {
+      background: #0f1724; border: 1px dashed #334155; border-radius: 8px;
+      text-align: center; color: #94a3b8; padding: 10px; min-height: 90px;
+    }
+    .choice { background: #1d243b; color: #e5e7eb; border: 1px solid #374151;
+      padding: 8px 10px; border-radius: 8px; cursor: pointer; margin: 4px 0; }
+    .log { max-height: 300px; overflow-y: auto; }
+    .log-entry { padding: 6px; border-bottom: 1px solid #111827; }
+    .modal {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+      display: none; align-items: center; justify-content: center;
+    }
+    .modal-card {
+      background: #0b1020; padding: 20px; border-radius: 10px;
+      width: 90%; max-width: 500px; box-shadow: 0 0 20px #000;
+    }
   </style>
 </head>
+
 <body>
-  <div class="wrap">
 
-    <header>
-      <h1>Life Sim — InfinitePlayGames</h1>
-      <div style="display:flex;gap:8px;align-items:center">
-        <a class="back-btn" href="/Menus/Games.html">← Back to Games Menu</a>
-        <a class="back-btn" id="link-og" href="/Menus/Games.html">Original Game</a>
-      </div>
-    </header>
+<!-- LOAD YOUR REAL MULTITAG AD SYSTEM -->
+<script src="/Ads/adloader.js"></script>
 
-    <!-- top banner ad slot (visible) -->
-    <div class="panel top-ad ad-slot" id="ad-top">Ad slot — top banner</div>
+<div class="wrap">
 
-    <div class="grid">
-      <!-- main column -->
-      <div>
-        <!-- Start screen: pick stats -->
-        <div class="panel start-screen" id="startScreen">
-          <div style="display:flex;justify-content:space-between;align-items:center">
-            <div>
-              <div class="small">Customize your start</div>
-              <strong>Distribute 10 points across Health, Happiness, Hunger, and Money</strong>
-            </div>
-            <div class="small">Start Age: <strong>3</strong></div>
-          </div>
+  <header style="display:flex;justify-content:space-between;align-items:center;">
+    <h1>Life Sim — InfinitePlayGames</h1>
+    <a class="back-btn" href="/Menus/Games.html">← Back to Games Menu</a>
+  </header>
 
-          <div style="margin-top:12px;display:grid;gap:8px">
-            <div class="stat-slider">
-              <div style="width:110px"><div class="small">Health</div><div id="startHealthVal">3</div></div>
-              <input id="startHealth" type="range" min="1" max="6" value="3" />
-            </div>
-            <div class="stat-slider">
-              <div style="width:110px"><div class="small">Happiness</div><div id="startHappyVal">3</div></div>
-              <input id="startHappy" type="range" min="1" max="6" value="3" />
-            </div>
-            <div class="stat-slider">
-              <div style="width:110px"><div class="small">Hunger</div><div id="startHungerVal">3</div></div>
-              <input id="startHunger" type="range" min="1" max="6" value="3" />
-            </div>
-            <div class="stat-slider">
-              <div style="width:110px"><div class="small">Money</div><div id="startMoneyVal">1</div></div>
-              <input id="startMoney" type="range" min="0" max="4" value="1" />
-            </div>
+  <!-- TOP BANNER AD -->
+  <div id="ad-top" class="ad-slot">Loading ad…</div>
 
-            <div class="small">Points left: <span id="pointsLeft">0</span></div>
+  <!-- START SCREEN -->
+  <div id="startScreen" class="panel">
+    <h2>Choose Your Starting Stats</h2>
+    <p>You have <strong>10 points</strong> to distribute.</p>
 
-            <div style="display:flex;gap:8px">
-              <button class="choice" id="btnStart">Start Life</button>
-              <button class="choice" id="btnRandom">Randomize</button>
-              <button class="choice" id="btnReset">Reset</button>
-            </div>
-            <div class="small">Tip: You can watch an ad during the game to get perks like food, money, or happiness boosts.</div>
-          </div>
-        </div>
+    <label>Health: <span id="startHealthVal">3</span></label>
+    <input id="startHealth" type="range" min="1" max="6" value="3">
 
-        <!-- choices & inline ad -->
-        <div class="panel">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-            <strong>Choices for this year</strong>
-            <div class="small">Age <span id="age">3</span></div>
-          </div>
+    <label>Happiness: <span id="startHappyVal">3</span></label>
+    <input id="startHappy" type="range" min="1" max="6" value="3">
 
-          <div class="ad-slot inline-ad" id="ad-inline">Inline ad slot</div>
+    <label>Hunger: <span id="startHungerVal">3</span></label>
+    <input id="startHunger" type="range" min="1" max="6" value="3">
 
-          <div class="choices" id="choiceArea"></div>
-        </div>
+    <label>Money: <span id="startMoneyVal">1</span></label>
+    <input id="startMoney" type="range" min="0" max="4" value="1">
 
-        <!-- log -->
-        <div class="panel">
-          <strong>Life Log</strong>
-          <div class="log" id="log"></div>
-        </div>
+    <p>Points left: <strong id="pointsLeft">0</strong></p>
 
-        <!-- bottom ad -->
-        <div class="panel" style="margin-top:10px">
-          <div class="ad-slot" id="ad-bottom">Bottom banner ad slot</div>
-        </div>
-      </div>
-
-      <!-- right column -->
-      <aside>
-        <div class="panel">
-          <strong>Stats</strong>
-          <div class="stats" style="margin-top:8px">
-            <div class="stat"><div class="label">Money</div><div class="value" id="money">$0</div></div>
-            <div class="stat"><div class="label">Health</div><div class="value" id="health">90</div></div>
-            <div class="stat"><div class="label">Happiness</div><div class="value" id="happiness">80</div></div>
-            <div class="stat"><div class="label">Hunger</div><div class="value" id="hunger">80</div></div>
-            <div class="stat"><div class="label">Education</div><div class="value" id="education">None</div></div>
-            <div class="stat"><div class="label">Job</div><div class="value" id="job">None</div></div>
-            <div class="stat"><div class="label">Relationship</div><div class="value" id="relationship">Single</div></div>
-            <div class="stat"><div class="label">Home</div><div class="value" id="home">With family</div></div>
-            <div class="stat"><div class="label">Children</div><div class="value" id="children">0</div></div>
-          </div>
-        </div>
-
-        <div class="panel" style="margin-top:12px">
-          <strong>Perks & Ads</strong>
-          <div style="margin-top:8px;display:flex;flex-direction:column;gap:8px">
-            <button class="choice" id="watchAdSnack">Watch Ad for Snack (+Hunger)</button>
-            <button class="choice" id="watchAdMoney">Watch Ad for Cash (+$200)</button>
-            <button class="choice" id="shareFeedback">Share Feedback (in-game) for Perk</button>
-            <div class="small">These actions will open an ad modal. If your ad system injects a real ad into the modal, it will show there. If not, a short simulated ad will run and then grant the perk.</div>
-          </div>
-        </div>
-
-        <div class="panel" style="margin-top:12px">
-          <strong>Save / Load</strong>
-          <div style="display:flex;gap:8px;margin-top:8px">
-            <button class="choice" id="saveBtn">Save</button>
-            <button class="choice" id="loadBtn">Load</button>
-            <button class="choice" id="clearBtn">Clear</button>
-          </div>
-          <div class="small" style="margin-top:8px">Saved locally in your browser.</div>
-        </div>
-      </aside>
-    </div>
-
-    <footer>InfinitePlayGames — build, expand, and monetize. Ads are loaded via the site's global ad loader.</footer>
+    <button id="btnStart" class="choice">Start Life</button>
+    <button id="btnRandom" class="choice">Randomize</button>
+    <button id="btnReset" class="choice">Reset</button>
   </div>
 
-  <!-- AD MODAL (pre/post-play & perk ads) -->
-  <div id="adModal" class="modal" style="display:none">
-    <div class="modal-card">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
-        <strong id="adModalTitle">Sponsored</strong>
-        <button class="modal-close" id="adCloseBtn">Close</button>
-      </div>
-      <div id="adModalSlot" class="ad-slot" style="min-height:120px">Ad will appear here</div>
-      <div style="display:flex;justify-content:flex-end;margin-top:10px">
-        <button class="choice" id="adSkipBtn">Skip (simulate)</button>
-      </div>
-    </div>
+  <!-- INLINE AD -->
+  <div id="ad-inline" class="ad-slot">Loading ad…</div>
+
+  <!-- CHOICES -->
+  <div class="panel">
+    <h2>Choices for this year (Age <span id="age">3</span>)</h2>
+    <div id="choiceArea"></div>
   </div>
 
-  <!-- GLOBAL INFINITEPLAY AD LOADER (your site already uses this) -->
-  <script src="/Ads/adloader.js"></script>
+  <!-- LOG -->
+  <div class="panel">
+    <h2>Life Log</h2>
+    <div id="log" class="log"></div>
+  </div>
 
-  <script>
-    // ---------- Game state ----------
-    const DEFAULT = {
-      age: 3, money: 0, health: 90, happiness: 80, hunger: 80,
-      educationLevel: 0, job: null, relationshipStatus: "Single",
-      partner: null, children: [], home: "Living with family", alive: true
-    };
-    let state = JSON.parse(JSON.stringify(DEFAULT));
+  <!-- BOTTOM BANNER AD -->
+  <div id="ad-bottom" class="ad-slot">Loading ad…</div>
 
-    // ---------- DOM ----------
-    const el = id => document.getElementById(id);
-    const logEl = el('log');
-    const choiceArea = el('choiceArea');
-    const adModal = el('adModal');
-    const adModalSlot = el('adModalSlot');
-    const adModalTitle = el('adModalTitle');
-    const adCloseBtn = el('adCloseBtn');
-    const adSkipBtn = el('adSkipBtn');
+</div>
 
-    // ---------- Start screen controls ----------
-    const startHealth = el('startHealth'), startHappy = el('startHappy'), startHunger = el('startHunger'), startMoney = el('startMoney');
-    const startHealthVal = el('startHealthVal'), startHappyVal = el('startHappyVal'), startHungerVal = el('startHungerVal'), startMoneyVal = el('startMoneyVal');
-    const pointsLeft = el('pointsLeft');
-    const btnStart = el('btnStart'), btnRandom = el('btnRandom'), btnReset = el('btnReset');
+<!-- AD MODAL -->
+<div id="adModal" class="modal">
+  <div class="modal-card">
+    <h3 id="adModalTitle">Sponsored</h3>
+    <div id="adModalSlot" class="ad-slot" style="min-height:120px;">Loading ad…</div>
+    <button id="adCloseBtn" class="choice">Close</button>
+  </div>
+</div>
 
-    function updateStartUI(){
-      startHealthVal.textContent = startHealth.value;
-      startHappyVal.textContent = startHappy.value;
-      startHungerVal.textContent = startHunger.value;
-      startMoneyVal.textContent = startMoney.value;
-      const used = Number(startHealth.value) + Number(startHappy.value) + Number(startHunger.value) + Number(startMoney.value);
-      const left = 13 - used; // allow total 13 for some flexibility
-      pointsLeft.textContent = left >= 0 ? left : 0;
+<script>
+/*  
+  /* ============================================================
+   LIFE SIM — FULL GAME + AD LOGIC
+   InfinitePlayGames — Updated for MultiTag Ads
+   ============================================================ */
+
+/* ---------- STATE ---------- */
+let state = {
+  age: 3,
+  money: 0,
+  health: 90,
+  happiness: 80,
+  hunger: 80,
+  educationLevel: 0,
+  job: null,
+  relationshipStatus: "Single",
+  partner: null,
+  children: [],
+  home: "Living with family",
+  alive: true
+};
+
+/* ---------- DOM SHORTCUT ---------- */
+const $ = id => document.getElementById(id);
+
+/* ---------- LOGGING ---------- */
+function log(msg) {
+  const div = document.createElement("div");
+  div.className = "log-entry";
+  div.innerHTML = `<strong>Age ${state.age}:</strong> ${msg}`;
+  $("log").prepend(div);
+}
+
+/* ---------- CLAMP ---------- */
+function clamp(v, min, max) {
+  return Math.max(min, Math.min(max, v));
+}
+
+/* ---------- UPDATE UI ---------- */
+function updateUI() {
+  $("age").textContent = state.age;
+  $("money").textContent = "$" + state.money;
+  $("health").textContent = state.health;
+  $("happiness").textContent = state.happiness;
+  $("hunger").textContent = state.hunger;
+
+  const edu = ["None", "School", "High School", "College"];
+  $("education").textContent = edu[state.educationLevel];
+
+  $("job").textContent = state.job || "None";
+  $("relationship").textContent = state.relationshipStatus;
+  $("home").textContent = state.home;
+  $("children").textContent = state.children.length;
+
+  refreshAds();
+}
+
+/* ---------- REFRESH ADS ---------- */
+function refreshAds() {
+  try {
+    if (window.refreshAdSlot) {
+      window.refreshAdSlot("ad-top");
+      window.refreshAdSlot("ad-inline");
+      window.refreshAdSlot("ad-bottom");
+      window.refreshAdSlot("adModalSlot");
     }
-    [startHealth,startHappy,startHunger,startMoney].forEach(i=>i.addEventListener('input',updateStartUI));
-    updateStartUI();
+  } catch (e) {}
+}
 
-    btnRandom.onclick = () => {
-      startHealth.value = 3 + Math.floor(Math.random()*3);
-      startHappy.value = 3 + Math.floor(Math.random()*3);
-      startHunger.value = 3 + Math.floor(Math.random()*3);
-      startMoney.value = Math.floor(Math.random()*3);
-      updateStartUI();
-    };
-    btnReset.onclick = () => {
-      startHealth.value=3; startHappy.value=3; startHunger.value=3; startMoney.value=1; updateStartUI();
-    };
+/* ---------- AD MODAL ---------- */
+function showAdModal(title, callback) {
+  $("adModalTitle").textContent = title;
+  $("adModal").style.display = "flex";
 
-    btnStart.onclick = () => {
-      // apply start values
-      state.age = 3;
-      state.health = Number(startHealth.value) * 15 + 30; // scale
-      state.happiness = Number(startHappy.value) * 12 + 20;
-      state.hunger = Number(startHunger.value) * 12 + 20;
-      state.money = Number(startMoney.value) * 500;
-      state.alive = true;
-      state.educationLevel = 0; state.job = null; state.relationshipStatus = "Single";
-      state.children = []; state.home = "Living with family";
-      el('startScreen').style.display = 'none';
-      renderAll();
-      log("Your life begins at age 3.");
-      // show a pre-game ad (first impression)
-      showAdModal("Welcome — Sponsored", ()=>{});
-    };
+  refreshAds();
 
-    // ---------- Logging ----------
-    function log(msg){
-      const d = document.createElement('div');
-      d.className = 'log-entry';
-      d.innerHTML = `<span class="year-label">Age ${state.age}:</span> ${msg}`;
-      logEl.prepend(d);
+  let done = false;
+
+  function finish() {
+    if (done) return;
+    done = true;
+    $("adModal").style.display = "none";
+    callback();
+  }
+
+  $("adCloseBtn").onclick = finish;
+
+  // Fallback: simulate ad if MultiTag doesn't fire
+  setTimeout(finish, 2500);
+}
+
+/* ---------- START SCREEN LOGIC ---------- */
+const startHealth = $("startHealth");
+const startHappy = $("startHappy");
+const startHunger = $("startHunger");
+const startMoney = $("startMoney");
+
+function updateStartStats() {
+  $("startHealthVal").textContent = startHealth.value;
+  $("startHappyVal").textContent = startHappy.value;
+  $("startHungerVal").textContent = startHunger.value;
+  $("startMoneyVal").textContent = startMoney.value;
+
+  const used =
+    Number(startHealth.value) +
+    Number(startHappy.value) +
+    Number(startHunger.value) +
+    Number(startMoney.value);
+
+  $("pointsLeft").textContent = 13 - used;
+}
+
+[startHealth, startHappy, startHunger, startMoney].forEach(slider =>
+  slider.addEventListener("input", updateStartStats)
+);
+
+updateStartStats();
+
+/* ---------- START GAME ---------- */
+$("btnStart").onclick = () => {
+  state.health = Number(startHealth.value) * 15 + 30;
+  state.happiness = Number(startHappy.value) * 12 + 20;
+  state.hunger = Number(startHunger.value) * 12 + 20;
+  state.money = Number(startMoney.value) * 500;
+
+  $("startScreen").style.display = "none";
+
+  updateUI();
+  log("Your life begins at age 3.");
+
+  showAdModal("Welcome — Sponsored", () => {});
+};
+
+$("btnRandom").onclick = () => {
+  startHealth.value = 2 + Math.floor(Math.random() * 4);
+  startHappy.value = 2 + Math.floor(Math.random() * 4);
+  startHunger.value = 2 + Math.floor(Math.random() * 4);
+  startMoney.value = Math.floor(Math.random() * 4);
+  updateStartStats();
+};
+
+$("btnReset").onclick = () => {
+  startHealth.value = 3;
+  startHappy.value = 3;
+  startHunger.value = 3;
+  startMoney.value = 1;
+  updateStartStats();
+};
+
+/* ---------- END OF YEAR ---------- */
+function endOfYear() {
+  state.age++;
+  state.children.forEach(c => (c.age += 1));
+
+  state.hunger = clamp(state.hunger - 8, 0, 100);
+  state.health = clamp(state.health - (state.hunger < 20 ? 6 : 1), 0, 100);
+
+  if (state.happiness < 20) state.health = clamp(state.health - 2, 0, 100);
+  if (state.age > 75) state.health = clamp(state.health - 2, 0, 100);
+
+  if (Math.random() < 0.03) {
+    const dmg = 8 + Math.floor(Math.random() * 12);
+    state.health = clamp(state.health - dmg, 0, 100);
+    log("A small accident occurred. Health -" + dmg + ".");
+  }
+
+  if (Math.random() < 0.04) {
+    const bonus = 100 + Math.floor(Math.random() * 400);
+    state.money += bonus;
+    log("You received a bonus of $" + bonus + ".");
+  }
+
+  if (state.health <= 0 || state.hunger <= 0) {
+    state.alive = false;
+    log("Your life ended. Refresh to start again.");
+    updateUI();
+    return;
+  }
+
+  if (state.age >= 100) {
+    state.alive = false;
+    log("You lived a long life and passed peacefully.");
+    updateUI();
+    return;
+  }
+
+  updateUI();
+}
+
+/* ---------- ADD CHOICE BUTTON ---------- */
+function addChoice(label, fn) {
+  const btn = document.createElement("button");
+  btn.className = "choice";
+  btn.textContent = label;
+
+  btn.onclick = () => {
+    const preAd = Math.random() < 0.18;
+
+    if (preAd) {
+      showAdModal("Sponsored", () => {
+        fn();
+        postAction();
+      });
+    } else {
+      fn();
+      postAction();
     }
+  };
 
-    // ---------- Utilities ----------
-    function clamp(v,min,max){return Math.max(min,Math.min(max,v));}
-    function saveGame(){ localStorage.setItem('lifesim_save', JSON.stringify(state)); alert('Saved locally.'); }
-    function loadGame(){ const s = localStorage.getItem('lifesim_save'); if(s){ state = JSON.parse(s); renderAll(); log('Loaded saved life.'); } else alert('No save found.'); }
-    function clearSave(){ localStorage.removeItem('lifesim_save'); alert('Save cleared.'); }
+  $("choiceArea").appendChild(btn);
+}
 
-    // ---------- Ad modal logic ----------
-    // showAdModal(title, onComplete, options)
-    // options: {slotId: 'ad-top'|'ad-inline'|'ad-bottom'|'adModalSlot', simulateMs: 2500}
-    function showAdModal(title, onComplete, options = {}){
-      adModalTitle.textContent = title || 'Sponsored';
-      adModalSlot.innerHTML = ''; // clear previous
-      adModal.style.display = 'flex';
+function postAction() {
+  const postAd = Math.random() < 0.18;
 
-      // If your global adloader scans for .ad-slot and injects ads, it should fill adModalSlot automatically.
-      // We also attempt to call a global hook if present (some loaders expose a function to refresh slots).
-      try{
-        // If your adloader exposes a refresh function, call it with the slot element id.
-        if(window.refreshAdSlot && typeof window.refreshAdSlot === 'function'){
-          window.refreshAdSlot('adModalSlot');
-        }
-      }catch(e){/*ignore*/}
+  if (postAd) {
+    showAdModal("Thanks for playing", () => {
+      endOfYear();
+    });
+  } else {
+    endOfYear();
+  }
+}
 
-      // Fallback simulated ad: if no real ad appears, simulate a short wait then complete.
-      const simulateMs = options.simulateMs || 2200;
-      let completed = false;
-      const finish = () => {
-        if(completed) return;
-        completed = true;
-        adModal.style.display = 'none';
-        onComplete && onComplete();
-      };
+/* ---------- RENDER CHOICES ---------- */
+function renderChoices() {
+  $("choiceArea").innerHTML = "";
 
-      // If the adloader sets a flag on the slot (example: slotLoaded), we could listen.
-      // For safety, we simulate a short ad if nothing else triggers finish.
-      const timer = setTimeout(()=> finish(), simulateMs);
+  if (!state.alive) {
+    $("choiceArea").innerHTML = "<p>You have died. Refresh to restart.</p>";
+    return;
+  }
 
-      // Close and Skip buttons
-      adCloseBtn.onclick = () => { clearTimeout(timer); finish(); };
-      adSkipBtn.onclick = () => { clearTimeout(timer); finish(); };
+  if (state.age <= 5) {
+    addChoice("Play with toys", () => {
+      state.happiness += 10;
+      state.hunger -= 4;
+      log("You played happily.");
+    });
 
-      // If adloader provides a callback when ad finishes, it should call window.onAdFinished(slotId)
-      window.onAdFinished = function(slotId){
-        clearTimeout(timer);
-        finish();
-      };
-    }
+    addChoice("Stay with family", () => {
+      state.happiness += 6;
+      log("You stayed close to family.");
+    });
+  }
 
-    // ---------- Perk actions (watch ad to get perk) ----------
-    el('watchAdSnack').onclick = () => {
-      showAdModal("Watch ad to get a Snack (+40 Hunger)", ()=>{
+  else if (state.age <= 12) {
+    addChoice("Go to school", () => {
+      state.educationLevel = Math.max(state.educationLevel, 1);
+      state.happiness -= 2;
+      log("You attended school.");
+    });
+
+    addChoice("Play with friends", () => {
+      state.happiness += 12;
+      state.health += 2;
+      log("You had fun with friends.");
+    });
+
+    addChoice("Stay home", () => {
+      state.happiness += 5;
+      log("You relaxed at home.");
+    });
+  }
+
+  else if (state.age <= 18) {
+    addChoice("Study hard", () => {
+      state.educationLevel = Math.max(state.educationLevel, 2);
+      state.happiness -= 3;
+      log("You focused on school.");
+    });
+
+    addChoice("Part-time job", () => {
+      const pay = 600 + Math.floor(Math.random() * 400);
+      state.money += pay;
+      state.hunger -= 6;
+      log("You earned $" + pay + ".");
+    });
+
+    addChoice("Hang out", () => {
+      state.happiness += 10;
+      state.money -= 20;
+      log("You chilled with friends.");
+    });
+  }
+
+  else {
+    addChoice("Work", () => {
+      const pay = 2000 + Math.floor(Math.random() * 1500);
+      state.money += pay;
+      state.hunger -= 8;
+      state.happiness -= 2;
+      log("You worked and earned $" + pay + ".");
+    });
+
+    addChoice("Take care of yourself", () => {
+      state.hunger = clamp(state.hunger + 40, 0, 100);
+      state.health = clamp(state.health + 18, 0, 100);
+      state.happiness = clamp(state.happiness + 12, 0, 100);
+      state.money -= 150;
+      log("You rested and ate well.");
+    });
+
+    addChoice("Buy groceries ($50)", () => {
+      if (state.money >= 50) {
+        state.money -= 50;
+        state.hunger = clamp(state.hunger + 30, 0, 100);
+        log("You bought groceries.");
+      } else log("Not enough money.");
+    });
+
+    addChoice("Eat at restaurant ($120)", () => {
+      if (state.money >= 120) {
+        state.money -= 120;
+        state.hunger = clamp(state.hunger + 60, 0, 100);
+        state.happiness += 6;
+        log("You ate at a restaurant.");
+      } else log("Not enough money.");
+    });
+
+    addChoice("Watch ad for snack (+40 Hunger)", () => {
+      showAdModal("Watch ad for snack", () => {
         state.hunger = clamp(state.hunger + 40, 0, 100);
-        log("You watched an ad and got a snack. Hunger +40.");
-        renderAll();
-      }, {simulateMs:2500});
-    };
-    el('watchAdMoney').onclick = () => {
-      showAdModal("Watch ad to get Cash (+$200)", ()=>{
+        log("You watched an ad and got a snack.");
+        updateUI();
+      });
+    });
+
+    addChoice("Watch ad for $200", () => {
+      showAdModal("Watch ad for cash", () => {
         state.money += 200;
-        log("You watched an ad and received $200.");
-        renderAll();
-      }, {simulateMs:2500});
-    };
-    el('shareFeedback').onclick = () => {
-      // This is an in-game feedback action (not instructing to post fake reviews).
-      showAdModal("Share feedback (in-game) for a perk", ()=>{
-        state.happiness = clamp(state.happiness + 12,0,100);
-        state.money += 50;
-        log("You shared feedback and received a small perk (happiness +12, $50).");
-        renderAll();
-      }, {simulateMs:2000});
-    };
+        log("You watched an ad and got $200.");
+        updateUI();
+      });
+    });
+  }
 
-    // ---------- Save/load handlers ----------
-    el('saveBtn').onclick = saveGame;
-    el('loadBtn').onclick = loadGame;
-    el('clearBtn').onclick = clearSave;
+  updateUI();
+}
 
-    // ---------- Core game loop: choices ----------
-    function renderChoices(){
-      choiceArea.innerHTML = '';
-      if(!state.alive){
-        const p = document.createElement('div'); p.className='small'; p.textContent='You are no longer alive. Refresh to start a new life.'; choiceArea.appendChild(p); return;
-      }
+/* ---------- INITIALIZE ---------- */
+function renderAll() {
+  updateUI();
+  renderChoices();
+}
 
-      // Age phases
-      if(state.age <= 5){
-        addChoice("Play with toys", ()=>{ state.happiness = clamp(state.happiness+10,0,100); state.hunger = clamp(state.hunger-4,0,100); log("You played and had fun."); }, true);
-        addChoice("Stay with family", ()=>{ state.happiness = clamp(state.happiness+6,0,100); log("You felt safe with family."); }, true);
-      } else if(state.age <= 12){
-        addChoice("Go to school", ()=>{ state.educationLevel = Math.max(state.educationLevel,1); state.happiness = clamp(state.happiness-2,0,100); log("You attended school and learned."); }, true);
-        addChoice("Play with friends", ()=>{ state.happiness = clamp(state.happiness+12,0,100); state.health = clamp(state.health+2,0,100); log("You had fun with friends."); }, true);
-        addChoice("Stay home and chill", ()=>{ state.happiness = clamp(state.happiness+5,0,100); log("You relaxed at home."); }, true);
-      } else if(state.age <= 18){
-        addChoice("Study hard", ()=>{ state.educationLevel = Math.max(state.educationLevel,2); state.happiness = clamp(state.happiness-3,0,100); log("You focused on studies."); }, true);
-        addChoice("Part-time job", ()=>{ const pay = 600 + Math.floor(Math.random()*400); state.money += pay; state.hunger = clamp(state.hunger-6,0,100); log("You worked part-time and earned $" + pay + "."); }, true);
-        addChoice("Hang out", ()=>{ state.happiness = clamp(state.happiness+10,0,100); state.money = Math.max(0,state.money-20); log("You chilled with friends."); }, true);
-      } else {
-        // adult choices
-        addChoice("Work (earn money)", ()=>{ let pay = 2000 + Math.floor(Math.random()*1500); state.money += pay; state.hunger = clamp(state.hunger-8,0,100); state.happiness = clamp(state.happiness-2,0,100); log("You worked and earned $" + pay + "."); }, true);
-        addChoice("Take care of yourself (eat & rest)", ()=>{ state.hunger = clamp(state.hunger+40,0,100); state.health = clamp(state.health+18,0,100); state.happiness = clamp(state.happiness+12,0,100); state.money = Math.max(0,state.money-150); log("You rested and ate well. Health +18, Hunger +40."); }, true);
-        addChoice("Study / College", ()=>{ if(state.educationLevel < 3){ state.educationLevel = 3; state.money = Math.max(0,state.money-1500); log("You completed college."); } else { state.happiness = clamp(state.happiness+3,0,100); log("You took extra courses."); } }, true);
+renderAll();
 
-        // relationship
-        if(state.relationshipStatus === "Single"){
-          addChoice("Start dating", ()=>{ if(Math.random()<0.7){ state.relationshipStatus = "In a relationship"; log("You started dating someone."); state.happiness = clamp(state.happiness+10,0,100);} else { log("Dating didn't work out this year."); } }, true);
-        } else if(state.relationshipStatus === "In a relationship"){
-          addChoice("Get married", ()=>{ state.relationshipStatus = "Married"; log("You got married."); state.happiness = clamp(state.happiness+12,0,100); }, true);
-          addChoice("Break up", ()=>{ state.relationshipStatus = "Single"; log("You ended the relationship."); state.happiness = clamp(state.happiness-10,0,100); }, true);
-        } else if(state.relationshipStatus === "Married"){
-          addChoice("Have a child", ()=>{ const name = "Child " + (state.children.length+1); state.children.push({name,age:0}); state.money = Math.max(0,state.money-400); state.happiness = clamp(state.happiness+10,0,100); log("You had " + name + "."); }, true);
-          addChoice("Consider divorce", ()=>{ if(Math.random()<0.45){ state.relationshipStatus = "Single"; state.partner = null; state.money = Math.max(0,state.money-2000); state.happiness = clamp(state.happiness-18,0,100); log("You divorced. It was rough."); } else { state.happiness = clamp(state.happiness-4,0,100); log("You worked things out this year."); } }, true);
-        }
+*/
+</script>
 
-        // housing
-        if(state.home === "Living with family"){
-          addChoice("Rent an apartment ($1500)", ()=>{ if(state.money >= 1500){ state.money -= 1500; state.home = "Rented apartment"; state.happiness = clamp(state.happiness+8,0,100); log("You moved into a rented apartment."); } else log("Not enough money to rent."); }, true);
-        } else if(state.home === "Rented apartment"){
-          addChoice("Buy small house ($15000)", ()=>{ if(state.money >= 15000){ state.money -= 15000; state.home = "Small house"; state.happiness = clamp(state.happiness+12,0,100); log("You bought a small house."); } else log("Need more savings to buy a house."); }, true);
-        } else if(state.home === "Small house"){
-          addChoice("Upgrade to big house ($50000)", ()=>{ if(state.money >= 50000){ state.money -= 50000; state.home = "Big house"; state.happiness = clamp(state.happiness+15,0,100); log("You upgraded to a big house."); } else log("Not enough money to upgrade."); }, true);
-          addChoice("Sell house (get $30000)", ()=>{ state.money += 30000; state.home = "Rented apartment"; state.happiness = clamp(state.happiness-6,0,100); log("You sold your house and went back to renting."); }, true);
-        }
-
-        // food options
-        addChoice("Buy groceries ($50) — Replenish Hunger +30", ()=>{ if(state.money >= 50){ state.money -= 50; state.hunger = clamp(state.hunger+30,0,100); log("You bought groceries. Hunger +30."); } else log("Not enough money for groceries."); }, true);
-        addChoice("Eat at restaurant ($120) — Replenish Hunger +60", ()=>{ if(state.money >= 120){ state.money -= 120; state.hunger = clamp(state.hunger+60,0,100); state.happiness = clamp(state.happiness+6,0,100); log("You ate at a restaurant. Hunger +60."); } else log("Not enough money for restaurant."); }, true);
-
-        // watch ad for snack (inline)
-        addChoice("Watch ad for snack (+40 Hunger)", ()=>{ showAdModal("Watch ad to get Snack", ()=>{ state.hunger = clamp(state.hunger+40,0,100); log("You watched an ad and got a snack. Hunger +40."); renderAll(); }); }, true);
-      }
-
-      // always-available small actions
-      addChoice("Save game", ()=>{ saveGame(); }, true);
-      addChoice("End year (skip choices)", ()=>{ endOfYear(); }, true);
-    }
-
-    function addChoice(label, fn, cond=true){
-      if(!cond) return;
-      const btn = document.createElement('button');
-      btn.className = 'choice';
-      btn.textContent = label;
-      btn.onclick = () => {
-        // show pre-action ad sometimes (random)
-        const showPre = Math.random() < 0.18; // ~18% chance
-        if(showPre){
-          showAdModal("Sponsored — Quick Ad", ()=>{ fn(); postAction(); }, {simulateMs:2000});
-        } else {
-          fn();
-          postAction();
-        }
-      };
-      choiceArea.appendChild(btn);
-    }
-
-    function postAction(){
-      // after action, show post-play ad sometimes
-      const showPost = Math.random() < 0.18;
-      if(showPost){
-        showAdModal("Sponsored — Thanks for playing", ()=>{ endOfYear(); }, {simulateMs:2000});
-      } else {
-        endOfYear();
-      }
-    }
-
-    // ---------- End of year effects ----------
-    function endOfYear(){
-      // age children
-      state.children.forEach(c=>c.age++);
-      // age player
-      state.age++;
-      // hunger and health decay (balanced)
-      state.hunger = clamp(state.hunger - 8, 0, 100);
-      // health penalty if hunger low
-      state.health = clamp(state.health - (state.hunger < 20 ? 6 : 1), 0, 100);
-      // happiness affects health slowly
-      if(state.happiness < 20) state.health = clamp(state.health - 2, 0, 100);
-      // older age penalty
-      if(state.age > 75) state.health = clamp(state.health - 2, 0, 100);
-
-      // random events (small)
-      if(Math.random() < 0.03){ // 3% chance of accident
-        const dmg = 8 + Math.floor(Math.random()*12);
-        state.health = clamp(state.health - dmg, 0, 100);
-        log("A small accident occurred. Health -" + dmg + ".");
-      }
-      if(Math.random() < 0.04){ // 4% chance of bonus
-        const bonus = 100 + Math.floor(Math.random()*400);
-        state.money += bonus;
-        log("You received a small unexpected bonus of $" + bonus + ".");
-      }
-
-      // death checks
-      if(state.health <= 0 || state.hunger <= 0){
-        state.alive = false;
-        log("Your life ended. Refresh to start a new life.");
-        renderAll();
-        return;
-      }
-      // natural lifespan end
-      if(state.age >= 100){
-        state.alive = false;
-        log("You lived a long life and passed peacefully.");
-        renderAll();
-        return;
-      }
-
-      renderAll();
-    }
-
-    // ---------- Render ----------
-    function renderAll(){
-      el('age').textContent = state.age;
-      el('money').textContent = '$' + state.money;
-      el('health').textContent = state.health;
-      el('happiness').textContent = state.happiness;
-      el('hunger').textContent = state.hunger;
-      const eduMap = ["None","School","High School","College"];
-      el('education').textContent = eduMap[state.educationLevel] || "None";
-      el('job').textContent = state.job || "None";
-      el('relationship').textContent = state.relationshipStatus;
-      el('home').textContent = state.home;
-      el('children').textContent = state.children.length;
-      renderChoices();
-      // attempt to refresh visible ad slots (if your loader supports it)
-      try{ if(window.refreshAdSlot) { window.refreshAdSlot('ad-top'); window.refreshAdSlot('ad-inline'); window.refreshAdSlot('ad-bottom'); } }catch(e){}
-    }
-
-    // ---------- Init: hide start if saved exists ----------
-    (function init(){
-      const saved = localStorage.getItem('lifesim_save');
-      if(saved){
-        // keep start screen visible so user can choose to load or start new
-      } else {
-        // default start screen visible
-      }
-      // Hook up ad slots: if your adloader scans .ad-slot it should already inject ads.
-      // We also attempt to call a global init if present.
-      try{ if(window.initAdLoader) window.initAdLoader(); }catch(e){}
-    })();
-
-    // ---------- Expose some helpers for adloader (optional) ----------
-    // If your adloader expects specific slot IDs, it can call window.onAdFinished('slotId') when ad completes.
-    window.lifesim = {
-      showAdModal, state, renderAll
-    };
-  </script>
 </body>
 </html>
