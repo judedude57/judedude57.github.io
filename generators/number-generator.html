@@ -1,92 +1,156 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Name Generator</title>
-    <link rel="stylesheet" href="../style.css">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f2f2f2;
-            text-align: center;
-            padding: 40px;
-        }
-        h1 {
-            font-size: 40px;
-            margin-bottom: 20px;
-        }
-        button {
-            margin: 5px;
-            padding: 10px 15px;
-            font-size: 16px;
-        }
-        #output {
-            margin-top: 20px;
-            font-size: 24px;
-            font-weight: bold;
-        }
-    </style>
-</head>
-<body>
+<meta charset="UTF-8">
+<title>Number Generator – Infinite Play</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<h1>Name Generator</h1>
+<!-- GLOBAL AD LOADER -->
+<script src="/ads/loader.js"></script>
 
-<div>
-    <button onclick="setMode('first')">First Name</button>
-    <button onclick="setMode('last')">Last Name</button>
-    <button onclick="setMode('full')">Full Name</button>
-</div>
-
-<br>
-
-<button onclick="generate()">Generate</button>
-
-<h2 id="output"></h2>
-
-<script>
-let mode = "full";
-
-function setMode(m) {
-    mode = m;
-}
-
-function generate() {
-    const firstNames = ["Alex", "Jordan", "Taylor", "Sky", "Riley", "Casey", "Morgan"];
-    const lastNames = ["Smith", "Johnson", "Brown", "Davis", "Miller", "Wilson", "Moore"];
-
-    let result = "";
-
-    if (mode === "first") {
-        result = firstNames[Math.floor(Math.random() * firstNames.length)];
-    } else if (mode === "last") {
-        result = lastNames[Math.floor(Math.random() * lastNames.length)];
-    } else {
-        const first = firstNames[Math.floor(Math.random() * firstNames.length)];
-        const last = lastNames[Math.floor(Math.random() * lastNames.length)];
-        result = first + " " + last;
+<style>
+    body {
+        background: #111;
+        color: #f5f5f5;
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        text-align: center;
     }
 
-    document.getElementById("output").innerText = result;
+    .home-btn {
+        position: fixed;
+        top: 10px;
+        left: 10px;
+        background: #222;
+        color: white;
+        padding: 10px 15px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-size: 16px;
+        border: 1px solid #444;
+        transition: 0.25s;
+        z-index: 9999;
+    }
+    .home-btn:hover {
+        background: #333;
+        transform: scale(1.05);
+        border-color: #7a2cff;
+        box-shadow: 0 0 10px #7a2cff;
+    }
+
+    .container {
+        max-width: 500px;
+        margin: 120px auto;
+        padding: 30px;
+        background: #1b1b1b;
+        border-radius: 10px;
+        box-shadow: 0 0 20px rgba(0,0,0,0.7);
+    }
+
+    h1 {
+        font-size: 36px;
+        margin-bottom: 10px;
+        color: #9d4bff;
+        text-shadow: 0 0 10px #9d4bff;
+    }
+
+    label {
+        font-size: 18px;
+        display: block;
+        margin-bottom: 10px;
+    }
+
+    input {
+        width: 80%;
+        padding: 12px;
+        font-size: 18px;
+        border-radius: 8px;
+        border: 1px solid #444;
+        background: #222;
+        color: white;
+        text-align: center;
+        margin-bottom: 20px;
+        transition: 0.25s;
+    }
+    input:focus {
+        border-color: #7a2cff;
+        box-shadow: 0 0 10px #7a2cff;
+        outline: none;
+    }
+
+    button {
+        padding: 12px 25px;
+        font-size: 20px;
+        background: #222;
+        color: white;
+        border-radius: 8px;
+        border: 2px solid #444;
+        cursor: pointer;
+        transition: 0.25s;
+    }
+    button:hover {
+        background: #333;
+        transform: scale(1.08);
+        border-color: #7a2cff;
+        box-shadow: 0 0 15px #7a2cff;
+    }
+
+    .result-box {
+        margin-top: 25px;
+        padding: 20px;
+        background: #151515;
+        border-radius: 8px;
+        border: 1px solid #333;
+        font-size: 26px;
+        color: #4bb8ff;
+        text-shadow: 0 0 10px #4bb8ff;
+        min-height: 40px;
+    }
+
+    .logo {
+        margin-top: 30px;
+        width: 180px;
+        opacity: 0.9;
+    }
+</style>
+</head>
+
+<body>
+
+<a href="/Menus/Games.html" class="home-btn">🏠 Home</a>
+
+<div class="container">
+    <h1>Number Generator</h1>
+
+    <label for="digits">How many digits?</label>
+    <input type="number" id="digits" min="1" max="50" placeholder="Enter number of digits">
+
+    <button onclick="generateNumber()">Generate</button>
+
+    <div class="result-box" id="result">Your number will appear here</div>
+
+    <img src="/Assets/Copilot_20260430_082824 (1).png" class="logo">
+</div>
+
+<script>
+function generateNumber() {
+    const digits = Number(document.getElementById("digits").value);
+
+    if (!digits || digits < 1) {
+        document.getElementById("result").innerText = "Enter a valid number of digits.";
+        return;
+    }
+
+    let number = "";
+
+    for (let i = 0; i < digits; i++) {
+        number += Math.floor(Math.random() * 10);
+    }
+
+    document.getElementById("result").innerText = number;
 }
 </script>
-  
-
-
-    <a href="https://judedude57.github.io" style="
-    position: fixed;
-    top: 10px;
-    left: 10px;
-    background: #222;
-    color: white;
-    padding: 10px 15px;
-    border-radius: 6px;
-    text-decoration: none;
-    font-size: 18px;
-    z-index: 99999;
-">
-    Home
-</a>
-
-
 
 </body>
 </html>
