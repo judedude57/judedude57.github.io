@@ -249,5 +249,59 @@
 
 </div>
 
+    <!-- FEATURED GAME FLOATING BUTTON -->
+<div id="featured-game">
+    ❤️ Featured Game: Love Calculator ❤️
+</div>
+
+<style>
+    #featured-game {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: #1b1b1b;
+        border: 2px solid #ff2bd4;
+        padding: 12px 18px;
+        border-radius: 10px;
+        color: #fff;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        box-shadow: 0 0 12px #ff2bd4;
+        z-index: 99999;
+        animation: pulseGlow 3s infinite ease-in-out;
+        transition: 0.25s ease;
+    }
+
+    #featured-game:hover {
+        transform: scale(1.08);
+        background: #2a2a2a;
+        box-shadow: 0 0 20px #ff4be0;
+        border-color: #ff4be0;
+    }
+
+    @keyframes pulseGlow {
+        0% { box-shadow: 0 0 8px #ff2bd4; }
+        50% { box-shadow: 0 0 20px #ff2bd4; }
+        100% { box-shadow: 0 0 8px #ff2bd4; }
+    }
+
+    @media (max-width: 600px) {
+        #featured-game {
+            font-size: 14px;
+            padding: 10px 14px;
+            bottom: 15px;
+            right: 15px;
+        }
+    }
+</style>
+
+<script>
+    document.getElementById("featured-game").onclick = function() {
+        window.location.href = "/generators/Love-Calc.html";
+    };
+</script>
+
+
 </body>
 </html>
