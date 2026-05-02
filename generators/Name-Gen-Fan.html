@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Fantasy Creature Name Generator | Infinite Play</title>
+
+<!-- ✅ SEO META TAGS -->
+<meta name="description" content="Generate unique fantasy names for elves, orcs, dwarves, dragonborn, and fairies. Choose race, first or last name, and get endless combinations.">
+<meta name="keywords" content="fantasy name generator, elf names, orc names, dwarf names, dragonborn names, fairy names, RPG names, Infinite Play tools">
+<meta name="author" content="Infinite Play">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- ✅ OPEN GRAPH (Social Sharing) -->
+<meta property="og:title" content="Fantasy Creature Name Generator | Infinite Play">
+<meta property="og:description" content="Generate fantasy names for elves, orcs, dwarves, dragonborn, and fairies. Endless combinations.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://yourdomain.com/Tools/FantasyNameGenerator.html">
+<meta property="og:image" content="https://yourdomain.com/Assets/infiniteplay-banner.png">
+
+<!-- ✅ SCHEMA.ORG JSON-LD -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Fantasy Creature Name Generator",
+  "url": "https://yourdomain.com/Tools/FantasyNameGenerator.html",
+  "applicationCategory": "UtilityApplication",
+  "operatingSystem": "All",
+  "description": "A fantasy name generator that creates unique names for elves, orcs, dwarves, dragonborn, and fairies. Choose race and name type.",
+  "creator": {
+    "@type": "Organization",
+    "name": "Infinite Play"
+  }
+}
+</script>
+
+<style>
+    body {
+        background: #0a0a0f;
+        color: #e0e0ff;
+        font-family: Arial, sans-serif;
+        text-align: center;
+        padding: 20px;
+    }
+
+    h1 {
+        color: #8a5cff;
+        text-shadow: 0 0 10px #8a5cff;
+    }
+
+    select, button {
+        padding: 10px;
+        margin: 10px;
+        background: #1a1a22;
+        color: #e0e0ff;
+        border: 2px solid #8a5cff;
+        border-radius: 6px;
+        font-size: 16px;
+    }
+
+    button:hover {
+        background: #8a5cff;
+        color: #000;
+        cursor: pointer;
+    }
+
+    #result {
+        margin-top: 20px;
+        font-size: 24px;
+        color: #9f7fff;
+        text-shadow: 0 0 8px #9f7fff;
+    }
+
+    .nav-buttons {
+        margin-top: 40px;
+    }
+
+    .nav-buttons a {
+        display: inline-block;
+        padding: 12px 20px;
+        margin: 10px;
+        background: #111;
+        border: 2px solid #8a5cff;
+        color: #e0e0ff;
+        text-decoration: none;
+        border-radius: 6px;
+    }
+
+    .nav-buttons a:hover {
+        background: #8a5cff;
+        color: #000;
+    }
+
+    .support-box {
+        margin-top: 40px;
+        padding: 15px;
+        background: #111;
+        border: 2px solid #8a5cff;
+        border-radius: 6px;
+    }
+
+    .support-box a {
+        color: #9f7fff;
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+    .support-box a:hover {
+        color: #fff;
+    }
+</style>
+</head>
+<body>
+
+<h1>Fantasy Creature Name Generator</h1>
+<p>Select a race or creature type and generate a unique name.</p>
+
+<!-- ⭐ AD CODE (Push Page Ad) -->
+<script>
+(function(s){
+    s.dataset.zone='10954674',
+    s.src='https://nap5k.com/tag.min.js'
+})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))
+</script>
+
+<select id="race">
+    <option value="elf">Elf</option>
+    <option value="orc">Orc</option>
+    <option value="dwarf">Dwarf</option>
+    <option value="dragonborn">Dragonborn</option>
+    <option value="fairy">Fairy</option>
+</select>
+
+<select id="nameType">
+    <option value="full">Full Name</option>
+    <option value="first">First Name Only</option>
+    <option value="last">Last Name Only</option>
+</select>
+
+<br>
+
+<button onclick="generateName()">Generate Name</button>
+
+<div id="result"></div>
+
+<div class="nav-buttons">
+    <a href="/Tools/tools.html">Back to Tools</a>
+</div>
+
+<div class="support-box">
+    ❤️ Support the Project:  
+    <br>
+    <a href="https://omg10.com/4/10952010" target="_blank">Click here to support Infinite Play</a>
+</div>
+
+<script>
+const names = {
+    elf: {
+        first: [
+            "Aelion","Lythara","Eldrin","Seraphiel","Vaelis","Thalara","Eryndor","Sylthas",
+            "Maelion","Aerith","Faelar","Nythira","Syllen","Vaelor","Elandra","Mythrin",
+            "Aeris","Thalion","Lirael","Vaenya","Erylia","Sorenel","Aelira","Mythos",
+            "Sylara","Thalior","Eryndra","Vaelion","Nytheris","Aelthas"
+        ],
+        last: [
+            "Moonwhisper","Starleaf","Silverbranch","Nightgale","Windrunner","Sunweaver",
+            "Shadowbrook","Brightsong","Stormpetal","Lightbloom","Frostwhisper","Starcrest",
+            "Moonspire","Dawnpetal","Nightthorn","Silvercrest","Windspire","Stormleaf",
+            "Brightwind","Shadowvale","Suncrest","Frostbloom","Starweaver","Moonthorn",
+            "Nightpetal","Silverwind","Stormcrest","Lightthorn","Windwhisper","Dawnleaf"
+        ]
+    },
+
+    orc: {
+        first: [
+            "Grom","Thrak","Morga","Zugor","Brakka","Throgar","Urgosh","Kragna",
+            "Durok","Moktar","Grasha","Rokhan","Zugra","Throkk","Brugga","Gorash",
+            "Mokgar","Rugosh","Thragga","Krogar","Zugrok","Brakka","Morgash","Gruk",
+            "Throgar","Rugnak","Goruk","Zugoth","Brugnak","Throsh"
+        ],
+        last: [
+            "Skullcrusher","Bonebreaker","Ironfist","Bloodfang","Warhammer","Stonehide",
+            "Stormbreaker","Rageclaw","Ironjaw","Bloodscar","Warspine","Stonefury",
+            "Skullbrand","Bonegnasher","Ironhide","Bloodmaw","Warclaw","Stonebreaker",
+            "Stormjaw","Ragefang","Ironscar","Bloodhammer","Warhide","Stonefang",
+            "Skullfury","Bonebrand","Ironfang","Bloodbreaker","Warjaw","Stoneclaw"
+        ]
+    },
+
+    dwarf: {
+        first: [
+            "Borin","Thrain","Dagna","Korin","Bralda","Thorin","Durin","Gimli",
+            "Bromli","Thalga","Dorin","Kragni","Brunna","Thaldrin","Dorgar","Kromli",
+            "Bralin","Thorga","Durnik","Kragna","Brulda","Thalgrim","Dornik","Krogar",
+            "Bromgar","Thalrin","Durga","Kraglin","Brunna","Thorgar"
+        ],
+        last: [
+            "Stonebeard","Ironshield","Deepdelver","Rockhammer","Goldforge","Anvilbreaker",
+            "Stonehelm","Ironfury","Deepforge","Rockbender","Goldbrand","Anviljaw",
+            "Stonefury","Ironbeard","Deepshield","Rockbreaker","Goldhelm","Anvilstone",
+            "Stonejaw","Ironbrand","Deephammer","Rockshield","Goldbreaker","Anvilcrest",
+            "Stoneforge","Ironcrest","Deepbrand","Rockhelm","Goldfury","Anvilforge"
+        ]
+    },
+
+    dragonborn: {
+        first: [
+            "Zyrrath","Kaelthor","Vyrnax","Sarynth","Dravion","Myrrath","Kalyth","Zorvax",
+            "Rhyzeth","Valnax","Syrath","Drakthor","Myzrin","Kalvyr","Zyrnath","Rhazor",
+            "Valthor","Syrnax","Dravyr","Myrrin","Kalthor","Zorath","Rhyzath","Valzor",
+            "Syrith","Draknir","Myzath","Kalzor","Zyrith","Rhazir"
+        ],
+        last: [
+            "Flameborn","Stormscale","Ironwing","Ashclaw","Thundercrest","Firebreath",
+            "Stormfang","Ironscale","Ashwing","Thunderjaw","Flamecrest","Fireclaw",
+            "Stormbreath","Ironcrest","Ashfang","Thunderwing","Flamejaw","Firefang",
+            "Stormclaw","Ironscale","Ashcrest","Thunderfang","Flamewing","Firecrest",
+            "Stormjaw","Ironfang","Ashjaw","Thunderclaw","Flamefang","Firewing"
+        ]
+    },
+
+    fairy: {
+        first: [
+            "Lunella","Pixara","Faylinn","Aurelia","Thistledrop","Merribell","Sylphie","Ariella",
+            "Bloomara","Faybelle","Lyria","Petalyn","Starbelle","Merrin","Sylphara","Aureth",
+            "Lunara","Pixelle","Fayra","Arielle","Bloomira","Thistelle","Lyria","Petaline",
+            "Starra","Merrith","Sylphina","Aureline","Luneth","Pixara"
+        ],
+        last: [
+            "Petalshine","Starwhisper","Moonpetal","Glowbloom","Sunflutter","Leafwhisper",
+            "Petalcrest","Starbloom","Moonwhirl","Glowpetal","Sunwhisper","Leafcrest",
+            "Petalwhirl","Starshine","Moonflutter","Glowcrest","Sunpetal","Leafbloom",
+            "Petalwing","Starpetal","Moonshine","Glowwhirl","Sunbloom","Leafshine",
+            "Petalwhisper","Starwhirl","Mooncrest","Glowshine","Sunwhirl","Leafpetal"
+        ]
+    }
+};
+
+function generateName() {
+    const race = document.getElementById("race").value;
+    const type = document.getElementById("nameType").value;
+
+    const first = names[race].first[Math.floor(Math.random() * names[race].first.length)];
+    const last = names[race].last[Math.floor(Math.random() * names[race].last.length)];
+
+    let output = "";
+
+    if (type === "first") output = first;
+    else if (type === "last") output = last;
+    else output = first + " " + last;
+
+    document.getElementById("result").innerText = output;
+}
+</script>
+
+  <!-- FEATURED GAME FLOATING BUTTON -->
+<div id="featured-game">
+    ❤️ Featured Game: Love Calculator ❤️
+</div>
+
+<style>
+    #featured-game {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: #1b1b1b;
+        border: 2px solid #ff2bd4;
+        padding: 12px 18px;
+        border-radius: 10px;
+        color: #fff;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        box-shadow: 0 0 12px #ff2bd4;
+        z-index: 99999;
+        animation: pulseGlow 3s infinite ease-in-out;
+        transition: 0.25s ease;
+    }
+
+    #featured-game:hover {
+        transform: scale(1.08);
+        background: #2a2a2a;
+        box-shadow: 0 0 20px #ff4be0;
+        border-color: #ff4be0;
+    }
+
+    @keyframes pulseGlow {
+        0% { box-shadow: 0 0 8px #ff2bd4; }
+        50% { box-shadow: 0 0 20px #ff2bd4; }
+        100% { box-shadow: 0 0 8px #ff2bd4; }
+    }
+
+    @media (max-width: 600px) {
+        #featured-game {
+            font-size: 14px;
+            padding: 10px 14px;
+            bottom: 15px;
+            right: 15px;
+        }
+    }
+</style>
+
+<script>
+    document.getElementById("featured-game").onclick = function() {
+        window.location.href = "/generators/Love-Calc.html";
+    };
+</script>
+
+
+</body>
+</html>
+
