@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Infinite Play: Neon Snake</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --bg-color: #050816;
+      --panel-color: #0b1020;
+      --accent: #38bdf8;
+      --snake-color: #22c55e;
+      --food-color: #f97316;
+      --grid-color: #1f2937;
+      --text-color: #e5e7eb;
+      --danger: #f97373;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+    }
+
+    body {
+      background: radial-gradient(circle at top, #111827 0, #020617 45%, #000 100%);
+      color: var(--text-color);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .shell {
+      width: 100%;
+      max-width: 960px;
+      background: linear-gradient(145deg, #020617 0, #020617 40%, #020617 100%);
+      border-radius: 18px;
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      box-shadow:
+        0 0 40px rgba(56, 189, 248, 0.25),
+        0 0 80px rgba(129, 140, 248, 0.2);
+      padding: 18px 18px 12px;
+      display: grid;
+      grid-template-columns: minmax(0, 2fr) minmax(0, 1.4fr);
+      gap: 16px;
+    }
+
+    @media (max-width: 800px) {
+      .shell {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .left,
+    .right {
+      background: radial-gradient(circle at top left, #020617 0, #020617 40%, #020617 100%);
+      border-radius: 14px;
+      border: 1px solid rgba(51, 65, 85, 0.9);
+      padding: 14px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .left::before,
+    .right::before {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background:
+        radial-gradient(circle at 0 0, rgba(56, 189, 248, 0.12), transparent 55%),
+        radial-gradient(circle at 100% 0, rgba(129, 140, 248, 0.12), transparent 55%);
+      opacity: 0.8;
+      pointer-events: none;
+    }
+
+    .left > *,
+    .right > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .title-block {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    h1 {
+      font-size: 1.2rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #e5e7eb;
+    }
+
+    .subtitle {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: #9ca3af;
+    }
+
+    .badge {
+      font-size: 0.7rem;
+      padding: 4px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(56, 189, 248, 0.6);
+      color: #bae6fd;
+      background: radial-gradient(circle at top, rgba(56, 189, 248, 0.25), transparent 60%);
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      white-space: nowrap;
+    }
+
+    .canvas-wrap {
+      margin-top: 8px;
+      background: radial-gradient(circle at top, #020617 0, #020617 40%, #020617 100%);
+      border-radius: 12px;
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    canvas {
+      width: 100%;
+      max-width: 480px;
+      aspect-ratio: 1 / 1;
+      border-radius: 10px;
+      background: #020617;
+      display: block;
+      margin: 0 auto;
+      box-shadow:
+        0 0 0 1px rgba(31, 41, 55, 1),
+        0 0 40px rgba(15, 23, 42, 0.9);
+    }
+
+    .hud {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      font-size: 0.8rem;
+    }
+
+    .hud-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .pill {
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .pill-label {
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      font-size: 0.65rem;
+      color: #9ca3af;
+    }
+
+    .pill-value {
+      font-weight: 600;
+      color: #e5e7eb;
+    }
+
+    .pill-value.highlight {
+      color: #22c55e;
+    }
+
+    .pill-value.danger {
+      color: var(--danger);
+    }
+
+    .controls {
+      font-size: 0.75rem;
+      color: #9ca3af;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .key {
+      border-radius: 6px;
+      border: 1px solid rgba(75, 85, 99, 0.9);
+      padding: 2px 6px;
+      font-size: 0.7rem;
+      color: #e5e7eb;
+      background: radial-gradient(circle at top, rgba(148, 163, 184, 0.25), transparent 70%);
+    }
+
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 6px;
+    }
+
+    .btn {
+      border-radius: 999px;
+      border: 1px solid rgba(56, 189, 248, 0.7);
+      background: radial-gradient(circle at top, rgba(56, 189, 248, 0.2), rgba(15, 23, 42, 0.95));
+      color: #e0f2fe;
+      padding: 6px 14px;
+      font-size: 0.8rem;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: transform 0.08s ease, box-shadow 0.08s ease, border-color 0.08s ease;
+    }
+
+    .btn.secondary {
+      border-color: rgba(148, 163, 184, 0.8);
+      background: radial-gradient(circle at top, rgba(148, 163, 184, 0.18), rgba(15, 23, 42, 0.95));
+      color: #e5e7eb;
+    }
+
+    .btn.danger {
+      border-color: rgba(248, 113, 113, 0.9);
+      background: radial-gradient(circle at top, rgba(248, 113, 113, 0.2), rgba(15, 23, 42, 0.95));
+      color: #fee2e2;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 0 18px rgba(56, 189, 248, 0.35);
+      border-color: rgba(56, 189, 248, 1);
+    }
+
+    .btn.secondary:hover {
+      box-shadow: 0 0 18px rgba(148, 163, 184, 0.35);
+      border-color: rgba(148, 163, 184, 1);
+    }
+
+    .btn.danger:hover {
+      box-shadow: 0 0 18px rgba(248, 113, 113, 0.4);
+      border-color: rgba(248, 113, 113, 1);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+      box-shadow: none;
+    }
+
+    .right h2 {
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: #9ca3af;
+      margin-bottom: 8px;
+    }
+
+    .card {
+      background: rgba(15, 23, 42, 0.96);
+      border-radius: 10px;
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      padding: 10px;
+      margin-bottom: 10px;
+      font-size: 0.8rem;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .card-title {
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      font-size: 0.7rem;
+      color: #9ca3af;
+    }
+
+    .link-box {
+      background: rgba(15, 23, 42, 0.9);
+      border-radius: 8px;
+      border: 1px dashed rgba(75, 85, 99, 0.9);
+      padding: 6px 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 0.75rem;
+      color: #e5e7eb;
+      word-break: break-all;
+    }
+
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .chip {
+      font-size: 0.7rem;
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      color: #9ca3af;
+      background: rgba(15, 23, 42, 0.9);
+    }
+
+    .colors-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 6px;
+    }
+
+    .color-field {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      font-size: 0.7rem;
+    }
+
+    .color-field label {
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: #9ca3af;
+    }
+
+    .color-field input[type="color"] {
+      width: 100%;
+      height: 26px;
+      border-radius: 6px;
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      background: transparent;
+      padding: 0;
+      cursor: pointer;
+    }
+
+    .note {
+      font-size: 0.7rem;
+      color: #9ca3af;
+      margin-top: 4px;
+    }
+
+    .ad-card {
+      margin-top: 6px;
+    }
+
+    .ad-slot {
+      margin-top: 6px;
+      border-radius: 8px;
+      border: 1px dashed rgba(75, 85, 99, 0.9);
+      padding: 8px;
+      font-size: 0.7rem;
+      color: #9ca3af;
+      text-align: center;
+      background: rgba(15, 23, 42, 0.9);
+    }
+
+    .status {
+      margin-top: 4px;
+      font-size: 0.7rem;
+      color: #9ca3af;
+    }
+
+    .status span {
+      color: #22c55e;
+      font-weight: 500;
+    }
+
+    .status.error span {
+      color: var(--danger);
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <!-- LEFT: GAME -->
+    <div class="left">
+      <header>
+        <div class="title-block">
+          <div class="subtitle">Infinite Play • Arcade Core</div>
+          <h1>Neon Snake</h1>
+        </div>
+        <div class="badge">HTML5 • WASD / Arrows</div>
+      </header>
+
+      <div class="canvas-wrap">
+        <canvas id="game" width="480" height="480"></canvas>
+
+        <div class="hud">
+          <div class="hud-group">
+            <div class="pill">
+              <span class="pill-label">Score</span>
+              <span class="pill-value" id="score">0</span>
+            </div>
+            <div class="pill">
+              <span class="pill-label">Best</span>
+              <span class="pill-value highlight" id="highScore">0</span>
+            </div>
+          </div>
+          <div class="hud-group">
+            <div class="controls">
+              <span>Move:</span>
+              <span class="key">↑ ↓ ← →</span>
+              <span class="key">W A S D</span>
+              <span>|</span>
+              <span class="key">Space</span> to pause
+            </div>
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <!-- CHANGE href TO YOUR GAMES MENU PATH -->
+          <a href="/games.html" class="btn secondary" id="backToMenu">
+            ⬅ Back to Games Menu
+          </a>
+          <button class="btn" id="restartBtn">⟳ Restart</button>
+          <button class="btn danger" id="resetHighScoreBtn">✕ Reset Best</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: BRANDING / DIRECT LINK / COLORS / ADS -->
+    <div class="right">
+      <h2>Session • Meta</h2>
+
+      <!-- DIRECT LINK CARD -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Direct Link</div>
+          <span class="chip">Shareable</span>
+        </div>
+        <div class="link-box">
+          <span id="directLinkText">https://omg10.com/4/10952010</span>
+          <button class="btn secondary" id="copyLinkBtn" style="padding:4px 10px;font-size:0.7rem;">
+            Copy
+          </button>
+        </div>
+        <div class="chip-row">
+          <span class="chip">Open in new tab</span>
+          <span class="chip">Use in support cards</span>
+        </div>
+        <div class="status" id="copyStatus"></div>
+      </div>
+
+      <!-- COLOR CUSTOMIZATION -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Neon Palette</div>
+          <span class="chip">Per-browser saved</span>
+        </div>
+        <div class="colors-grid">
+          <div class="color-field">
+            <label for="snakeColor">Snake</label>
+            <input type="color" id="snakeColor" value="#22c55e" />
+          </div>
+          <div class="color-field">
+            <label for="foodColor">Food</label>
+            <input type="color" id="foodColor" value="#f97316" />
+          </div>
+          <div class="color-field">
+            <label for="bgColor">Board</label>
+            <input type="color" id="bgColor" value="#020617" />
+          </div>
+        </div>
+        <div class="btn-row" style="margin-top:6px;">
+          <button class="btn secondary" id="saveColorsBtn" style="font-size:0.75rem;padding:4px 10px;">
+            Save Colors
+          </button>
+          <button class="btn secondary" id="resetColorsBtn" style="font-size:0.75rem;padding:4px 10px;">
+            Reset Palette
+          </button>
+        </div>
+        <div class="note">
+          Colors + best score are stored in this browser only (localStorage) — each user keeps their own.
+        </div>
+        <div class="status" id="colorStatus"></div>
+      </div>
+
+      <!-- ADS CARD -->
+      <div class="card ad-card">
+        <div class="card-header">
+          <div class="card-title">Monetization</div>
+          <span class="chip">Push Page Ads</span>
+        </div>
+        <div class="ad-slot" id="ad-slot">
+          Ad zone active for this page.
+        </div>
+        <div class="note">
+          This game is tuned for long sessions and replays — perfect for page-level ads.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- GAME LOGIC -->
+  <script>
+    (function () {
+      const canvas = document.getElementById("game");
+      const ctx = canvas.getContext("2d");
+
+      const gridSize = 24; // 480 / 24 = 20 cells
+      const tileCount = canvas.width / gridSize;
+
+      let snake = [];
+      let direction = { x: 1, y: 0 };
+      let nextDirection = { x: 1, y: 0 };
+      let food = { x: 10, y: 10 };
+      let score = 0;
+      let highScore = 0;
+      let gameLoopId = null;
+      let speedMs = 120;
+      let isPaused = false;
+      let isDead = false;
+
+      const scoreEl = document.getElementById("score");
+      const highScoreEl = document.getElementById("highScore");
+      const restartBtn = document.getElementById("restartBtn");
+      const resetHighScoreBtn = document.getElementById("resetHighScoreBtn");
+
+      const snakeColorInput = document.getElementById("snakeColor");
+      const foodColorInput = document.getElementById("foodColor");
+      const bgColorInput = document.getElementById("bgColor");
+      const saveColorsBtn = document.getElementById("saveColorsBtn");
+      const resetColorsBtn = document.getElementById("resetColorsBtn");
+      const colorStatus = document.getElementById("colorStatus");
+
+      const copyLinkBtn = document.getElementById("copyLinkBtn");
+      const copyStatus = document.getElementById("copyStatus");
+      const directLinkText = document.getElementById("directLinkText");
+
+      const LS_HIGH_SCORE_KEY = "infinitePlay_neonSnake_highScore";
+      const LS_COLORS_KEY = "infinitePlay_neonSnake_colors";
+
+      function loadHighScore() {
+        try {
+          const stored = localStorage.getItem(LS_HIGH_SCORE_KEY);
+          if (stored !== null) {
+            highScore = parseInt(stored, 10) || 0;
+          }
+        } catch (e) {
+          highScore = 0;
+        }
+        highScoreEl.textContent = highScore;
+      }
+
+      function saveHighScore() {
+        try {
+          localStorage.setItem(LS_HIGH_SCORE_KEY, String(highScore));
+        } catch (e) {
+          // ignore
+        }
+      }
+
+      function loadColors() {
+        try {
+          const stored = localStorage.getItem(LS_COLORS_KEY);
+          if (!stored) return;
+          const parsed = JSON.parse(stored);
+          if (parsed.snake) snakeColorInput.value = parsed.snake;
+          if (parsed.food) foodColorInput.value = parsed.food;
+          if (parsed.bg) bgColorInput.value = parsed.bg;
+        } catch (e) {
+          // ignore
+        }
+      }
+
+      function saveColors() {
+        const payload = {
+          snake: snakeColorInput.value,
+          food: foodColorInput.value,
+          bg: bgColorInput.value,
+        };
+        try {
+          localStorage.setItem(LS_COLORS_KEY, JSON.stringify(payload));
+          colorStatus.classList.remove("error");
+          colorStatus.innerHTML = "<span>Saved.</span> Palette locked for this browser.";
+        } catch (e) {
+          colorStatus.classList.add("error");
+          colorStatus.innerHTML = "<span>Could not save.</span> Storage is blocked.";
+        }
+        setTimeout(() => {
+          colorStatus.textContent = "";
+        }, 2000);
+      }
+
+      function resetColors() {
+        snakeColorInput.value = "#22c55e";
+        foodColorInput.value = "#f97316";
+        bgColorInput.value = "#020617";
+        try {
+          localStorage.removeItem(LS_COLORS_KEY);
+        } catch (e) {
+          // ignore
+        }
+        colorStatus.classList.remove("error");
+        colorStatus.innerHTML = "<span>Reset.</span> Back to Infinite Play default.";
+        setTimeout(() => {
+          colorStatus.textContent = "";
+        }, 2000);
+      }
+
+      function initSnake() {
+        snake = [
+          { x: 8, y: 10 },
+          { x: 7, y: 10 },
+          { x: 6, y: 10 },
+        ];
+        direction = { x: 1, y: 0 };
+        nextDirection = { x: 1, y: 0 };
+        score = 0;
+        scoreEl.textContent = score;
+        isDead = false;
+      }
+
+      function randomFood() {
+        let newFood;
+        while (true) {
+          newFood = {
+            x: Math.floor(Math.random() * tileCount),
+            y: Math.floor(Math.random() * tileCount),
+          };
+          const onSnake = snake.some((seg) => seg.x === newFood.x && seg.y === newFood.y);
+          if (!onSnake) break;
+        }
+        food = newFood;
+      }
+
+      function drawBoard() {
+        const bg = bgColorInput.value || "#020617";
+        ctx.fillStyle = bg;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        ctx.strokeStyle = "rgba(31,41,55,0.8)";
+        ctx.lineWidth = 1;
+        for (let i = 0; i <= tileCount; i++) {
+          ctx.beginPath();
+          ctx.moveTo(i * gridSize + 0.5, 0);
+          ctx.lineTo(i * gridSize + 0.5, canvas.height);
+          ctx.stroke();
+
+          ctx.beginPath();
+          ctx.moveTo(0, i * gridSize + 0.5);
+          ctx.lineTo(canvas.width, i * gridSize + 0.5);
+          ctx.stroke();
+        }
+      }
+
+      function drawSnake() {
+        const snakeColor = snakeColorInput.value || "#22c55e";
+        const headColor = "#a855f7";
+
+        snake.forEach((seg, index) => {
+          const x = seg.x * gridSize;
+          const y = seg.y * gridSize;
+          const radius = 6;
+
+          const gradient = ctx.createRadialGradient(
+            x + gridSize / 2,
+            y + gridSize / 2,
+            4,
+            x + gridSize / 2,
+            y + gridSize / 2,
+            gridSize
+          );
+          if (index === 0) {
+            gradient.addColorStop(0, headColor);
+            gradient.addColorStop(1, "rgba(168,85,247,0.1)");
+          } else {
+            gradient.addColorStop(0, snakeColor);
+            gradient.addColorStop(1, "rgba(34,197,94,0.08)");
+          }
+
+          ctx.fillStyle = gradient;
+          ctx.beginPath();
+          ctx.roundRect(x + 2, y + 2, gridSize - 4, gridSize - 4, radius);
+          ctx.fill();
+
+          if (index === 0) {
+            ctx.fillStyle = "rgba(15,23,42,0.9)";
+            const eyeSize = 3;
+            const offsetX = direction.x === 0 ? 4 : direction.x > 0 ? 6 : -6;
+            const offsetY = direction.y === 0 ? 4 : direction.y > 0 ? 6 : -6;
+            ctx.beginPath();
+            ctx.arc(
+              x + gridSize / 2 + offsetX,
+              y + gridSize / 2 + offsetY,
+              eyeSize,
+              0,
+              Math.PI * 2
+            );
+            ctx.fill();
+          }
+        });
+      }
+
+      function drawFood() {
+        const foodColor = foodColorInput.value || "#f97316";
+        const x = food.x * gridSize;
+        const y = food.y * gridSize;
+
+        const gradient = ctx.createRadialGradient(
+          x + gridSize / 2,
+          y + gridSize / 2,
+          2,
+          x + gridSize / 2,
+          y + gridSize / 2,
+          gridSize
+        );
+        gradient.addColorStop(0, foodColor);
+        gradient.addColorStop(1, "rgba(249,115,22,0.1)");
+
+        ctx.fillStyle = gradient;
+        ctx.beginPath();
+        ctx.roundRect(x + 4, y + 4, gridSize - 8, gridSize - 8, 8);
+        ctx.fill();
+      }
+
+      function update() {
+        if (isPaused || isDead) {
+          drawBoard();
+          drawSnake();
+          drawFood();
+          if (isDead) {
+            drawGameOver();
+          } else {
+            drawPaused();
+          }
+          return;
+        }
+
+        direction = nextDirection;
+
+        const head = { ...snake[0] };
+        head.x += direction.x;
+        head.y += direction.y;
+
+        if (
+          head.x < 0 ||
+          head.x >= tileCount ||
+          head.y < 0 ||
+          head.y >= tileCount ||
+          snake.some((seg) => seg.x === head.x && seg.y === head.y)
+        ) {
+          isDead = true;
+          if (score > highScore) {
+            highScore = score;
+            highScoreEl.textContent = highScore;
+            saveHighScore();
+          }
+          drawBoard();
+          drawSnake();
+          drawFood();
+          drawGameOver();
+          return;
+        }
+
+        snake.unshift(head);
+
+        if (head.x === food.x && head.y === food.y) {
+          score += 1;
+          scoreEl.textContent = score;
+          randomFood();
+        } else {
+          snake.pop();
+        }
+
+        drawBoard();
+        drawSnake();
+        drawFood();
+      }
+
+      function drawGameOver() {
+        ctx.fillStyle = "rgba(15,23,42,0.9)";
+        ctx.fillRect(40, canvas.height / 2 - 60, canvas.width - 80, 120);
+        ctx.strokeStyle = "rgba(248,113,113,0.9)";
+        ctx.lineWidth = 2;
+        ctx.strokeRect(40, canvas.height / 2 - 60, canvas.width - 80, 120);
+
+        ctx.fillStyle = "#fecaca";
+        ctx.font = "20px system-ui";
+        ctx.textAlign = "center";
+        ctx.fillText("Game Over", canvas.width / 2, canvas.height / 2 - 20);
+
+        ctx.fillStyle = "#e5e7eb";
+        ctx.font = "14px system-ui";
+        ctx.fillText(
+          "Press Space or click Restart to play again",
+          canvas.width / 2,
+          canvas.height / 2 + 10
+        );
+      }
+
+      function drawPaused() {
+        ctx.fillStyle = "rgba(15,23,42,0.9)";
+        ctx.fillRect(60, canvas.height / 2 - 40, canvas.width - 120, 80);
+        ctx.strokeStyle = "rgba(56,189,248,0.9)";
+        ctx.lineWidth = 2;
+        ctx.strokeRect(60, canvas.height / 2 - 40, canvas.width - 120, 80);
+
+        ctx.fillStyle = "#bae6fd";
+        ctx.font = "18px system-ui";
+        ctx.textAlign = "center";
+        ctx.fillText("Paused", canvas.width / 2, canvas.height / 2 - 8);
+
+        ctx.fillStyle = "#e5e7eb";
+        ctx.font = "13px system-ui";
+        ctx.fillText(
+          "Press Space to resume",
+          canvas.width / 2,
+          canvas.height / 2 + 16
+        );
+      }
+
+      function startLoop() {
+        if (gameLoopId) clearInterval(gameLoopId);
+        gameLoopId = setInterval(update, speedMs);
+      }
+
+      function restartGame() {
+        initSnake();
+        randomFood();
+        isPaused = false;
+        isDead = false;
+        startLoop();
+      }
+
+      function handleKey(e) {
+        const key = e.key.toLowerCase();
+        if (key === " " || key === "spacebar") {
+          if (isDead) {
+            restartGame();
+          } else {
+            isPaused = !isPaused;
+          }
+          return;
+        }
+
+        if (isDead) return;
+
+        if (["arrowup", "w"].includes(key) && direction.y !== 1) {
+          nextDirection = { x: 0, y: -1 };
+        } else if (["arrowdown", "s"].includes(key) && direction.y !== -1) {
+          nextDirection = { x: 0, y: 1 };
+        } else if (["arrowleft", "a"].includes(key) && direction.x !== 1) {
+          nextDirection = { x: -1, y: 0 };
+        } else if (["arrowright", "d"].includes(key) && direction.x !== -1) {
+          nextDirection = { x: 1, y: 0 };
+        }
+      }
+
+      restartBtn.addEventListener("click", restartGame);
+      resetHighScoreBtn.addEventListener("click", function () {
+        try {
+          localStorage.removeItem(LS_HIGH_SCORE_KEY);
+        } catch (e) {
+          // ignore
+        }
+        highScore = 0;
+        highScoreEl.textContent = "0";
+      });
+
+      saveColorsBtn.addEventListener("click", saveColors);
+      resetColorsBtn.addEventListener("click", resetColors);
+
+      copyLinkBtn.addEventListener("click", async function () {
+        const text = directLinkText.textContent.trim();
+        try {
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            await navigator.clipboard.writeText(text);
+          } else {
+            const temp = document.createElement("textarea");
+            temp.value = text;
+            document.body.appendChild(temp);
+            temp.select();
+            document.execCommand("copy");
+            document.body.removeChild(temp);
+          }
+          copyStatus.classList.remove("error");
+          copyStatus.innerHTML = "<span>Copied.</span> Direct link ready.";
+        } catch (e) {
+          copyStatus.classList.add("error");
+          copyStatus.innerHTML = "<span>Failed.</span> Copy manually.";
+        }
+        setTimeout(() => {
+          copyStatus.textContent = "";
+        }, 2000);
+      });
+
+      window.addEventListener("keydown", handleKey);
+
+      loadHighScore();
+      loadColors();
+      initSnake();
+      randomFood();
+      startLoop();
+    })();
+  </script>
+
+  <!-- PUSH PAGE ADS (as provided) -->
+  <script>
+    (function (s) {
+      s.dataset.zone = "10954674",
+      s.src = "https://nap5k.com/tag.min.js"
+    })([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement("script")))
+  </script>
+</body>
+</html>
